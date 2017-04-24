@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/plugins/AGT" >
+        <file>icons/elec_icon.png</file>
+        <file>icons/mag_icon.png</file>
+		<file>icons/raster_icon.png</file>
+        <file>icons/help.svg</file>
+    </qresource>
+</RCC>

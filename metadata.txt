@@ -1,0 +1,36 @@
+# This file contains metadata for your plugin. Since 
+# version 2.0 of QGIS this is the proper way to supply 
+# information about a plugin. The old method of 
+# embedding metadata in __init__.py will 
+# is no longer supported since version 2.0.
+
+# This file should be included when you package your plugin.# Mandatory items:
+
+[general]
+name=AGT - Archaeological Geophysics Toolbox
+qgisMinimumVersion=2.0
+description=This plugin provides basic processing tools of geophysical data for Archaeology
+version=0.1
+author=Nariman HATAMI / INRAP
+email=nariman.hatami@inrap.fr
+
+# End of mandatory metadata
+
+# Optional items:
+
+# Uncomment the following line and add your changelog:
+# changelog=
+
+# Tags are comma separated with spaces allowed
+tags=archaeology, geophysics, RM85, RM15
+
+homepage=https://github.com/narimanInrap/AGT/blob/master/README.md
+tracker=https://github.com/narimanInrap/AGT/issues
+repository=https://github.com/narimanInrap/AGT
+icon=icon.png
+# experimental flag
+experimental=True
+
+# deprecated flag (applies to the whole plugin, not just a single version)
+deprecated=False
+
