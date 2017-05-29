@@ -34,10 +34,16 @@ SOURCES = \
 	Dialog/georefDialog.py\
 	Dialog/magDialog.py \
 	Dialog/rasterDialog.py\
+	Dialog/ElecDownDialog.py\
+	Dialog/GridDialog.py\
 	ui/ui_electDialog.py\
 	ui/ui_georefDialog.py\
 	ui/ui_magDialog.py\
-	ui/ui_rasterDialog.py
+	ui/ui_rasterDialog.py\
+	ui/ui_ElecDownDialog.py\
+	ui/ui_GridDialog.py\
+	toolbox/AGTUtilities.py\
+	toolbox/AGTExceptions.py
 	
 PLUGINNAME = AGT
 
@@ -47,14 +53,18 @@ PY_FILES = \
 	Dialog/georefDialog.py \
 	Dialog/magDialog.py \
 	Dialog/rasterDialog.py \
+	Dialog/ElecDownDialog.py \
+	Dialog/GridDialog.py \
 	__init__.py
 
-EXTRAS = icons/elec_icon.png icons/mag_icon.png icons/raster_icon.png icons/help.svg metadata.txt
+EXTRAS = icons/elec_icon.png icons/mag_icon.png icons/raster_icon.png icons/help.svg icons/download_icon.png metadata.txt
 
 COMPILED_UI_FILES = ui/ui_electDialog.py \
 	ui/ui_georefDialog.py \
 	ui/ui_magDialog.py \
-	ui/ui_rasterDialog.py
+	ui/ui_rasterDialog.py \
+	ui/ui_ElecDownDialog.py \
+	ui/ui_GridDialog.py
 
 
 COMPILED_RESOURCE_FILES = resources_rc.py

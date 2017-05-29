@@ -9,7 +9,7 @@
 [general]
 name=AGT - Archaeological Geophysics Toolbox
 qgisMinimumVersion=2.0
-description=This plugin provides basic processing tools of geophysical data for Archaeology
+description=This plugin provides basic processing tools of geophysical data for Archaeology: Geoscan Research RM15/RM85, Sensys MXPDA
 version=0.1
 author=Nariman HATAMI / INRAP
 email=nariman.hatami@inrap.fr
@@ -22,14 +22,14 @@ email=nariman.hatami@inrap.fr
 # changelog=
 
 # Tags are comma separated with spaces allowed
-tags=archaeology, geophysics, RM85, RM15
+tags=archaeology, geophysics, RM85, RM15, INRAP, AGT, MXPDA, processing
 
 homepage=https://github.com/narimanInrap/AGT/blob/master/README.md
 tracker=https://github.com/narimanInrap/AGT/issues
 repository=https://github.com/narimanInrap/AGT
 icon=icon.png
 # experimental flag
-experimental=True
+experimental=False
 
 # deprecated flag (applies to the whole plugin, not just a single version)
 deprecated=False

@@ -39,6 +39,8 @@ import resources_rc
 from Dialog.ElectDialog import ElectDialog
 from Dialog.MagDialog import MagDialog
 from Dialog.RasterDialog import RasterDialog 
+#from Dialog.ElecDownDialog import ElecDownDialog 
+
 import os.path
 
 
@@ -71,6 +73,7 @@ class AGT:
         # Create the dialog (after translation) and keep reference
         self.dlg = ElectDialog(self.iface)
         self.magDlg = MagDialog(self.iface)
+        #self.elecDownDlg = ElecDownDialog(self.iface)
         #self.rasterDlg = RasterDialog(self.iface)
 
         # Declare instance attributes
@@ -171,6 +174,13 @@ class AGT:
 
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
+        
+#         icon_path = ':/plugins/AGT/icons/download_icon.png'
+#         self.add_action(
+#             icon_path,
+#             text=self.tr(u'RM15/RM85 download'),
+#             callback=self.runElecDown,
+#             parent=self.iface.mainWindow())        
 
         icon_path = ':/plugins/AGT/icons/elec_icon.png'
         self.add_action(
@@ -186,6 +196,7 @@ class AGT:
             callback=self.runMag,
             parent=self.iface.mainWindow())
         
+     
 #         icon_path = ':/plugins/AGT/icons/raster_icon.png'
 #         self.add_action(
 #             icon_path,
@@ -202,9 +213,13 @@ class AGT:
             add_to_toolbar = False)        
         # separator
         self.toolbar.addSeparator()
-
+        
     def help(self):
-        pass
+        if QCoreApplication.translate(u"AGT", "help") == "aide":
+            help_file = "file:///{}/help/build/html/fr/index.html".format(os.path.dirname(__file__))
+        else:
+            help_file = "file:///{}/help/build/html/en/index.html".format(os.path.dirname(__file__)) 
+        QDesktopServices().openUrl(QUrl(help_file))
     
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
@@ -242,7 +257,21 @@ class AGT:
             pass
         else:
             self.magDlg.hideDialog()
-            
+    
+#     def runElecDown(self):
+#         """Run method that performs all the real work"""
+#         # show the dialog
+#         self.elecDownDlg.show()
+#         # Run the dialog event loop
+#         result = self.elecDownDlg.exec_()
+#         # See if OK was pressed
+#         if result:
+#             # Do something useful here - delete the line containing pass and
+#             # substitute with your code.
+#             pass
+#         else:
+#             self.elecDownDlg.hideDialog()
+#             
     def runRaster(self):
         """Run method that performs all the real work"""
         # show the dialog

@@ -65,7 +65,39 @@ class Utilities(object):
         Utilities.interpolProcDict['inverse distance weighted'] = 'saga:inversedistanceweighted'
         Utilities.interpolProcDict['multilevel spline interpolation'] = 'saga:multilevelbsplineinterpolation'
         return Utilities.interpolProcDict.keys()
+    
+    # Returns the list of available baud rates
+    @staticmethod
+    def getBaudRateList():
         
+        baudRates = []
+        baudRates.append('2400')
+        baudRates.append('9600')
+        baudRates.append('14400')
+        baudRates.append('19200')
+        baudRates.append('28800')       
+        return baudRates
+    
+    # Returns the list of available COM ports
+    @staticmethod
+    def getComPortList():
+        
+        comPorts = []
+        comPorts.append('COM1')   
+        comPorts.append('COM2')   
+        comPorts.append('COM3')   
+        comPorts.append('COM4')   
+        comPorts.append('COM9')   
+        return comPorts
+    
+    # Returns the list of available probe configurations
+    @staticmethod
+    def getProbeConfigList():
+        
+        probeConfigs = []
+        probeConfigs.append(QtGui.QApplication.translate("Utility", 'pole-pole', None, QtGui.QApplication.UnicodeUTF8))
+        return probeConfigs
+    
     # Returns a list of names of all layers in QgsMapLayerRegistry
     @staticmethod
     def getLayerNames(geoTypes):
@@ -106,7 +138,7 @@ class Utilities(object):
         else:
             filter = '*' + filExt
             
-        SaveOutPutShapeMsg = QtGui.QApplication.translate("Utility","Save output shapefile", None, QtGui.QApplication.UnicodeUTF8) 
+        SaveOutPutShapeMsg = QtGui.QApplication.translate("Utility","Save output file", None, QtGui.QApplication.UnicodeUTF8) 
         outFilePath = QtGui.QFileDialog.getSaveFileName(parent, SaveOutPutShapeMsg, outDir, filter)
         outFilePath = unicode(outFilePath)
         if outFilePath:
