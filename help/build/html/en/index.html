@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Welcome to AGT’s documentation! &mdash; AGT 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="AGT 0.1 documentation" href="#" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="#">AGT 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="welcome-to-agt-s-documentation">
+<h1>Welcome to AGT&#8217;s documentation!<a class="headerlink" href="#welcome-to-agt-s-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul class="simple">
+</ul>
+</div>
+</div>
+<div class="section" id="introduction">
+<span id="index-0"></span><h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<p>This plugin is a toolbox for processing electrical (Geoscan Research RM15/RM85) and magnetic (Sensys MXPDA) prospecting data.</p>
+</div>
+<div class="section" id="electrical-data-processing-module-geoscan-research-rm15-rm85">
+<span id="index-1"></span><h1>Electrical data processing module (Geoscan Research RM15/RM85)<a class="headerlink" href="#electrical-data-processing-module-geoscan-research-rm15-rm85" title="Permalink to this headline">¶</a></h1>
+<p>This module enables initial processing of grid-based electrical data collected in a regular trot. At the moment only the pole-pole probes configuration is available.</p>
+<p><strong>Input file</strong></p>
+<p>The input file is an ascii file (.dat) that contains the data, and a header that points out all the information concerning the configuration of the resistance meter and the survey mode:</p>
+<blockquote>
+<div><p>** Column file containing the data <a href="#id1"><span class="problematic" id="id2">**</span></a></p>
+<ul class="simple">
+<li>RM85          Name of the resistance meter</li>
+<li>2                     Number of grids</li>
+<li>30            Length of the grids (m)</li>
+<li>30            Width of the grids (m)</li>
+<li>0.5           Probe spacing (m)</li>
+<li>3                     Number of channels</li>
+<li>4                     Number of probes</li>
+<li>1                     Line step (m)</li>
+<li>Pole-Pole     Probe configuration</li>
+<li>10            Current intensity</li>
+<li>1                     Number of the first grid</li>
+<li>0                     Coordinates of grid?s first point (left-down point)</li>
+<li>0</li>
+<li>2                     Number of the second grid</li>
+<li>0                     Coordinates of grid?s first point (left-down point)</li>
+<li>30</li>
+<li>20.95         Resistivity measure</li>
+<li>25</li>
+<li>20.5</li>
+<li>8.55</li>
+<li>8.9</li>
+<li>5.26</li>
+<li>.</li>
+<li>.</li>
+<li>.</li>
+</ul>
+</div></blockquote>
+<p>The value of non measured points (dummy value) is 999.</p>
+<p>The header has two different roles:</p>
+<ol class="arabic simple">
+<li>It is used for the data processing, thus it must be completed accurately</li>
+<li>It is used to keep the metadata of the survey</li>
+</ol>
+<p><strong>Processing</strong></p>
+<p>The basic process consists in reorganizing the raw data in order to separate each <em>channel</em> . The measured resistance values are transformed into apparent resistivity, depending on the chosen probe configuration (for the moment only the pole-pole configuration is available).
+The data can be exported in Shapefiles and also in simple ascii files (.dat). Two sub-modules are proposed afterwards:</p>
+<blockquote>
+<div><p><em>Median filtering</em> </p>
+<p>This function allows to do noise removal using a median filter algorithm. The kernel size and the median value are defined by the user.</p>
+<p><em>Georeferencing</em> </p>
+<p>This function allows the georeferencing of the grid using geometric translations and rotations (scaling and deformation are not used). The method uses two control points that are provided by the user.</p>
+</div></blockquote>
+</div>
+<div class="section" id="magnetic-data-processing-module-sensys-mxpda">
+<span id="index-2"></span><h1>Magnetic data processing module (Sensys MXPDA)<a class="headerlink" href="#magnetic-data-processing-module-sensys-mxpda" title="Permalink to this headline">¶</a></h1>
+<p>This module allows basic processing of geophysical magnetic surveys data, collected with a Sensys MXPDA magnetometer paired with a GPS receiver.</p>
+<p><strong>Input file</strong></p>
+<p>The input file is an .asc file, generated by Sensys Magneto-Arch software. Its configuration is as follows:</p>
+<p>X, Y, difference of the vertical component of the magnetic field, profile name, the number of the probe.</p>
+<ul class="simple">
+<li>30694328.591 5432511.556 5.5 &#8220;20161010-110332_GZP.prm&#8221; 1</li>
+<li>30694328.717 5432511.772 31.2 &#8220;20161010-110332_GZP.prm&#8221; 2</li>
+<li>30694328.844 5432511.987 -21.6 &#8220;20161010-110332_GZP.prm&#8221; 3</li>
+<li>30694328.971 5432512.203 -8.3 &#8220;20161010-110332_GZP.prm&#8221; 4</li>
+<li>30694329.098 5432512.418 -12.3 &#8220;20161010-110332_GZP.prm&#8221; 5</li>
+<li>...</li>
+</ul>
+<p>Collected data are georeferenced in UTM coordinates. The two first digits of the X coordinates correspond to the UTM zone (here UTM-30).</p>
+<p><strong>Processing</strong></p>
+<p>The basic process consists in reorganizing the data in order to separate each <em>profile</em> (a profile is defined as a set of data collected with a probe during a survey). Points are then georeferenced in the chosen mapping system. Data can be exported in Shapefiles and also in simple ascii files (.dat).
+Four processing modules are proposed:</p>
+<blockquote>
+<div><p><em>Decimation</em> </p>
+<p>This function allows reducing the number of collected points by keeping a fraction of them (1 out of n, <em>n</em> is chosen by the user).</p>
+<p><em>Median removal</em> </p>
+<p>This function allows removing the median value of each profile, in order to eliminate the zero offset due to electronic components of the sensors and constant magnetic perturbations. It is possible to restrain the number of points used to determine the median value by using a percentile. Using a percentile threshold excludes heavily magnetic anomalies from the median value computing.</p>
+<p><em>Trend removal</em> </p>
+<p>This function allows a polynomial regression, with a degree of 1, 2 or 3, on each profile.</p>
+<p><em>Stationary point removal</em> </p>
+<p>This function eliminates points collected while the magnetometer is stationary.</p>
+</div></blockquote>
+</div>
+<div class="section" id="code-source">
+<span id="index-3"></span><h1>Code source<a class="headerlink" href="#code-source" title="Permalink to this headline">¶</a></h1>
+<p>The source code is available at:</p>
+<p><a class="reference external" href="https://github.com/narimanInrap/AGT.git">https://github.com/narimanInrap/AGT.git</a></p>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
+<li><a class="reference internal" href="search.html"><em>Search Page</em></a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Welcome to AGT&#8217;s documentation!</a></li>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#electrical-data-processing-module-geoscan-research-rm15-rm85">Electrical data processing module (Geoscan Research RM15/RM85)</a></li>
+<li><a class="reference internal" href="#magnetic-data-processing-module-sensys-mxpda">Magnetic data processing module (Sensys MXPDA)</a></li>
+<li><a class="reference internal" href="#code-source">Code source</a></li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="#">AGT 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Nariman HATAMI / INRAP.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
