@@ -179,6 +179,8 @@ class Engine(object):
                 for channelCount in range(0, self.channelNbr):
                     measureNbr = self.channelNbr - channelCount                    
                     xShift = (channelCount + 1)*self.ElectGap/2 # the measured point is in the middle of the two measuring elecrodes
+                    if yStep < 0:
+                        xShift = -xShift
                     filtI = 0 
                     for measureCount in range(0, measureNbr):
                         res = float(rawDataFile.readLine())
