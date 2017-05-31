@@ -124,6 +124,13 @@ Le code source est disponible à l’adresse suivante :
 
 https://github.com/narimanInrap/AGT.git
 
+évolutions futures
+===================
+
+* Module de traitement des données électromagnétique (GeoPhex gem-2, dualEM)
+* Module de téléchargement RM15/RM85
+* Module de traitement avancé
+
 Indices and tables
 ==================
 
