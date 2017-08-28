@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/ui_ElecDownDialog.ui'
 #
-# Created: Tue May 09 17:49:39 2017
+# Created: Wed Jun 21 16:28:13 2017
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -47,7 +47,7 @@ class Ui_AGTElecDownDialog(object):
         self.gridLayout_2.setObjectName(_fromUtf8("gridLayout_2"))
         self.lineStepSpin = QtGui.QDoubleSpinBox(self.box)
         self.lineStepSpin.setSingleStep(0.1)
-        self.lineStepSpin.setProperty("value", 0.5)
+        self.lineStepSpin.setProperty("value", 1.0)
         self.lineStepSpin.setObjectName(_fromUtf8("lineStepSpin"))
         self.gridLayout_2.addWidget(self.lineStepSpin, 11, 2, 1, 1)
         self.gridSizeSpinX = QtGui.QSpinBox(self.box)

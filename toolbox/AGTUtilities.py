@@ -34,6 +34,9 @@ from os.path import basename
 
 import sqlite3
 
+#from ..lib.serial.tools import list_ports
+#import serial.tools.list_ports
+
 # All methods of this class were adopted from 'points2one Plugin'
 # Copyright (C) 2010 Pavol Kapusta
 # Copyright (C) 2010, 2013 Goyo
@@ -53,7 +56,11 @@ class Utilities(object):
         crsList = []      
         for crs in rows:
             crsList.append(crs[0][:25] + ', ' + crs[6])
-            Utilities.crsRefDict[crs[0][:25] + ', ' + crs[6]] = crs[6]        
+            try:
+                code = long(crs[6])
+            except ValueError:
+                code = crs[6]
+            Utilities.crsRefDict[crs[0][:25] + ', ' + crs[6]] = code        
         cur.close()
         conn.close()        
         return crsList
@@ -79,17 +86,15 @@ class Utilities(object):
         return baudRates
     
     # Returns the list of available COM ports
-    @staticmethod
-    def getComPortList():
-        
-        comPorts = []
-        comPorts.append('COM1')   
-        comPorts.append('COM2')   
-        comPorts.append('COM3')   
-        comPorts.append('COM4')   
-        comPorts.append('COM9')   
-        return comPorts
-    
+#     @staticmethod
+#     def getComPortList():
+#         
+#         ports = list(list_ports.comports())
+#         comPorts = []
+#         for p in ports:
+#             comPorts.append(str(p))
+#         return comPorts 
+#     
     # Returns the list of available probe configurations
     @staticmethod
     def getProbeConfigList():

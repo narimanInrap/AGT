@@ -24,11 +24,6 @@
 #using Unicode for all strings
 from __future__ import unicode_literals
 
-#debug
-import sys
-sys.path.append(unicode('C:\Program Files\eclipse\plugins\org.python.pydev_3.4.1.201403181715\pysrc'))
-from pydevd import *
-#debug
 
 
 import math
@@ -53,7 +48,8 @@ class Engine(object):
     filteredPointNum = []   
     def __init__(self, rawDataFilename, dataEncoding, datOutput, crsRef = None, projectName = None, medianPercent = None, kernelSize = None, filter = None, 
                  addCoordFields = None, decimation = None, decimValue = None, medRemove = None, percentile = None, percThreshold = None,
-                 trendRemove = None, trendPolyOrder = None, statPtRem = None, statPtThresh = None, gpsProbe = None, outputShapefile = None):
+                 trendRemove = None, trendPolyOrder = None, trendPercentile = None, trendPercThreshold = None, statPtRem = None, statPtThresh = None, 
+                 gpsProbe = None, outputShapefile = None):
         self.rawDataFilename = rawDataFilename
         self.dataEncoding = dataEncoding
         self.gridNames = []        
@@ -86,6 +82,8 @@ class Engine(object):
         self.percThreshold = percThreshold
         self.isTrendRemoval = trendRemove
         self.trendPolyOrder = trendPolyOrder
+        self.isTrendPercentile = trendPercentile
+        self.trendPercThreshold = trendPercThreshold
         self.isStationPtRem = statPtRem
         if statPtThresh:
             self.stationPtThreshold = float(statPtThresh)
@@ -539,18 +537,6 @@ class Engine(object):
         newY = yR + yg1
         return QgsPoint(newX, newY)
     
-#     def runMag(self):
-#         self.magRawDataParser()
-#         if self.isDecimation:
-#             self.magDecimation()       
-#         if self.isStationPtRem:
-#             self.distanceFilter()
-#         self.sortedMagPoints = sorted(self.magPoints, key = itemgetter(3, 4))
-#         self.createProfileList()
-#         self.medianRemoval()
-#         if self.datOutput:
-#             self.createMagDatExport()
-#         self.createMagShapefile()
     
     def sortMagPoints(self):
         self.sortedMagPoints = sorted(self.magPoints, key = itemgetter(3, 4)) 
@@ -607,13 +593,28 @@ class Engine(object):
         tempY = [1]
         profile = 1
         valueList = []
-        step = 1    
+        position=[]
+        position.append(0)
+        tamp=1
+        x=0
+    
+        for i in range(1,len(self.sortedMagPoints)):
+            if self.profile[i]==tamp:
+                x+=numpy.sqrt(((self.sortedMagPoints[i][0]-self.sortedMagPoints[i-1][0])**2)+((self.sortedMagPoints[i][2]-self.sortedMagPoints[i-1][2])**2))
+                position.append(x)
+            else:
+                tamp+=1
+                x=0
+                position.append(x)
+            
+            
         for i in range(1, len(self.sortedMagPoints)):
             if i == len(self.sortedMagPoints) - 1: # Median correction for the last profile            
                 tempVals.append(self.sortedMagPoints[i][2])    
-                tempY.append(step) # fictive Y for the polynomial
-                step += 1                
-                newValPoly, a1, p1 = [], [], []    
+                tempY.append(position[i]) 
+                
+                newValPoly, a1, p1 = [], [], []   
+                
                 if self.isMedianRemoval:
                     filtTempVals = []
                     if self.isPercentile:
@@ -623,11 +624,26 @@ class Engine(object):
                         if self.isPercentile:
                             if val < maxThresh and val > minThresh:
                                 filtTempVals.append(val)
-                        else: 
-                            filtTempVals.append(val)
+                            else:
+                                filtTempVals.append(val)
                     medianProf = numpy.median(filtTempVals)                    
                 else:
-                    a1 = numpy.polyfit(tempY, tempVals, self.trendPolyOrder)
+                    filtTempVals=[]
+                    ytemp2=[]
+                    if self.isTrendPercentile:
+                            minThresh = numpy.percentile(tempVals, self.trendPercThreshold)
+                            maxThresh = numpy.percentile(tempVals, (100-self.trendPercThreshold))
+                            
+                    for val in range(0,len(tempVals)):
+                            if self.isTrendPercentile:
+                                if tempVals[val] < maxThresh and tempVals[val] > minThresh:
+                                    filtTempVals.append(tempVals[val])
+                                    ytemp2.append(tempY[val])
+                            else:
+                                filtTempVals.append(tempVals[val])
+                                ytemp2.append(tempY[val])
+                        
+                    a1 = numpy.polyfit(ytemp2, filtTempVals, self.trendPolyOrder)
                     p1 = numpy.poly1d(a1)    
                     newValPoly = [p1(val) for val in tempY]    
                 val = 0                
@@ -640,14 +656,14 @@ class Engine(object):
                 for val in valueList:
                     self.medianRemValues.append(float(val))   
                 valueList = []                
+                
             elif self.profile[i] == profile: # creation of a temporary vector for the correction
                 tempVals.append((self.sortedMagPoints)[i][2])    
-                tempY.append(step)
-                step += 1    
+                tempY.append(position[i])
+                
             else: # the beginning of a new profile, stop append and computation of the median or the polynomial                
                 profile += 1
                 newValPoly, a1, p1 = [], [], []
-                step += 1
                 
                 if self.isMedianRemoval:
                     filtTempVals = []
@@ -662,20 +678,33 @@ class Engine(object):
                             filtTempVals.append(val)
                     medianProf = numpy.median(filtTempVals)                
                 else:
-                    a1 = numpy.polyfit(tempY, tempVals, self.trendPolyOrder)
+                    filtTempVals=[]
+                    ytemp2=[]
+                    if self.isTrendPercentile:
+                            minThresh = numpy.percentile(tempVals, self.trendPercThreshold)
+                            maxThresh = numpy.percentile(tempVals, (100-self.trendPercThreshold))
+                    
+                    for val in range(0,len(tempVals)):
+                            if self.isTrendPercentile:
+                                if tempVals[val] < maxThresh and tempVals[val] > minThresh:
+                                    filtTempVals.append(tempVals[val])
+                                    ytemp2.append(tempY[val])
+                            else:
+                                filtTempVals.append(tempVals[val])
+                                ytemp2.append(tempY[val])
+                        
+                    a1 = numpy.polyfit(ytemp2, filtTempVals, self.trendPolyOrder)
                     p1 = numpy.poly1d(a1)    
                     newValPoly = [p1(val) for val in tempY]    
+                val = 0                
                 for i in range(0, len(tempVals)):
                     if self.isMedianRemoval:
-                        val = tempVals[i] - medianProf
+                        val = tempVals[i] - medianProf 
                     else:
-                        val = tempVals[i] - newValPoly[i]  
-                    valueList.append(val)               
+                        val = tempVals[i] - newValPoly[i] 
+                    valueList.append(val)
                 for val in valueList:
                     self.medianRemValues.append(float(val))                
-                tempVals, tempY, valueList = [], [], []                
-                step = 1
+                tempVals, tempY, valueList = [], [], [] 
                 tempVals.append(self.sortedMagPoints[i][2])    
-                tempY.append(step)
-        
-        
+                tempY.append(position[i])    

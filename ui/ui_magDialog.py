@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/ui_magDialog.ui'
 #
-# Created: Mon Apr 24 17:40:53 2017
+# Created: Thu Aug 24 11:07:46 2017
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_AGTMagDialog(object):
     def setupUi(self, AGTMagDialog):
         AGTMagDialog.setObjectName(_fromUtf8("AGTMagDialog"))
-        AGTMagDialog.resize(359, 534)
+        AGTMagDialog.resize(359, 538)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -209,6 +209,14 @@ class Ui_AGTMagDialog(object):
         self.trendchk = QtGui.QCheckBox(self.groupBox_3)
         self.trendchk.setObjectName(_fromUtf8("trendchk"))
         self.gridLayout_2.addWidget(self.trendchk, 0, 0, 1, 1)
+        self.trendPercentileChk = QtGui.QCheckBox(self.groupBox_3)
+        self.trendPercentileChk.setObjectName(_fromUtf8("trendPercentileChk"))
+        self.gridLayout_2.addWidget(self.trendPercentileChk, 3, 1, 1, 1)
+        self.trendPercentileSpinBox = QtGui.QSpinBox(self.groupBox_3)
+        self.trendPercentileSpinBox.setMaximum(100)
+        self.trendPercentileSpinBox.setProperty("value", 25)
+        self.trendPercentileSpinBox.setObjectName(_fromUtf8("trendPercentileSpinBox"))
+        self.gridLayout_2.addWidget(self.trendPercentileSpinBox, 3, 2, 1, 1)
         self.gridLayout_5.addWidget(self.groupBox_3, 4, 0, 1, 1)
         self.groupBox = QtGui.QGroupBox(AGTMagDialog)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
@@ -289,6 +297,7 @@ class Ui_AGTMagDialog(object):
         self.percentilechk.setText(_translate("AGTMagDialog", "Percentile threshold", None))
         self.label_2.setText(_translate("AGTMagDialog", "Polynomial order", None))
         self.trendchk.setText(_translate("AGTMagDialog", "Trend removal", None))
+        self.trendPercentileChk.setText(_translate("AGTMagDialog", "Percentile threshold", None))
         self.label_3.setText(_translate("AGTMagDialog", "Threshold", None))
         self.label_8.setText(_translate("AGTMagDialog", "GPS located on probe", None))
         self.stationRmvchk.setText(_translate("AGTMagDialog", "Stationary point removal", None))

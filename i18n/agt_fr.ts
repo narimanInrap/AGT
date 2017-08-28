@@ -231,27 +231,27 @@
 <context>
     <name>AGTGridDialog</name>
     <message>
-        <location filename="ui_GridDialog.py" line="95"/>
+        <location filename="ui_GridDialog.py" line="96"/>
         <source>Grid&apos;s first point X coordinate</source>
         <translation>Longitude (X) du premierpoint de la grille</translation>
     </message>
     <message>
-        <location filename="ui_GridDialog.py" line="96"/>
+        <location filename="ui_GridDialog.py" line="97"/>
         <source>Grid&apos;s name (number)</source>
         <translation>Nom(numéro) de la grille</translation>
     </message>
     <message>
-        <location filename="ui_GridDialog.py" line="97"/>
+        <location filename="ui_GridDialog.py" line="98"/>
         <source>Grid&apos;s first point Y coordinate</source>
         <translation>Latitude (Y) du premierpoint de la grille</translation>
     </message>
     <message>
-        <location filename="ui_GridDialog.py" line="94"/>
+        <location filename="ui_GridDialog.py" line="95"/>
         <source>Grid Dialog</source>
         <translation>Grid Dialog</translation>
     </message>
     <message>
-        <location filename="ui_GridDialog.py" line="98"/>
+        <location filename="ui_GridDialog.py" line="99"/>
         <source>Apply</source>
         <translation>Appliquer</translation>
     </message>
@@ -259,92 +259,92 @@
 <context>
     <name>AGTMagDialog</name>
     <message>
-        <location filename="ui_magDialog.py" line="277"/>
+        <location filename="ui_magDialog.py" line="285"/>
         <source>MXPDA processing</source>
         <translation>Traitements MXPDA</translation>
     </message>
     <message>
-        <location filename="ui_magDialog.py" line="278"/>
+        <location filename="ui_magDialog.py" line="286"/>
         <source>Raw data (.asc)</source>
         <translation>Données brutes</translation>
     </message>
     <message>
-        <location filename="ui_magDialog.py" line="284"/>
+        <location filename="ui_magDialog.py" line="292"/>
         <source>browse</source>
         <translation>parcourir</translation>
     </message>
     <message>
-        <location filename="ui_magDialog.py" line="280"/>
+        <location filename="ui_magDialog.py" line="288"/>
         <source>Output files</source>
         <translation>Fichiers de sortie</translation>
     </message>
     <message>
-        <location filename="ui_magDialog.py" line="281"/>
+        <location filename="ui_magDialog.py" line="289"/>
         <source>CRS projection</source>
         <translation>Projection SCR</translation>
     </message>
     <message>
-        <location filename="ui_magDialog.py" line="282"/>
+        <location filename="ui_magDialog.py" line="290"/>
         <source>Export also as .DAT</source>
         <translation>Export en .dat</translation>
     </message>
     <message>
-        <location filename="ui_magDialog.py" line="283"/>
+        <location filename="ui_magDialog.py" line="291"/>
         <source>Add coordinates fields</source>
         <translation>Ajout des champs de coordonnées</translation>
     </message>
     <message>
-        <location filename="ui_magDialog.py" line="285"/>
+        <location filename="ui_magDialog.py" line="293"/>
         <source>Shapefile</source>
         <translation>Shapefile</translation>
     </message>
     <message>
-        <location filename="ui_magDialog.py" line="286"/>
+        <location filename="ui_magDialog.py" line="294"/>
         <source>Character encoding</source>
         <translation>Codage des caractères</translation>
     </message>
     <message>
-        <location filename="ui_magDialog.py" line="287"/>
+        <location filename="ui_magDialog.py" line="295"/>
         <source>Decimation</source>
         <translation>Décimation</translation>
     </message>
     <message>
-        <location filename="ui_magDialog.py" line="288"/>
+        <location filename="ui_magDialog.py" line="296"/>
         <source>Median removal</source>
         <translation>Elimination de la médiane</translation>
     </message>
     <message>
-        <location filename="ui_magDialog.py" line="289"/>
+        <location filename="ui_magDialog.py" line="300"/>
         <source>Percentile threshold</source>
         <translation>Seuillage percentile</translation>
     </message>
     <message>
-        <location filename="ui_magDialog.py" line="290"/>
+        <location filename="ui_magDialog.py" line="298"/>
         <source>Polynomial order</source>
         <translation>Degré du polynome</translation>
     </message>
     <message>
-        <location filename="ui_magDialog.py" line="291"/>
+        <location filename="ui_magDialog.py" line="299"/>
         <source>Trend removal</source>
         <translation>Suppression d&apos;un polynôme</translation>
     </message>
     <message>
-        <location filename="ui_magDialog.py" line="292"/>
+        <location filename="ui_magDialog.py" line="301"/>
         <source>Threshold</source>
         <translation>Seuillage</translation>
     </message>
     <message>
-        <location filename="ui_magDialog.py" line="293"/>
+        <location filename="ui_magDialog.py" line="302"/>
         <source>GPS located on probe</source>
         <translation>Emplacement du GPS sur la sonde</translation>
     </message>
     <message>
-        <location filename="ui_magDialog.py" line="294"/>
+        <location filename="ui_magDialog.py" line="303"/>
         <source>Stationary point removal</source>
         <translation>Suppression des points stationnaires</translation>
     </message>
     <message>
-        <location filename="ui_magDialog.py" line="295"/>
+        <location filename="ui_magDialog.py" line="304"/>
         <source>run</source>
         <translation>lancer</translation>
     </message>
@@ -405,7 +405,7 @@
         <translation>Veuillez renseigner un fichier de sortie.</translation>
     </message>
     <message>
-        <location filename="ElecDownDialog.py" line="121"/>
+        <location filename="ElecDownDialog.py" line="122"/>
         <source>Unexpected error, procedure stopped.</source>
         <translation>Erreur inattendue, la procédure s&apos;est arrêtée.</translation>
     </message>
@@ -496,27 +496,27 @@
 <context>
     <name>MagDlg</name>
     <message>
-        <location filename="magDialog.py" line="181"/>
+        <location filename="magDialog.py" line="185"/>
         <source>Please specify an input data file.</source>
         <translation>Veuillez spécifier un fichier d&apos;entrée.</translation>
     </message>
     <message>
-        <location filename="magDialog.py" line="185"/>
+        <location filename="magDialog.py" line="189"/>
         <source>Please specify an output shapefile.</source>
         <translation>Veuillez spécifier un fichier de sortie(shapefile).</translation>
     </message>
     <message>
-        <location filename="magDialog.py" line="190"/>
+        <location filename="magDialog.py" line="194"/>
         <source>The output file must have the filename.shp format.</source>
         <translation>Le fichier de sortie doit être de type .shp.</translation>
     </message>
     <message>
-        <location filename="magDialog.py" line="200"/>
+        <location filename="magDialog.py" line="204"/>
         <source>Created output Shapfile:</source>
         <translation>Le shapefile de sortie généré:</translation>
     </message>
     <message>
-        <location filename="magDialog.py" line="202"/>
+        <location filename="magDialog.py" line="206"/>
         <source>Would you like to add the new layer to your project?</source>
         <translation>Voulez-vous ajouter la nouvelle couche à votre projet?</translation>
     </message>
@@ -524,12 +524,12 @@
 <context>
     <name>Utility</name>
     <message>
-        <location filename="AGTUtilities.py" line="98"/>
+        <location filename="AGTUtilities.py" line="103"/>
         <source>pole-pole</source>
-        <translation>pôle-pôle</translation>
+        <translation>pole-pole</translation>
     </message>
     <message>
-        <location filename="AGTUtilities.py" line="141"/>
+        <location filename="AGTUtilities.py" line="146"/>
         <source>Save output file</source>
         <translation>Sauvegarder le fichier de sortie</translation>
     </message>

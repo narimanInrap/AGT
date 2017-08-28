@@ -53,13 +53,14 @@ class GridDialog(QDialog, Ui_AGTGridDialog):
             QMessageBox.warning(self, 'AGT', msg)
             return False
         return True
+    
         
     def run(self):
         
         if not self.inputCheck():
-            return False           
-        self.engine.grids.extend([self.nameSpin, self.xSpin, self.ySpin])
-        self.accept()        
+            return False      
+        self.engine.grids.extend([[self.nameSpin.value(), self.xSpin.value(), self.ySpin.value()]])       
+        self.accept()
     
                     
         

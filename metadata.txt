@@ -22,9 +22,14 @@ about = Electrical resistivity processing module (Geoscan Research RM15/RM85) co
 			b. Median removal
 			c. Trend removal
 			d. Stationary point removal
-version=1.1.1
-author=Nariman HATAMI - INRAP
-email=nariman.hatami@inrap.fr
+Coming soon:	
+	Electromagnetic processing module (GeoPhex gem-2, dualEM)
+	RM15/RM85 Download module
+	Advanced processing module 
+
+version=1.1.5
+author=INRAP - Guillaume Hulin, Francois-Xavier Simon, Nariman Hatami
+email=developpement-qgis@inrap.fr
 repository=https://github.com/narimanInrap/AGT
 
 # End of mandatory metadata

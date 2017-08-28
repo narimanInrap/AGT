@@ -203,7 +203,7 @@ class AGT:
 #             text=self.tr(u'Interpolation'),
 #             callback=self.runRaster,
 #             parent=self.iface.mainWindow())
-#         
+#          
         icon_path = ':/plugins/AGT/icons/help.svg'
         self.add_action(
             icon_path,
@@ -271,7 +271,7 @@ class AGT:
 #             pass
 #         else:
 #             self.elecDownDlg.hideDialog()
-#             
+             
     def runRaster(self):
         """Run method that performs all the real work"""
         # show the dialog

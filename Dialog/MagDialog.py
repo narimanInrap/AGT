@@ -79,9 +79,12 @@ class MagDialog(QDialog, Ui_AGTMagDialog):
     def TrendChecked(self):
         
         if self.trendchk.isChecked():
+            self.trendPercentileChk.setEnabled(True)    
             self.medchk.setCheckState(Qt.Unchecked)
         else:
+            self.trendPercentileChk.setCheckState(Qt.Unchecked)
             self.medchk.setCheckState(Qt.Checked)
+            self.trendPercentileChk.setDisabled(True)
     
     def setDefaultEncoding(self):
         
@@ -139,8 +142,9 @@ class MagDialog(QDialog, Ui_AGTMagDialog):
         self.engine = Engine(rawDataFilename = self.inFileLine.text(), dataEncoding = self.comboEncoding.currentText(), crsRef = self.comboCRS.currentText(), 
                              datOutput = self.datFilechkbox.isChecked(), addCoordFields = self.coordFieldschk.isChecked(), decimation =self.decimChk.isChecked(), 
                              decimValue = self.decimSpin.value(), medRemove =  self.medchk.isChecked(), percentile = self.percentilechk.isChecked(), 
-                             percThreshold = self.percentSpin.value(), trendRemove = self.trendchk.isChecked(), trendPolyOrder = self.polyOrdSpin.value(), 
-                             statPtRem = self.stationRmvchk.isChecked(), statPtThresh = self.thresSpin.value(), gpsProbe = self.gpsSpin.value(), outputShapefile = self.outputFilename.text())
+                             percThreshold = self.percentSpin.value(), trendRemove = self.trendchk.isChecked(), trendPolyOrder = self.polyOrdSpin.value(),
+                             trendPercentile = self.trendPercentileChk.isChecked(), trendPercThreshold = self.trendPercentileSpinBox.value(), statPtRem = self.stationRmvchk.isChecked(), 
+                             statPtThresh = self.thresSpin.value(), gpsProbe = self.gpsSpin.value(), outputShapefile = self.outputFilename.text())
         try:
             self.runMag()
         except (FileDeletionError, NoFeatureCreatedError, ParserError, Exception) as e:            
