@@ -118,6 +118,36 @@ Four processing modules are proposed:
 	\ *Stationary point removal* \ 
 	
 	This function eliminates points collected while the magnetometer is stationary.
+	
+EMI data processing module (EM31 from Geonics)
+======================
+
+The module transforms the electrical conductivity values provided by the EM31 (based on McNeil, 1980). This processing allows to overpass the boundaries of the linear approximation which is only valid in first approximation for an instrument hold on the ground (Z=0) and observing the low induction number condition (i.e. low electrical conductivity). Data is transformed into a .shp file and can be uploaded into the GIS.
+
+\ **Input file** \
+
+The input file is an ascii file format (.dat) as delivered by DAT31W (Geoncis software). It contains the X, and Y position of each measurement, as well as the quadrature (QV1 in mS / m), in-phase part of the electromagnetic signal (IV1 in ppt)  and a time stamp:
+
+* / EAST, NORTH, QV1, IV1, TIME /
+* 642039.43420000 7097622.22880000 30.10 1.03 15: 32: 39.555
+* 642039.43560000 7097622.22740000 30.25 1.03 15: 32: 39.904
+* 642039.43548000 7097622.22934000 30.18 1.03 15: 32: 40.262
+* 642039.43478000 7097622.23249000 30.13 1.01 15: 32: 40.614
+* 642039.43402000 7097622.23591000 30.02 1.00 15: 32: 40.991
+* 642039.50925000 7097622.14500000 29.95 1.00 15: 32: 41.353
+* 642039.58235000 7097622.05660000 29.98 1.00 15: 32: 41.699
+* 642039.67784000 7097621.93750000 30.18 1.02 15: 32: 42.071
+
+You have to specify the coordinate system used during the acquisition.
+
+\ **Processing** \
+
+The processing module estimate the apparent electrical conductivity values based on the solution of the integrals and the Hankel transform (Thiesson et al., 2014). 
+This solution takes into account the height of the device and the coils configuration. It can therefore be applied regardless of the type of soil studied (valid in salty soil contexts).
+
+McNeill J.D., 1980 - Electromagnetic terrain conductivity measurement at low induction number, technical note TN6, Geonics Ltd, Toronto, 15p.
+Thiesson J., Kessouri P., Schamper C., Tabbagh A., 2014 - Calibration of frequency-domain electromagnetic devices used in near-surface surveying. Near Surface Geophysics, 12, 481-491.
+
 
 .. index:: code source
 

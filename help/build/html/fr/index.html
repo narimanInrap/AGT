@@ -132,15 +132,40 @@
 <div><em>Suppression des points stationnaires</em> </div></blockquote>
 <p>Cette fonction permet de supprimer les points de mesures lorsque l’appareil est à l’arrêt.</p>
 </div>
+<div class="section" id="module-de-traitement-des-donnees-electromagnetique-em31-de-geonics">
+<span id="index-3"></span><h1>Module de traitement des données électromagnétique (EM31 de Geonics)<a class="headerlink" href="#module-de-traitement-des-donnees-electromagnetique-em31-de-geonics" title="Permalink to this headline">¶</a></h1>
+<p>Ce module permet de corriger les valeurs de conductivité électrique fournies par l’EM31 (calculée d’après McNeil, 1980).
+Ce traitement permet de dépasser le domaine de validité de l’approximation linéaire qui n’est valable qu’en première approximation pour une altitude d’appareil nulle et dans le cas du faible nombre d’induction (c’est-à-dire une conductivité électrique des sols assez faible).
+Il transforme ensuite ces points en fichier .shp et les charge dans le canevas.</p>
+<p><strong>Fichier en entrée</strong></p>
+<p>Le fichier en entrée est un fichier ascii (.dat) dans le format d’export proposé par le logiciel DAT31W.
+Il contient les données de positionnement ainsi que les données en quadrature (QV1 en mS/m), les données en phase (IV1 en ppt) et l’heure d’acquisition en (heure : minute : seconde) :</p>
+<ul class="simple">
+<li>/EAST,  NORTH,  QV1,  IV1,  TIME/</li>
+<li>642039.43420000  7097622.22880000       30.10        1.03 15:32:39.555</li>
+<li>642039.43560000  7097622.22740000       30.25        1.03 15:32:39.904</li>
+<li>642039.43548000  7097622.22934000       30.18        1.03 15:32:40.262</li>
+<li>642039.43478000  7097622.23249000       30.13        1.01 15:32:40.614</li>
+<li>642039.43402000  7097622.23591000       30.02        1.00 15:32:40.991</li>
+<li>642039.50925000  7097622.14500000       29.95        1.00 15:32:41.353</li>
+<li>642039.58235000  7097622.05660000       29.98        1.00 15:32:41.699</li>
+<li>642039.67784000  7097621.93750000       30.18        1.02 15:32:42.071</li>
+</ul>
+<p>Il est nécessaire de préciser le système de coordonnées utilisé pour votre acquisition.</p>
+<p><strong>Traitement effectué</strong> </p>
+<p>Le module de traitement propose de calculer les valeurs de conductivité électrique apparente en se basant sur la solution des intégrales et la transformée de Hankel (Thiesson et al., 2014). Cette solution tient compte de la hauteur de l’appareil et de la configuration de bobines utilisée. Elle peut être appliquée quel que soit le type de sol étudié (valable dans des contextes de sols salés).</p>
+<p>McNeill J.D., 1980 - Electromagnetic terrain conductivity measurement at low induction number, technical note TN6, Geonics Ltd, Toronto, 15p.
+Thiesson J., Kessouri P., Schamper C., Tabbagh A. 2014 - Calibration of frequency-domain electromagnetic devices used in near-surface surveying. Near Surface Geophysics, 12, 481-491.</p>
+</div>
 <div class="section" id="code-source">
-<span id="index-3"></span><h1>Code source<a class="headerlink" href="#code-source" title="Permalink to this headline">¶</a></h1>
+<span id="index-4"></span><h1>Code source<a class="headerlink" href="#code-source" title="Permalink to this headline">¶</a></h1>
 <p>Le code source est disponible à l’adresse suivante :</p>
 <p><a class="reference external" href="https://github.com/narimanInrap/AGT.git">https://github.com/narimanInrap/AGT.git</a></p>
 </div>
 <div class="section" id="evolutions-futures">
 <h1>évolutions futures<a class="headerlink" href="#evolutions-futures" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
-<li>Module de traitement des données électromagnétique (GeoPhex gem-2, dualEM)</li>
+<li>Module de traitement des données électromagnétique (GeoPhex gem-2)</li>
 <li>Module de téléchargement RM15/RM85</li>
 <li>Module de traitement avancé</li>
 </ul>
@@ -165,6 +190,7 @@
 <li><a class="reference internal" href="#presentation">Présentation</a></li>
 <li><a class="reference internal" href="#module-de-traitement-des-donnees-electriques-geoscan-research-rm15-rm85">Module de traitement des données électriques (Geoscan Research RM15/RM85)</a></li>
 <li><a class="reference internal" href="#module-de-traitement-des-donnees-magnetiques-sensys-mxpda">Module de traitement des données magnétiques (Sensys MXPDA)</a></li>
+<li><a class="reference internal" href="#module-de-traitement-des-donnees-electromagnetique-em31-de-geonics">Module de traitement des données électromagnétique (EM31 de Geonics)</a></li>
 <li><a class="reference internal" href="#code-source">Code source</a></li>
 <li><a class="reference internal" href="#evolutions-futures">évolutions futures</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
