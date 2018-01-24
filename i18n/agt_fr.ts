@@ -4,29 +4,102 @@
 <context>
     <name>AGT</name>
     <message>
-        <location filename="agt.py" line="227"/>
+        <location filename="agt.py" line="235"/>
         <source>&amp;AGT</source>
         <translation>&amp;AGT</translation>
     </message>
     <message>
-        <location filename="agt.py" line="186"/>
+        <location filename="agt.py" line="188"/>
         <source>RM15/RM85 processing</source>
         <translation>Traitements RM15/RM85</translation>
     </message>
     <message>
-        <location filename="agt.py" line="193"/>
+        <location filename="agt.py" line="195"/>
         <source>MXPDA processing</source>
         <translation>Traitements MXPDA</translation>
     </message>
     <message>
-        <location filename="agt.py" line="218"/>
+        <location filename="agt.py" line="226"/>
         <source>help</source>
         <translation>aide</translation>
     </message>
     <message>
-        <location filename="agt.py" line="179"/>
-        <source>RM15/RM85 download</source>
-        <translation>Chargement RM15/RM85</translation>
+        <location filename="agt.py" line="202"/>
+        <source>EM31 processing</source>
+        <translation>Traitements EM31</translation>
+    </message>
+</context>
+<context>
+    <name>AGTEM31Dialog</name>
+    <message>
+        <location filename="ui_EM31Dialog.py" line="171"/>
+        <source>Raw data (.dat)</source>
+        <translation>Données brutes</translation>
+    </message>
+    <message>
+        <location filename="ui_EM31Dialog.py" line="177"/>
+        <source>browse</source>
+        <translation>parcourir</translation>
+    </message>
+    <message>
+        <location filename="ui_EM31Dialog.py" line="173"/>
+        <source>Output files</source>
+        <translation>Fichiers de sortie</translation>
+    </message>
+    <message>
+        <location filename="ui_EM31Dialog.py" line="174"/>
+        <source>CRS projection</source>
+        <translation>Projection SCR</translation>
+    </message>
+    <message>
+        <location filename="ui_EM31Dialog.py" line="175"/>
+        <source>Export also as .DAT</source>
+        <translation>Export en .dat</translation>
+    </message>
+    <message>
+        <location filename="ui_EM31Dialog.py" line="176"/>
+        <source>Add coordinates fields</source>
+        <translation>Ajout des champs de coordonnées</translation>
+    </message>
+    <message>
+        <location filename="ui_EM31Dialog.py" line="178"/>
+        <source>Shapefile</source>
+        <translation>Shapefile</translation>
+    </message>
+    <message>
+        <location filename="ui_EM31Dialog.py" line="179"/>
+        <source>Character encoding</source>
+        <translation>Codage des caractères</translation>
+    </message>
+    <message>
+        <location filename="ui_EM31Dialog.py" line="180"/>
+        <source>Sensor height (m)</source>
+        <translation>Hauteur du capteur</translation>
+    </message>
+    <message>
+        <location filename="ui_EM31Dialog.py" line="181"/>
+        <source>Coils configuration</source>
+        <translation>Configuration des bobines</translation>
+    </message>
+    <message>
+        <location filename="ui_EM31Dialog.py" line="182"/>
+        <source>HCP</source>
+        <translation>HCP</translation>
+    </message>
+    <message>
+        <location filename="ui_EM31Dialog.py" line="183"/>
+        <source>VCP</source>
+        <translation>VCP</translation>
+    </message>
+    <message>
+        <location filename="ui_EM31Dialog.py" line="184"/>
+        <source>run</source>
+        <translation>lancer</translation>
+    </message>
+    <message>
+        <location filename="ui_EM31Dialog.py" line="170"/>
+        <source>EM31 processing</source>
+        <translation>Traitements EM31</translation>
     </message>
 </context>
 <context>
@@ -465,7 +538,7 @@
     <message>
         <location filename="electDialog.py" line="87"/>
         <source>The project name you have chosen already exists, you might overwrite some shapefiles. Do you want to continue?</source>
-        <translation>Le nom de projet choisi existe déjà, vous risquez d&apos;écraser des shapefiles. Voulez-vous cotinuer?</translation>
+        <translation>Le nom de projet choisi existe déjà, vous risquez d&apos;écraser des shapefiles. Voulez-vous continuer?</translation>
     </message>
     <message>
         <location filename="ElecDownDialog.py" line="115"/>
@@ -496,27 +569,27 @@
 <context>
     <name>MagDlg</name>
     <message>
-        <location filename="magDialog.py" line="185"/>
+        <location filename="magDialog.py" line="182"/>
         <source>Please specify an input data file.</source>
         <translation>Veuillez spécifier un fichier d&apos;entrée.</translation>
     </message>
     <message>
-        <location filename="magDialog.py" line="189"/>
+        <location filename="magDialog.py" line="186"/>
         <source>Please specify an output shapefile.</source>
         <translation>Veuillez spécifier un fichier de sortie(shapefile).</translation>
     </message>
     <message>
-        <location filename="magDialog.py" line="194"/>
+        <location filename="magDialog.py" line="191"/>
         <source>The output file must have the filename.shp format.</source>
         <translation>Le fichier de sortie doit être de type .shp.</translation>
     </message>
     <message>
-        <location filename="magDialog.py" line="204"/>
+        <location filename="magDialog.py" line="198"/>
         <source>Created output Shapfile:</source>
         <translation>Le shapefile de sortie généré:</translation>
     </message>
     <message>
-        <location filename="magDialog.py" line="206"/>
+        <location filename="magDialog.py" line="200"/>
         <source>Would you like to add the new layer to your project?</source>
         <translation>Voulez-vous ajouter la nouvelle couche à votre projet?</translation>
     </message>
