@@ -13,9 +13,10 @@ Magnetic data processing module (Sensys MXPDA):
 		Median removal
 		Trend removal
 		Stationary point removal
+
+Electromagnetic processing module (GeoPhex gem-2, dualEM)
 		
-Coming soon:	
-	Electromagnetic processing module (GeoPhex gem-2, dualEM)
+Coming soon:		
 	RM15/RM85 Download module
 	Advanced processing module 
 
