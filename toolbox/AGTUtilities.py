@@ -8,7 +8,7 @@ AGT - Archaeological Geophysics Toolbox
         begin                : 2016-04-14
         git sha              : $Format:%H$
         copyright            : (C) 2016 by Nariman HATAMI / INRAP
-        email                : nariman.hatami@inrap.fr
+        email                : developpement-qgis@inrap.fr
  ***************************************************************************/
 
 /***************************************************************************
@@ -86,15 +86,15 @@ class Utilities(object):
         return baudRates
     
     # Returns the list of available COM ports
-#     @staticmethod
-#     def getComPortList():
-#         
-#         ports = list(list_ports.comports())
-#         comPorts = []
-#         for p in ports:
-#             comPorts.append(str(p))
-#         return comPorts 
-#     
+    @staticmethod
+    def getComPortList():
+        
+        #ports = list(list_ports.comports())
+        comPorts = []
+        #for p in ports:
+        #   comPorts.append(str(p))
+        return comPorts 
+    
     # Returns the list of available probe configurations
     @staticmethod
     def getProbeConfigList():

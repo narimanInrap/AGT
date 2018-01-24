@@ -27,7 +27,7 @@ Coming soon:
 	RM15/RM85 Download module
 	Advanced processing module 
 
-version=1.1.5
+version=1.1.3
 author=INRAP - Guillaume Hulin, Francois-Xavier Simon, Nariman Hatami
 email=developpement-qgis@inrap.fr
 repository=https://github.com/narimanInrap/AGT
@@ -40,7 +40,7 @@ repository=https://github.com/narimanInrap/AGT
 # changelog=
 
 # Tags are comma separated with spaces allowed
-tags=archaeology, geophysics, RM85, RM15, INRAP, AGT, MXPDA, processing
+tags=archaeology, geophysics, RM85, RM15, INRAP, AGT, MXPDA, processing, EMI, EM31
 
 homepage=https://github.com/narimanInrap/AGT/blob/master/README.md
 tracker=https://github.com/narimanInrap/AGT/issues

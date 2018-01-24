@@ -42,6 +42,7 @@ SOURCES = \
 	ui/ui_rasterDialog.py\
 	ui/ui_ElecDownDialog.py\
 	ui/ui_GridDialog.py\
+	ui/ui_EM31Dialog.py\
 	toolbox/AGTUtilities.py\
 	toolbox/AGTExceptions.py
 	
@@ -64,7 +65,8 @@ COMPILED_UI_FILES = ui/ui_electDialog.py \
 	ui/ui_magDialog.py \
 	ui/ui_rasterDialog.py \
 	ui/ui_ElecDownDialog.py \
-	ui/ui_GridDialog.py
+	ui/ui_GridDialog.py \
+	ui/ui_EM31Dialog.py
 
 
 COMPILED_RESOURCE_FILES = resources_rc.py

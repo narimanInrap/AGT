@@ -8,7 +8,7 @@
         begin                : 2016-04-14
         git sha              : $Format:%H$
         copyright            : (C) 2016 by Nariman HATAMI / INRAP
-        email                : nariman.hatami@inrap.fr
+        email                : developpement-qgis@inrap.fr
  ***************************************************************************/
 
 /***************************************************************************
@@ -39,7 +39,8 @@ import resources_rc
 from Dialog.ElectDialog import ElectDialog
 from Dialog.MagDialog import MagDialog
 from Dialog.RasterDialog import RasterDialog 
-#from Dialog.ElecDownDialog import ElecDownDialog 
+#from Dialog.ElecDownDialog import ElecDownDialog
+from Dialog.EM31Dialog import EM31Dialog
 
 import os.path
 
@@ -73,6 +74,7 @@ class AGT:
         # Create the dialog (after translation) and keep reference
         self.dlg = ElectDialog(self.iface)
         self.magDlg = MagDialog(self.iface)
+        self.em31Dlg = EM31Dialog(self.iface)
         #self.elecDownDlg = ElecDownDialog(self.iface)
         #self.rasterDlg = RasterDialog(self.iface)
 
@@ -196,6 +198,12 @@ class AGT:
             callback=self.runMag,
             parent=self.iface.mainWindow())
         
+        icon_path = ':/plugins/AGT/icons/em31_icon.png'
+        self.add_action(
+            icon_path,
+            text=self.tr(u'EM31 processing'),
+            callback=self.runEM31,
+            parent=self.iface.mainWindow())
      
 #         icon_path = ':/plugins/AGT/icons/raster_icon.png'
 #         self.add_action(
@@ -271,6 +279,20 @@ class AGT:
 #             pass
 #         else:
 #             self.elecDownDlg.hideDialog()
+    
+    def runEM31(self):
+        """Run method that performs all the real work"""
+        # show the dialog
+        self.em31Dlg.show()
+        # Run the dialog event loop
+        result = self.em31Dlg.exec_()
+        # See if OK was pressed
+        if result:
+            # Do something useful here - delete the line containing pass and
+            # substitute with your code.
+            pass
+        else:
+            self.em31Dlg.hideDialog()
              
     def runRaster(self):
         """Run method that performs all the real work"""

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/ui_magDialog.ui'
 #
-# Created: Thu Aug 24 11:07:46 2017
+# Created: Mon Oct 02 14:59:13 2017
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
