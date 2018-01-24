@@ -22,27 +22,27 @@
 """
 
 #using Unicode for all strings
-from __future__ import unicode_literals
-
-#from PyQt4.QtCore import *
-#from PyQt4 import QtGui
-#from qgis.core import *
-
+# from __future__ import unicode_literals
+# 
+# from PyQt4.QtCore import *
+# from PyQt4 import QtGui
+# from qgis.core import *
+# 
 # import os.path
-# import serial as rs
+# from ..lib.serial import *
 # import numpy as np
 # import sys
-
+#   
 # from PyQt4.QtGui import QFileDialog
-# 
-# 
+#  
+#  
 # from ..toolbox.AGTUtilities import Utilities
 # from ..toolbox.AGTExceptions import *
-# 
+#  
 # class DownloadEngine(object):
-# 
+#     
 #     def __init__(self, datOutput, isRM85, gridNb, gridX, gridY, probeSpacing, channelNb, probeNb, collectedPointNb, lineStep, probeConfig, currentInt, 
-#                  comPort, baudRate):
+#                   comPort, baudRate):
 #         
 #         self.outputFileName = datOutput
 #         self.resMeter = 'RM85' if isRM85 else 'RM15'
@@ -57,28 +57,29 @@ from __future__ import unicode_literals
 #         self.lineStep = lineStep
 #         self.probConfig = probeConfig
 #         self.currentInt = currentInt
-#         self.serialPort = comPort
+#         self.serialPort = comPort[:4]
 #         self.baudRate = baudRate
-#                 
-#     def RMDownload(self):
-        
-            
-#         ser = rs.Serial(self.serialPort, self.baudRate, timeout = 1) 
+#                  
+#     def RMDownload(self):        
+#    
+#         ser = Serial()
+#         ser.baudrate = self.baudRate
+#         ser.port = self.serialPort       
+#         ser.open() 
 #         ser.flushInput()
 #         ser.flushOutput()
-#         data = []         
-#         started = 0
-#         while True:
+#         data = []      
+#         totalData = 0
+#         while totalData == 0:
 #             bytesToRead = ser.readline()
-#             if bytesToRead != '':
-#                 started = 1                    
-#                 totalData = int(self.gridNb*self.gridX*self.gridY*self.measuredNb/self.lineStep)                
+#             if bytesToRead != '':                               
+#                 totalData = int(self.gridNb*self.gridX*self.gridY*self.measuredNb/self.lineStep)          
 #                 for x in range(totalData):
 #                     if x == 0:
 #                         dataline = str(bytesToRead)
 #                     else :
 #                         dataline = str(ser.readline())                        
-#                     metadataline = str(ser.readline())                    
+#                     metadataline = str(ser.readline())                  
 #                     if '4095' in dataline:
 #                         value = '999'
 #                     elif '4094' in dataline:
@@ -97,14 +98,8 @@ from __future__ import unicode_literals
 #                         else:
 #                             value = int(dataline.strip())
 #                         value = round(value, 2) #conversion to resistance values                    
-#                     data.append(value)                    
-#             if started == 1 and bytesToRead == '':               
-#                 break
-#         
-#         output2 = open("c:\testDown.dat")
-#         output2.write("toto\n")
-#         output2.close()
-#         
+#                     data.append(value)  
+#         ser.close()         
 #         outputFile = open(self.outputFileName,'w')
 #         outputFile.write(self.resMeter + '\n')
 #         outputFile.write(str(self.gridNb) + '\n')
@@ -123,5 +118,5 @@ from __future__ import unicode_literals
 #         for i in range(len(data)):
 #             outputFile.write(str(data[i]) + '\n')        
 #         outputFile.close()
-        #self.grids = []
-  
+#         self.grids = []
+#     
