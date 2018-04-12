@@ -1,82 +1,70 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Welcome to AGT’s documentation! &mdash; AGT 0.1 documentation</title>
-    
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <title>Welcome to AGT’s documentation! &#8212; AGT 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.1',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="AGT 0.1 documentation" href="#" /> 
-  </head>
-  <body>
-    <div class="related">
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li><a href="#">AGT 0.1 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="#">AGT 0.1 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="welcome-to-agt-s-documentation">
-<h1>Welcome to AGT&#8217;s documentation!<a class="headerlink" href="#welcome-to-agt-s-documentation" title="Permalink to this headline">¶</a></h1>
+<h1>Welcome to AGT’s documentation!<a class="headerlink" href="#welcome-to-agt-s-documentation" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
-<ul class="simple">
-</ul>
 </div>
 </div>
 <div class="section" id="presentation">
 <span id="index-0"></span><h1>Présentation<a class="headerlink" href="#presentation" title="Permalink to this headline">¶</a></h1>
-<p>Le plugin permet de traiter les données issues de prospections électriques (Geoscan Research RM15/RM85) et de prospections magnétiques (Sensys MXPDA).</p>
+<p>AGT permet de traiter les données issues de prospections électriques (Geoscan research RM15/85 en grille), de prospections magnétiques (Sensys MXPDA et Bartington Grad601 en grille) et de prospections électomagnétiques basse-fréquence (Geonics EM31).</p>
 </div>
-<div class="section" id="module-de-traitement-des-donnees-electriques-geoscan-research-rm15-rm85">
-<h1>Module de traitement des données électriques (Geoscan Research RM15/RM85)<a class="headerlink" href="#module-de-traitement-des-donnees-electriques-geoscan-research-rm15-rm85" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-de-traitement-des-donnees-electriques-geoscan-research-rm15-rm85-prospection-en-grille">
+<h1>Module de traitement des données électriques (Geoscan Research RM15/RM85) - Prospection en grille<a class="headerlink" href="#module-de-traitement-des-donnees-electriques-geoscan-research-rm15-rm85-prospection-en-grille" title="Permalink to this headline">¶</a></h1>
 <p>Ce module permet de réaliser un traitement initial des données de résistivité électrique acquises sur la base d’un carroyage et à pas régulier. Pour l’instant, seule la configuration Pôle-Pôle est proposée.</p>
-<p><strong>fichier en entrée</strong></p>
+<p><strong>Fichier en entrée</strong></p>
 <p>Le fichier en entrée est un fichier ascii (.dat) qui contient les données et un en-tête de fichier qui rappelle l’ensemble des informations relatives à la configuration de l’appareil et au mode d’acquisition :</p>
 <blockquote>
 <div><p><strong>Fichier colonne contenant les n voies</strong></p>
 <ul class="simple">
-<li>RM85  Nom de l’appareil</li>
-<li>2             Nombre de grille</li>
-<li>30            Longueur des grilles</li>
-<li>30            Largeur des grilles</li>
-<li>0.5           Ecartement entre électrodes</li>
-<li>3             Nombre de voies mesurées</li>
-<li>4             Nombre d’électrode</li>
-<li>1             Intervalle de mesure</li>
-<li>Pole-Pole             Configuration d’électrode</li>
-<li>10            Intensité du courant injecté</li>
-<li>1             Nom de la première grille</li>
-<li>0             Coordonnées de la première grille (Point inférieur gauche)</li>
+<li>RM85         <em>Nom de l’appareil</em></li>
+<li>2            <em>Nombre de grille</em></li>
+<li>30           <em>Longueur des grilles</em></li>
+<li>30           <em>Largeur des grilles</em></li>
+<li>0.5          <em>Ecartement entre électrodes</em></li>
+<li>3                    <em>Nombre de voies mesurées</em></li>
+<li>4            <em>Nombre d’électrode</em></li>
+<li>1            <em>Intervalle de mesure</em></li>
+<li>Pole-Pole            <em>Configuration d’électrode</em></li>
+<li>10           <em>Intensité du courant injecté</em></li>
+<li>1            <em>Nom de la première grille</em></li>
+<li>0            <em>Coordonnées de la première grille (Point inférieur gauche)</em></li>
 <li>0</li>
-<li>2             Nom de la deuxième grille</li>
-<li>0             Coordonnées de la deuxième grille (Point inférieur gauche)</li>
-<li>30</li>
-<li>20.95         Mesures</li>
+<li>2            <em>Nom de la deuxième grille</em></li>
+<li>0            <em>Coordonnées de la deuxième grille (Point inférieur gauche)</em></li>
+<li>30 </li>
+<li>20.95        <em>Mesures</em></li>
 <li>25</li>
 <li>20.5</li>
 <li>8.55</li>
@@ -88,40 +76,95 @@
 </ul>
 </div></blockquote>
 <p>La valeur des données non mesurées (dummy log) est fixée à 999.</p>
-<p>L’en-tête a une double fonction :</p>
+<p>L’en-tête a une double fonction et doit être rempli rigoureusement. Il sert :</p>
 <ol class="arabic simple">
-<li>il sert au traitement des données et doit donc être rempli rigoureusement</li>
-<li>il sert à stocker les métadonnées liées à l’acquisition</li>
+<li>au traitement des données (informations lues automatiquement par le plugin)</li>
+<li>à stocker les métadonnées liées à l’acquisition</li>
 </ol>
-<p><strong>Traitement effectué</strong></p>
-<p>Le traitement de base consiste à réorganiser les données brutes pour les individualiser par <em>voie</em> . Les résistances mesurées sur le terrain sont transformées en résistivité apparente selon la géométrie d’électrode employée (seule la configuration Pôle-Pôle est configurée pour le moment). Les données peuvent être exportées en .shp et/ou en .dat. Deux sous-modules sont ensuite proposés à l’utilisateur :</p>
+<p><strong>Traitement</strong></p>
+<p>Le traitement de base consiste à réorganiser les données brutes pour les individualiser par voie et à associer à chaque point ses coordonnées X,Y. Les résistances mesurées sur le terrain sont transformées en résistivité apparente selon la géométrie d’électrode employée (seule la configuration Pôle-Pôle est configurée pour le moment). Les données peuvent être exportées en .shp ou en .dat. Deux sous-modules sont ensuite proposés à l’utilisateur :</p>
 <blockquote>
 <div><em>Filtrage par la médiane</em> </div></blockquote>
 <p>Cette fonction permet d’effectuer un filtrage par la médiane sur une fenêtre glissante et supprimer ainsi les points aberrants. L’écart à la médiane et la taille de la fenêtre sont à définir par l’utilisateur.</p>
 <blockquote>
 <div><em>Géoréférencement</em> </div></blockquote>
-<p>Cette fonction permet un géoréférencement de la grille par translation et rotation (pas de mise à l’échelle, ni de déformation). Elle est basée sur la définition de deux points de calage.</p>
+<p>Cette fonction permet un géoréférencement de la grille par translation et rotation. Elle est basée sur la définition de deux points de calage.</p>
+<span class="target" id="index-2"></span></div>
+<div class="section" id="module-de-traitement-des-donnees-magnetiques-sensys-mxpda-prospection-en-grille">
+<span id="index-3"></span><h1>Module de traitement des données magnétiques (Sensys MXPDA) - prospection en grille<a class="headerlink" href="#module-de-traitement-des-donnees-magnetiques-sensys-mxpda-prospection-en-grille" title="Permalink to this headline">¶</a></h1>
+<p>Ce module permet de réaliser un traitement basique des données de prospection magnétique acquises avec le magnétomètre différentiel Sensys MXPDA ou un Bartington Grad601.</p>
+<p><strong>Fichier en entrée</strong></p>
+<p>Le fichier en entrée est un fichier .dat issu du logiciel Magneto-Arch développé par Sensys ou .dat issu du logiciel d’export de Bartington. Ils présentent les structures suivantes :</p>
+<blockquote>
+<div><p><strong>Sensys MXPDA</strong></p>
+<ul class="simple">
+<li>X   Y    Value</li>
+<li>0   0     2.8</li>
+<li>0  0.1    2.87</li>
+<li>0  0.2    3.08</li>
+<li>0  0.3    2.59</li>
+<li>0  0.4    1.89</li>
+<li>.</li>
+<li>.</li>
+<li>.</li>
+</ul>
+<p><strong>Bartington Grad601</strong></p>
+<ul class="simple">
+<li>Time = 09:16:55</li>
+<li>Date = 06/10/2017</li>
+<li>Grid Number = 1</li>
+<li>Number of Sensors = 2</li>
+<li>Grid Size = 40 x 40</li>
+<li>Method of collection = ZigZag</li>
+<li>Starting Direction = West</li>
+<li>Data Range = 100 nT</li>
+<li>Line Spacing = 1.00 m</li>
+<li>Sampling = 4 samples / m</li>
+<li>Sensor Spacing = 1.0 m</li>
+<li>Mean = 0.50</li>
+<li>Max = 21.40</li>
+<li>Min = -4.01</li>
+<li>0.125 0.5 0.87         <em>Y, X, valeur</em></li>
+<li>0.375 0.5 0.86</li>
+<li>0.625 0.5 1.21</li>
+<li>0.875 0.5 1.78</li>
+<li>2.875 0.5 1.16</li>
+<li>.</li>
+<li>.</li>
+<li>.</li>
+</ul>
+</div></blockquote>
+<p><strong>Traitement</strong> </p>
+<p>Le traitement de base consiste à réorganiser les données pour les individualiser par profil (un profil est défini comme l’ensemble des données à X constant). Les données peuvent être exportées en .shp et/ou en .dat. Trois modules de traitement sont proposés à l’utilisateur :</p>
+<blockquote>
+<div><p><em>Suppression de la médiane</em> </p>
+<p>Cette fonction permet de retirer à chacun des profils leur valeur médiane afin d’éliminer les décalages du zéro induit par l’électronique des capteurs et des perturbations magnétiques constantes (sur le porteur par exemple). Il est possible de restreindre le nombre de points utilisés pour calculer la médiane en indiquant un percentile. Cette condition permet de s’affranchir des anomalies fortement magnétiques dans le calcul de la médiane.</p>
+<p><em>Suppression d’un polynôme</em> </p>
+<p>Cette fonction permet de soustraire un polynôme de degré 1, 2 ou 3 à chacun des profils.</p>
+<p><em>Géoréférencement</em> </p>
+<p>Cette fonction permet un géoréférencement de la grille par translation et rotation. Elle est basée sur la définition de deux points de calage.</p>
+</div></blockquote>
 </div>
-<div class="section" id="module-de-traitement-des-donnees-magnetiques-sensys-mxpda">
-<span id="index-2"></span><h1>Module de traitement des données magnétiques (Sensys MXPDA)<a class="headerlink" href="#module-de-traitement-des-donnees-magnetiques-sensys-mxpda" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-de-traitement-des-donnees-magnetiques-sensys-mxpda-prospection-avec-gnss">
+<span id="index-4"></span><h1>Module de traitement des données magnétiques (Sensys MXPDA) - prospection avec GNSS<a class="headerlink" href="#module-de-traitement-des-donnees-magnetiques-sensys-mxpda-prospection-avec-gnss" title="Permalink to this headline">¶</a></h1>
 <p>Ce module permet de réaliser un traitement basique des données de prospection magnétique acquises avec le magnétomètre différentiel Sensys MXPDA couplé à un GPS.</p>
 <p><strong>Fichier en entrée</strong></p>
 <p>Le fichier en entrée est un fichier .asc issu du logiciel Magneto-Arch développé par Sensys.  Il présente la configuration suivante :</p>
-<p>X, Y, Différence de la composante verticale du champ magnétique, Nom du profil, Numéro de la sonde</p>
+<p><em>X, Y, Différence de la composante verticale du champ magnétique, Nom du profil, Numéro de la sonde</em></p>
 <ul class="simple">
-<li>30694328.591 5432511.556 5.5 &#8220;20161010-110332_GZP.prm&#8221; 1</li>
-<li>30694328.717 5432511.772 31.2 &#8220;20161010-110332_GZP.prm&#8221; 2</li>
-<li>30694328.844 5432511.987 -21.6 &#8220;20161010-110332_GZP.prm&#8221; 3</li>
-<li>30694328.971 5432512.203 -8.3 &#8220;20161010-110332_GZP.prm&#8221; 4</li>
-<li>30694329.098 5432512.418 -12.3 &#8220;20161010-110332_GZP.prm&#8221; 5</li>
-<li>...</li>
+<li>30694328.591 5432511.556 5.5 “20161010-110332_GZP.prm” 1</li>
+<li>30694328.717 5432511.772 31.2 “20161010-110332_GZP.prm” 2</li>
+<li>30694328.844 5432511.987 -21.6 “20161010-110332_GZP.prm” 3</li>
+<li>30694328.971 5432512.203 -8.3 “20161010-110332_GZP.prm” 4</li>
+<li>30694329.098 5432512.418 -12.3 “20161010-110332_GZP.prm” 5</li>
+<li>…</li>
 </ul>
-<p>Les données acquises sont géoréférencées en coordonnées UTM. Les deux premiers chiffres de la coordonnées X correspondent à la zone de l’UTM (ici UTM-30).</p>
-<p><strong>Traitement effectué</strong> </p>
-<p>Le traitement de base consiste à réorganiser les données pour les individualiser par <em>profil</em> (un profil est défini comme l’ensemble des données acquises par une sonde le long d’un passage d’acquisition). Les points de mesures sont ensuite géoréférencés dans le système de projection souhaité par l’utilisateur. Les données peuvent être exportées en .shp et/ou en .dat. Quatre modules de traitement sont proposés à l’utilisateur :</p>
+<p>Les données acquises sont géoréférencées en coordonnées UTM. Les deux premiers chiffres de la coordonnée X correspondent à la zone de l’UTM (ici UTM-30).</p>
+<p><strong>Traitement</strong> </p>
+<p>Le traitement de base consiste à réorganiser les données pour les individualiser par profil (un profil est défini comme l’ensemble des données acquises par une sonde le long d’un passage d’acquisition). Les points de mesures sont ensuite géoréférencés dans le système de projection souhaité par l’utilisateur. Les données peuvent être exportées en .shp et/ou en .dat. Quatre modules de traitement sont proposés à l’utilisateur :</p>
 <blockquote>
 <div><em>Décimation</em> </div></blockquote>
-<p>Cette fonction permet de réduire le nombre de point de mesure en n’en gardant qu’un sur n (n étant spécifié par l’utilisateur).</p>
+<p>Cette fonction permet de réduire le nombre de point de mesure en n’en gardant qu’un sur n (n étant spécifié par l’utilisateur). L’utilisateur a le choix de prendre les données brutes ou bien de les filtrer par une médiane sur une fenêtre glissante de n points.</p>
 <blockquote>
 <div><em>Suppression de la médiane</em> </div></blockquote>
 <p>Cette fonction permet de retirer à chacun des profils leur valeur médiane afin d’éliminer les décalages du zéro induit par l’électronique des capteurs et des perturbations magnétiques constantes (sur le porteur par exemple). Il est possible de restreindre le nombre de points utilisés pour calculer la médiane en indiquant un percentile. Cette condition permet de s’affranchir des anomalies fortement magnétiques dans le calcul de la médiane.</p>
@@ -132,33 +175,30 @@
 <div><em>Suppression des points stationnaires</em> </div></blockquote>
 <p>Cette fonction permet de supprimer les points de mesures lorsque l’appareil est à l’arrêt.</p>
 </div>
-<div class="section" id="module-de-traitement-des-donnees-electromagnetique-em31-de-geonics">
-<span id="index-3"></span><h1>Module de traitement des données électromagnétique (EM31 de Geonics)<a class="headerlink" href="#module-de-traitement-des-donnees-electromagnetique-em31-de-geonics" title="Permalink to this headline">¶</a></h1>
-<p>Ce module permet de corriger les valeurs de conductivité électrique fournies par l’EM31 (calculée d’après McNeil, 1980).
-Ce traitement permet de dépasser le domaine de validité de l’approximation linéaire qui n’est valable qu’en première approximation pour une altitude d’appareil nulle et dans le cas du faible nombre d’induction (c’est-à-dire une conductivité électrique des sols assez faible).
-Il transforme ensuite ces points en fichier .shp et les charge dans le canevas.</p>
+<div class="section" id="module-de-traitement-des-donnees-electromagnetiques-de-type-emi-em31-de-geonics">
+<span id="index-5"></span><h1>Module de traitement des données électromagnétiques de type EMI (EM31 de Geonics)<a class="headerlink" href="#module-de-traitement-des-donnees-electromagnetiques-de-type-emi-em31-de-geonics" title="Permalink to this headline">¶</a></h1>
+<p>Ce module permet de corriger les valeurs de conductivité électrique fournies par l’EM31 (calculée d’après McNeil, 1980). Ce traitement permet de dépasser le domaine de validité de l’approximation linéaire qui n’est valable qu’en première approximation pour une altitude d’appareil nulle et dans le cas du faible nombre d’induction (c’est-à-dire une conductivité électrique des sols assez faible). Il transforme ensuite ces points en fichier .shp et les charge dans le canevas.</p>
 <p><strong>Fichier en entrée</strong></p>
-<p>Le fichier en entrée est un fichier ascii (.dat) dans le format d’export proposé par le logiciel DAT31W.
-Il contient les données de positionnement ainsi que les données en quadrature (QV1 en mS/m), les données en phase (IV1 en ppt) et l’heure d’acquisition en (heure : minute : seconde) :</p>
+<p>Le fichier en entrée est un fichier ascii (.dat) dans le format d’export proposé par le logiciel DAT31W. Il contient les données de positionnement ainsi que les données en quadrature (QV1 en mS/m), les données en phase (IV1 en ppt) et l’heure d’acquisition en (heure : minute : seconde) :</p>
 <ul class="simple">
 <li>/EAST,  NORTH,  QV1,  IV1,  TIME/</li>
-<li>642039.43420000  7097622.22880000       30.10        1.03 15:32:39.555</li>
-<li>642039.43560000  7097622.22740000       30.25        1.03 15:32:39.904</li>
-<li>642039.43548000  7097622.22934000       30.18        1.03 15:32:40.262</li>
-<li>642039.43478000  7097622.23249000       30.13        1.01 15:32:40.614</li>
-<li>642039.43402000  7097622.23591000       30.02        1.00 15:32:40.991</li>
-<li>642039.50925000  7097622.14500000       29.95        1.00 15:32:41.353</li>
-<li>642039.58235000  7097622.05660000       29.98        1.00 15:32:41.699</li>
-<li>642039.67784000  7097621.93750000       30.18        1.02 15:32:42.071</li>
+<li>642039.43420000  7097622.22880000       30.10        1.03 15:32:39.555</li>
+<li>642039.43560000  7097622.22740000         30.25        1.03 15:32:39.904</li>
+<li>642039.43548000  7097622.22934000         30.18        1.03 15:32:40.262</li>
+<li>642039.43478000  7097622.23249000       30.13        1.01 15:32:40.614</li>
+<li>642039.43402000  7097622.23591000       30.02        1.00 15:32:40.991</li>
+<li>642039.50925000  7097622.14500000       29.95        1.00 15:32:41.353</li>
+<li>642039.58235000  7097622.05660000       29.98        1.00 15:32:41.699</li>
+<li>642039.67784000  7097621.93750000       30.18        1.02 15:32:42.071</li>
 </ul>
-<p>Il est nécessaire de préciser le système de coordonnées utilisé pour votre acquisition.</p>
+<p>L’utilisateur doit préciser le système de coordonnées utilisé lors de l’acquisition.</p>
 <p><strong>Traitement effectué</strong> </p>
 <p>Le module de traitement propose de calculer les valeurs de conductivité électrique apparente en se basant sur la solution des intégrales et la transformée de Hankel (Thiesson et al., 2014). Cette solution tient compte de la hauteur de l’appareil et de la configuration de bobines utilisée. Elle peut être appliquée quel que soit le type de sol étudié (valable dans des contextes de sols salés).</p>
-<p>McNeill J.D., 1980 - Electromagnetic terrain conductivity measurement at low induction number, technical note TN6, Geonics Ltd, Toronto, 15p.
-Thiesson J., Kessouri P., Schamper C., Tabbagh A. 2014 - Calibration of frequency-domain electromagnetic devices used in near-surface surveying. Near Surface Geophysics, 12, 481-491.</p>
+<p>McNeill J.D., 1980 - Electromagnetic terrain conductivity measurement at low induction number, technical note TN6, Geonics Ltd, Toronto, 15p.</p>
+<p>Thiesson J., Kessouri P., Schamper C., Tabbagh A. 2014 - Calibration of frequency-domain electromagnetic devices used in near-surface surveying. Near Surface Geophysics, 12, 481-491.</p>
 </div>
 <div class="section" id="code-source">
-<span id="index-4"></span><h1>Code source<a class="headerlink" href="#code-source" title="Permalink to this headline">¶</a></h1>
+<span id="index-6"></span><h1>Code source<a class="headerlink" href="#code-source" title="Permalink to this headline">¶</a></h1>
 <p>Le code source est disponible à l’adresse suivante :</p>
 <p><a class="reference external" href="https://github.com/narimanInrap/AGT.git">https://github.com/narimanInrap/AGT.git</a></p>
 </div>
@@ -173,8 +213,8 @@ Thiesson J., Kessouri P., Schamper C., Tabbagh A. 2014 - Calibration of frequenc
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
-<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
-<li><a class="reference internal" href="search.html"><em>Search Page</em></a></li>
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
 </ul>
 </div>
 
@@ -182,54 +222,56 @@ Thiesson J., Kessouri P., Schamper C., Tabbagh A. 2014 - Calibration of frequenc
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Welcome to AGT&#8217;s documentation!</a></li>
+<li><a class="reference internal" href="#">Welcome to AGT’s documentation!</a></li>
 <li><a class="reference internal" href="#presentation">Présentation</a></li>
-<li><a class="reference internal" href="#module-de-traitement-des-donnees-electriques-geoscan-research-rm15-rm85">Module de traitement des données électriques (Geoscan Research RM15/RM85)</a></li>
-<li><a class="reference internal" href="#module-de-traitement-des-donnees-magnetiques-sensys-mxpda">Module de traitement des données magnétiques (Sensys MXPDA)</a></li>
-<li><a class="reference internal" href="#module-de-traitement-des-donnees-electromagnetique-em31-de-geonics">Module de traitement des données électromagnétique (EM31 de Geonics)</a></li>
+<li><a class="reference internal" href="#module-de-traitement-des-donnees-electriques-geoscan-research-rm15-rm85-prospection-en-grille">Module de traitement des données électriques (Geoscan Research RM15/RM85) - Prospection en grille</a></li>
+<li><a class="reference internal" href="#module-de-traitement-des-donnees-magnetiques-sensys-mxpda-prospection-en-grille">Module de traitement des données magnétiques (Sensys MXPDA) - prospection en grille</a></li>
+<li><a class="reference internal" href="#module-de-traitement-des-donnees-magnetiques-sensys-mxpda-prospection-avec-gnss">Module de traitement des données magnétiques (Sensys MXPDA) - prospection avec GNSS</a></li>
+<li><a class="reference internal" href="#module-de-traitement-des-donnees-electromagnetiques-de-type-emi-em31-de-geonics">Module de traitement des données électromagnétiques de type EMI (EM31 de Geonics)</a></li>
 <li><a class="reference internal" href="#code-source">Code source</a></li>
 <li><a class="reference internal" href="#evolutions-futures">évolutions futures</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/index.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
       <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
-        <li><a href="#">AGT 0.1 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="#">AGT 0.1 documentation</a> &#187;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2013, Nariman HATAMI / INRAP.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2013, Nariman HATAMI / INRAP.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.
     </div>
   </body>
 </html>
