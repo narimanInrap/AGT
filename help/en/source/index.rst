@@ -14,38 +14,38 @@ Welcome to AGT's documentation!
  
 Introduction
 =================== 
-This plugin is a toolbox for processing electrical (Geoscan Research RM15/RM85) and magnetic (Sensys MXPDA) prospecting data.
-
+This plugin is a toolbox for processing electrical resistivity (Geoscan Research RM15/RM85), magnetic (Sensys MXPDA / Bartington Grad601) and electromagnetic induction (Geonics EM31) data with shapefiles creation.
 
 .. index:: Electrical
 
-Electrical data processing module (Geoscan Research RM15/RM85)
+Electrical data processing module (Geoscan Research RM15/RM85) - grid survey
 ====================
-This module enables initial processing of grid-based electrical data collected in a regular trot. At the moment only the pole-pole probes configuration is available.
+This module enables basic processing of resistivity data collected with a regular grid. For the moment, only the Pole-Pole configuration is available.
 
 \ **Input file**\
 
-The input file is an ascii file (.dat) that contains the data, and a header that points out all the information concerning the configuration of the resistance meter and the survey mode:
+The input file is an ascii file (.dat) that contains the data and header that gives all the information concerning the configuration of the resistance meter and the survey mode:
 
-				\ ** Column file containing the data **\
 				
-				* RM85		Name of the resistance meter
-				* 2			Number of grids 
-				* 30		Length of the grids (m)			
-				* 30		Width of the grids (m)
-				* 0.5		Probe spacing (m)
-				* 3			Number of channels 
-				* 4			Number of probes 
-				* 1			Line step (m)
-				* Pole-Pole	Probe configuration 
-				* 10		Current intensity 
-				* 1			Number of the first grid 
-				* 0			Coordinates of grid’s first point (left-down point)
+				\ **Column file containing the data**\
+				
+				* RM85 		*Name of the resistance meter*
+				* 2	 		*Number of grids* 
+				* 30	 	*Grid length  (m)*
+				* 30 		*Grid width  (m)*
+				* 0.5 		*Probe spacing (m)*
+				* 3	 		*Number of channels*
+				* 4	 		*Number of probes*
+				* 1	 		*Line step (m)*
+				* Pole-Pole	  *Probe configuration* 
+				* 10 		*Current intensity*
+				* 1 			*Number of the first grid*
+				* 0			*Coordinates of grid's first point (bottom-left point)*
 				* 0
-				* 2			Number of the second grid
-				* 0			Coordinates of grid’s first point (left-down point)
+				* 2	 	*Number of the second grid*
+				* 0	 		*coordinates of grid's first point (bottom-left point)*
 				* 30
-				* 20.95		Resistivity measure
+				* 20.95	 	*Resistivity measurement*
 				* 25		
 				* 20.5
 				* 8.55
@@ -55,39 +55,109 @@ The input file is an ascii file (.dat) that contains the data, and a header that
 				* .
 				* .
 
-The value of non measured points (dummy value) is 999. 
+The value of dummy log is 999. 
 
-The header has two different roles:
+Header has two different roles, so must be accurately completed because it is used:
 
-#. It is used for the data processing, thus it must be completed accurately
-#. It is used to keep the metadata of the survey
+#. for data processing (automatically read by the software)
+#. for storing metadata of the survey
 
 \ **Processing**\
 
-
-The basic process consists in reorganizing the raw data in order to separate each \ *channel* \. The measured resistance values are transformed into apparent resistivity, depending on the chosen probe configuration (for the moment only the pole-pole configuration is available). 
-The data can be exported in Shapefiles and also in simple ascii files (.dat). Two sub-modules are proposed afterwards:
+The basic processing consists of reorganizing the raw data in order to separate each channel and assign the right
+X,Y position of each measurement.. The measured resistance values are transformed into apparent resistivity, depending on the chosen probe configuration (for the moment only the pole-pole configuration is available). 
+Data can be exported in shapefiles (.shp) or ascii files (.dat). Two sub-modules are subsequently proposed:
 
 	\ *Median filtering* \
 
-	This function allows to do noise removal using a median filter algorithm. The kernel size and the median value are defined by the user.
+	This function allows noise removal using a median filter algorithm. The user has to define the kernel size and the threshold defined as a percentage tolerance with the median value.
+
 
 	\ *Georeferencing* \
 
-	This function allows the georeferencing of the grid using geometric translations and rotations (scaling and deformation are not used). The method uses two control points that are provided by the user.
-
+	This function allows grid georeferencing using geometric translations and rotations. The method uses two control points provided by the user.
+	
 .. index:: magnetic				
 
-Magnetic data processing module (Sensys MXPDA)
+.. index:: grid survey
+
+Magnetic data processing module (Sensys MXPDA / Bartington Grad601) - grid survey
+======================
+This module allows basic processing of magnetic survey data, collected with a Sensys MXPDA or Bartington Grad601 magnetometer.
+
+\ **Input file**\
+
+The input file is an .dat file, generated by Sensys Magneto-Arch software or a .dat file generated by Bartington software. File configurations are as follows:
+
+
+				\ **Sensys MXPDA**\
+				
+				* X   Y    Value
+				* 0   0     2.8
+				* 0  0.1    2.87
+				* 0  0.2    3.08
+				* 0  0.3    2.59
+				* 0  0.4    1.89
+				* .
+				* .
+				* .
+				
+
+				\ **Bartington Grad601**\
+				
+				* Time = 09:16:55
+				* Date = 06/10/2017
+				* Grid Number = 1
+				* Number of Sensors = 2
+				* Grid Size = 40 x 40
+				* Method of collection = ZigZag
+				* Starting Direction = West
+				* Data Range = 100 nT
+				* Line Spacing = 1.00 m
+				* Sampling = 4 samples / m
+				* Sensor Spacing = 1.0 m
+				* Mean = 0.50
+				* Max = 21.40
+				* Min = -4.01
+				* 0.125 0.5 0.87 			*Y, X, value*
+				* 0.375 0.5 0.86
+				* 0.625 0.5 1.21
+				* 0.875 0.5 1.78
+				* 2.875 0.5 1.16
+				* .
+				* .
+				* .
+
+\ **Processing**\
+
+The basic processing consists of reorganizing the data in order to separate each profile (a profile is defined with a fixed X coordinate). Data can be exported in shapefiles (.shp) and ascii files (.dat). 
+
+Three processing modules are proposed:
+
+	\ *Median removal* \
+	 
+	This function removes the median value of each profile, in order to eliminate the shift due to electronic components of the sensors and constant magnetic disturbances. It is possible to limit the number of points used to determine the median value by using a percentile. Using a percentile threshold excludes strong magnetic anomalies from the median value computing.
+	
+	\ *Trend removal* \
+	 	
+	This function allows a first-, second- or third-order polynomial removal on each profile.
+	
+	\ *Georeferencing* \
+	
+	This function allows grid georeferencing using geometric translations and rotations. The method uses two control points provided by the user.
+
+.. index:: GNSS survey
+
+Magnetic data processing module (Sensys MXPDA) - GNSS survey
 ======================
 
-This module allows basic processing of geophysical magnetic surveys data, collected with a Sensys MXPDA magnetometer paired with a GPS receiver.
+This module allows basic processing of magnetic survey data, collected with a Sensys MXPDA magnetometer coupled with a GNSS.
 
 \ **Input file**\
 
 The input file is an .asc file, generated by Sensys Magneto-Arch software. Its configuration is as follows:
 
-X, Y, difference of the vertical component of the magnetic field, profile name, the number of the probe.
+*X, Y, difference of the vertical component of the magnetic field, profile name, the number of the probe.*
 
 * 30694328.591 5432511.556 5.5 "20161010-110332_GZP.prm" 1
 * 30694328.717 5432511.772 31.2 "20161010-110332_GZP.prm" 2
@@ -96,37 +166,38 @@ X, Y, difference of the vertical component of the magnetic field, profile name, 
 * 30694329.098 5432512.418 -12.3 "20161010-110332_GZP.prm" 5
 * ...
 
-Collected data are georeferenced in UTM coordinates. The two first digits of the X coordinates correspond to the UTM zone (here UTM-30).
+Collected data are georeferenced in UTM coordinates. The two first digits of the X coordinate correspond to the UTM zone (UTM-30 in this example).
 
 \ **Processing**\
 
-The basic process consists in reorganizing the data in order to separate each \ *profile* \ (a profile is defined as a set of data collected with a probe during a survey). Points are then georeferenced in the chosen mapping system. Data can be exported in Shapefiles and also in simple ascii files (.dat). 
+he basic processing consists of reorganizing the data in order to separate each profile (a profile is defined as a set of data collected with one probe along one line). Points are then georeferenced in the chosen mapping system. Data can be exported in shapefiles (.shp) and ascii files (.dat).
+
 Four processing modules are proposed:
 
 	\ *Decimation* \ 
 	
-	This function allows reducing the number of collected points by keeping a fraction of them (1 out of n, \ *n* \ is chosen by the user).
+	This function reduces the number of collected points by keeping a fraction of them (1 / n, n is chosen by the user). The user can use raw data or median filtered data (computed with a n data point moving median).
 
 	\ *Median removal* \
 	
-	This function allows removing the median value of each profile, in order to eliminate the zero offset due to electronic components of the sensors and constant magnetic perturbations. It is possible to restrain the number of points used to determine the median value by using a percentile. Using a percentile threshold excludes heavily magnetic anomalies from the median value computing.
-	
+	This function removes the median value of each profile, in order to eliminate the shift due to electronic components of the sensors and constant magnetic disturbances. It is possible to limit the number of points used to determine the median value by using a percentile. Using a percentile threshold excludes strong magnetic anomalies from the median value computing.
+
 	\ *Trend removal* \
 	
-	This function allows a polynomial regression, with a degree of 1, 2 or 3, on each profile. 
+	This function allows a first-, second- or third-order polynomial removal on each profile.
 	
 	\ *Stationary point removal* \ 
 	
-	This function eliminates points collected while the magnetometer is stationary.
-	
+	This function eliminates stationary data points collected while the magnetometer is immobile.
+
 EMI data processing module (EM31 from Geonics)
 ======================
 
-The module transforms the electrical conductivity values provided by the EM31 (based on McNeil, 1980). This processing allows to overpass the boundaries of the linear approximation which is only valid in first approximation for an instrument hold on the ground (Z=0) and observing the low induction number condition (i.e. low electrical conductivity). Data is transformed into a .shp file and can be uploaded into the GIS.
+The module transforms the electrical conductivity values provided by the EM31 (based on McNeil, 1980). This processing overpasses the boundaries of the linear approximation which is only valid in first approximation for an instrument held on the ground (Z=0) and respecting the low induction number condition (i.e. low electrical conductivity). Data is transformed into a .shp file and can be uploaded into GIS.
 
 \ **Input file** \
 
-The input file is an ascii file format (.dat) as delivered by DAT31W (Geoncis software). It contains the X, and Y position of each measurement, as well as the quadrature (QV1 in mS / m), in-phase part of the electromagnetic signal (IV1 in ppt)  and a time stamp:
+Input file is an ascii file format (.dat) as delivered by DAT31W (Geoncis software). It contains the X, and Y position of each measurement, as well as the quadrature (QV1 in mS / m), in-phase part of the electromagnetic signal (IV1 in ppt)  and a time stamp:
 
 * / EAST, NORTH, QV1, IV1, TIME /
 * 642039.43420000 7097622.22880000 30.10 1.03 15: 32: 39.555
@@ -138,15 +209,16 @@ The input file is an ascii file format (.dat) as delivered by DAT31W (Geoncis so
 * 642039.58235000 7097622.05660000 29.98 1.00 15: 32: 41.699
 * 642039.67784000 7097621.93750000 30.18 1.02 15: 32: 42.071
 
-You have to specify the coordinate system used during the acquisition.
+The user has to specify the coordinate system used during the survey.
 
 \ **Processing** \
 
-The processing module estimate the apparent electrical conductivity values based on the solution of the integrals and the Hankel transform (Thiesson et al., 2014). 
-This solution takes into account the height of the device and the coils configuration. It can therefore be applied regardless of the type of soil studied (valid in salty soil contexts).
+The processing module estimates the apparent electrical conductivity values based on the solution of the integrals and the Hankel transform (Thiesson et al., 2014). This solution takes into account the height of the device and the coils configuration. It can therefore be applied regardless of the type of soil studied even valid in salty soil contexts.
 
 McNeill J.D., 1980 - Electromagnetic terrain conductivity measurement at low induction number, technical note TN6, Geonics Ltd, Toronto, 15p.
+
 Thiesson J., Kessouri P., Schamper C., Tabbagh A., 2014 - Calibration of frequency-domain electromagnetic devices used in near-surface surveying. Near Surface Geophysics, 12, 481-491.
+
 
 
 .. index:: code source
