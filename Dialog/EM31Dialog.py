@@ -48,50 +48,50 @@ class EM31Dialog(QDialog, Ui_AGTEM31Dialog):
         QObject.connect(self.ButtonBrowse, SIGNAL('clicked()'), self.inFile)
         QObject.connect(self.ButtonBrowseShape, SIGNAL('clicked()'), self.outFileBrowse)
         QObject.connect(self.runButton, SIGNAL('clicked()'), self.EM31Process)
-        self.iface = iface    
+        self.iface = iface
+        self.defaultCrsImport = ''        
+        self.defaultCrs = ''
+        self.encoding = ''    
         self.populateCRS(Utilities.getCRSList())        
-        self.populateEncodings(AGTEnconding.getEncodings())       
-       
+        
 
     def tr(self, message):
         """Get the translation for a string using Qt translation API.        
         """
-        return QCoreApplication.translate(u"EM31Dlg", message)
-    
-    def setDefaultEncoding(self):
+        return QCoreApplication.translate(u"EM31Dlg", message)        
+   
+    def setDefaultCRSImport(self):    
         
-        index = self.comboEncoding.findText(AGTEnconding.getDefaultEncoding('UTF-8'))
-        if index == -1:
-            index = 0  # Make sure some encoding is selected.
-        self.comboEncoding.setCurrentIndex(index)
+        #index = self.comboCRS.findText(u'WGS 84 / UTM zone 31N, 32631')
+        self.defaultCrsImport = Utilities.loadDefaultParameters()[0]        
+        index = self.comboCRSImport.findText(self.defaultCrsImport)      
+        if index == -1:        
+            index = 0  # Make sure some encoding is selected.            
+        self.comboCRSImport.setCurrentIndex(index)   
     
-    def setDefaultCRS(self):    
+    def setDefaultCRSExport(self):    
         
-        index = self.comboCRS.findText(u'WGS 84 / UTM zone 31N, 32631')        
-        if index == -1:
+        #index = self.comboCRS.findText(u'WGS 84 / UTM zone 31N, 32631')
+        self.defaultCrs = Utilities.loadDefaultParameters()[1]        
+        index = self.comboCRS.findText(self.defaultCrs)      
+        if index == -1:        
             index = 0  # Make sure some encoding is selected.            
         self.comboCRS.setCurrentIndex(index)
-    
-    
-    def populateEncodings(self, names):
-        """Populates the combo box of available encodings."""
-        
-        self.comboEncoding.clear()
-        self.comboEncoding.addItems(names)       
-        self.setDefaultEncoding()
-      
    
     def populateCRS(self, crsNames):
         
+        self.comboCRSImport.clear()
+        self.comboCRSImport.addItems(crsNames)     
+        self.setDefaultCRSImport()
         self.comboCRS.clear()
         self.comboCRS.addItems(crsNames)     
-        self.setDefaultCRS()
-    
-    
+        self.setDefaultCRSExport()     
+
     def inFile(self):
         """Opens an open file dialog"""  
-                
-        inFilePath = Utilities.openFileDialog(self, 'Electromagnetic geophysical data (*.dat)', "Open input geophysical data file")
+        
+        inputMsg = QtGui.QApplication.translate(u"EM31Dlg", "Input file")
+        inFilePath = Utilities.openFileDialog(self, 'EM31 (*.dat)', inputMsg)
         if not inFilePath:
             return
         self.inFileLine.setText(inFilePath)   
@@ -110,15 +110,16 @@ class EM31Dialog(QDialog, Ui_AGTEM31Dialog):
             return
         coil = CoilConfigEnum.VCP
         if self.radioButtonHCP.isChecked():
-            coil = CoilConfigEnum.HCP            
-        self.engine = Engine(rawDataFilename = self.inFileLine.text(), dataEncoding = self.comboEncoding.currentText(), crsRef = self.comboCRS.currentText(), 
+            coil = CoilConfigEnum.HCP
+        self.encoding = Utilities.loadDefaultParameters()[2]
+        self.engine = Engine(rawDataFilename = self.inFileLine.text(), dataEncoding = self.encoding, crsRefImp = self.comboCRSImport.currentText(), crsRefExp = self.comboCRS.currentText(), 
                              datOutput = self.datFilechkbox.isChecked(), addCoordFields = self.coordFieldschk.isChecked(), outputShapefile = self.outputFilename.text(),
                              sensorHeight = self.heightSpin.value(), coilConfig = coil)
-       # try:
+        #try:
         self.runEM31()
         #except (FileDeletionError, NoFeatureCreatedError, ParserError, Exception) as e:            
-         #  QMessageBox.warning(self, 'AGT', e.message)
-          #  return      
+            #QMessageBox.warning(self, 'AGT', e.message)
+            #return      
         self.addShapeToCanvas()
         self.hideDialog()
     
@@ -148,11 +149,10 @@ class EM31Dialog(QDialog, Ui_AGTEM31Dialog):
         self.engine.ConductivityTransformation()
         self.progressBar.setValue(90)
         self.engine.createEM31Shapefile()
-        self.progressBar.setValue(100)
-        
-        
-            
-                                    
+        if self.datFilechkbox.isChecked():
+            self.engine.createEM31DatExport()
+        self.progressBar.setValue(100)     
+                    
     def addShapeToCanvas(self):
     
         message = QtGui.QApplication.translate(u"EM31Dlg",'Created output Shapfile:')
@@ -170,8 +170,8 @@ class EM31Dialog(QDialog, Ui_AGTEM31Dialog):
         self.datFilechkbox.setCheckState(Qt.Unchecked)
         self.coordFieldschk.setCheckState(Qt.Unchecked)       
         self.heightSpin.setValue(0.7)
-        self.radioButtonVCP.setChecked(True)    
-        self.setDefaultCRS()
-        self.setDefaultEncoding()  
+        self.radioButtonVCP.setChecked(True)
+        self.setDefaultCRSImport()    
+        self.setDefaultCRSExport()
         self.hide()
     

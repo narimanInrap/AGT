@@ -41,9 +41,8 @@ from Dialog.MagDialog import MagDialog
 from Dialog.RasterDialog import RasterDialog 
 #from Dialog.ElecDownDialog import ElecDownDialog
 from Dialog.EM31Dialog import EM31Dialog
-
-import os.path
-
+from Dialog.MagGridDialog import MagGridDialog
+from Dialog.ParametersDialog import ParametersDialog
 
 class AGT:
     """QGIS Plugin Implementation."""
@@ -77,6 +76,8 @@ class AGT:
         self.em31Dlg = EM31Dialog(self.iface)
         #self.elecDownDlg = ElecDownDialog(self.iface)
         #self.rasterDlg = RasterDialog(self.iface)
+        self.magGridDlg = MagGridDialog(self.iface)
+        self.paramDlg = ParametersDialog(self.iface)
 
         # Declare instance attributes
         self.actions = []
@@ -191,10 +192,17 @@ class AGT:
             callback=self.runElec,
             parent=self.iface.mainWindow())
         
+        icon_path = ':/plugins/AGT/icons/magGrid_icon.png'
+        self.add_action(
+            icon_path,
+            text=self.tr(u'MXPDA/Grad601 processing - Grid survey'),
+            callback=self.runMagGrid,
+            parent=self.iface.mainWindow())
+        
         icon_path = ':/plugins/AGT/icons/mag_icon.png'
         self.add_action(
             icon_path,
-            text=self.tr(u'MXPDA processing'),
+            text=self.tr(u'MXPDA processing - GNSS survey'),
             callback=self.runMag,
             parent=self.iface.mainWindow())
         
@@ -212,7 +220,16 @@ class AGT:
 #             callback=self.runRaster,
 #             parent=self.iface.mainWindow())
 #          
+        
+        icon_path = ':/plugins/AGT/icons/param_icon.png'
+        self.add_action(
+            icon_path,
+            text=self.tr(u'Default parameters'),
+            callback=self.parameters,
+            parent=self.iface.mainWindow(),
+            add_to_toolbar = True)        
         icon_path = ':/plugins/AGT/icons/help.svg'
+        
         self.add_action(
             icon_path,
             text=self.tr(u'help'),
@@ -228,6 +245,16 @@ class AGT:
         else:
             help_file = "file:///{}/help/build/html/en/index.html".format(os.path.dirname(__file__)) 
         QDesktopServices().openUrl(QUrl(help_file))
+        
+    def parameters(self):
+        
+        self.paramDlg.loadParams()
+        self.paramDlg.setDefaultEncoding()
+        self.paramDlg.setDefaultCRSImport()        
+        self.paramDlg.setDefaultCRSExport()
+        self.paramDlg.show()
+        self.paramDlg.exec_()              
+        
     
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
@@ -255,7 +282,8 @@ class AGT:
     def runMag(self):
         """Run method that performs all the real work"""
         # show the dialog
-        self.magDlg.show()
+        self.magDlg.show()        
+        self.magDlg.setDefaultCRS()
         # Run the dialog event loop
         result = self.magDlg.exec_()
         # See if OK was pressed
@@ -265,6 +293,20 @@ class AGT:
             pass
         else:
             self.magDlg.hideDialog()
+            
+    def runMagGrid(self):
+        """Run method that performs all the real work"""
+        # show the dialog
+        self.magGridDlg.show()
+        # Run the dialog event loop
+        result = self.magGridDlg.exec_()
+        # See if OK was pressed
+        if result:
+            # Do something useful here - delete the line containing pass and
+            # substitute with your code.
+            pass
+        else:
+            self.magGridDlg.hideDialog()
     
 #     def runElecDown(self):
 #         """Run method that performs all the real work"""
@@ -285,6 +327,8 @@ class AGT:
         # show the dialog
         self.em31Dlg.show()
         # Run the dialog event loop
+        self.em31Dlg.setDefaultCRSImport()        
+        self.em31Dlg.setDefaultCRSExport()
         result = self.em31Dlg.exec_()
         # See if OK was pressed
         if result:

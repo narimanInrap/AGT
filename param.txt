@@ -1,0 +1,3 @@
+WGS 84 / UTM zone 31N, 32631
+RGF93 / Lambert-93, 2154
+UTF-8

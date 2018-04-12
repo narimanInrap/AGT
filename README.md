@@ -1,22 +1,31 @@
 AGT
 ===
 
-Electrical resistivity processing module (Geoscan Research RM15/RM85):
+Electrical resistivity processing module (Geoscan Research RM15/RM85) contains:
 	Import
 	Processing: 
 		Median filtering
 		Georeferencing
-Magnetic data processing module (Sensys MXPDA):
+Magnetic data processing module (Sensys MXPDA - GNSS) contains:
 	Import
 	Processing:
-		Decimation
+		Decimation(raw - median moving window)
 		Median removal
 		Trend removal
 		Stationary point removal
+Magnetic data processing module (Sensys MXPDA/Grad601 - grid survey) contains:
+	Import
+	Processing:	
+		Median removal
+		Trend removal
+		Georeferencing
+Electromagnetic data processing module (Geonics EM31) contains:
+	Import
+	Processing:
+		Apparent conductivity calculation
 
-Electromagnetic processing module (GeoPhex gem-2, dualEM)
-		
-Coming soon:		
+Coming soon:	
+	EMI data processing module (GeoPhex gem-2, dualEM)
 	RM15/RM85 Download module
 	Advanced processing module 
 

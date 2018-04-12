@@ -29,20 +29,23 @@ import os
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
+
+
 from ..core.AGTEngine import Engine
 
-from ..ui.ui_magDialog import Ui_AGTMagDialog
+from ..ui.ui_MagGridDialog import Ui_AGTMagGridDialog
 from ..toolbox.AGTUtilities import Utilities, AGTEnconding
 from ..toolbox.AGTExceptions import *
+from GeorefDialog import GeorefDialog
 
 #FORM_CLASS, _ = uic.loadUiType(os.path.join(
 #   os.path.dirname(__file__), 'AGT_dialog_base.ui'))
 
 
-class MagDialog(QDialog, Ui_AGTMagDialog):
+class MagGridDialog(QDialog, Ui_AGTMagGridDialog):
     def __init__(self, iface, parent=None):
         """Constructor."""
-        super(MagDialog, self).__init__(parent)
+        super(MagGridDialog, self).__init__(parent)
         # Set up the user interface from Designer.
         # After setupUI you can access any designer object by doing
         # self.<objectname>, and you can use autoconnect slots - see
@@ -54,17 +57,9 @@ class MagDialog(QDialog, Ui_AGTMagDialog):
         QObject.connect(self.allProcess_button, SIGNAL('clicked()'), self.magProcesses)
         QObject.connect(self.medchk, SIGNAL('stateChanged(int)'), self.medianChecked)
         QObject.connect(self.trendchk, SIGNAL('stateChanged(int)'), self.TrendChecked)
-        self.iface = iface
-        self.defaultCrs = ''
-        self.encoding = ''
-        self.populateCRS(Utilities.getCRSList())        
-  
-
-    def tr(self, message):
-        """Get the translation for a string using Qt translation API.        
-        """
-        return QCoreApplication.translate(u"MagDlg", message)
-    
+        self.iface = iface    
+        self.encoding = Utilities.loadDefaultParameters()
+      
     def medianChecked(self):
     
         if self.medchk.isChecked():
@@ -83,26 +78,12 @@ class MagDialog(QDialog, Ui_AGTMagDialog):
         else:
             self.trendPercentileChk.setCheckState(Qt.Unchecked)
             self.medchk.setCheckState(Qt.Checked)
-            self.trendPercentileChk.setDisabled(True)  
-    
-    def populateCRS(self, crsNames):
-        
-        self.comboCRS.clear()
-        self.comboCRS.addItems(crsNames)
-        self.setDefaultCRS()
-    
-    def setDefaultCRS(self):    
-        
-        self.defaultCrs = Utilities.loadDefaultParameters()[1]
-        index = self.comboCRS.findText(self.defaultCrs)      
-        if index == -1:        
-            index = 0  # Make sure some encoding is selected.            
-        self.comboCRS.setCurrentIndex(index)        
-        
+            self.trendPercentileChk.setDisabled(True)
+  
     def inFile(self):
         """Opens an open file dialog"""  
                 
-        inFilePath = Utilities.openFileDialog(self, 'MXPDA (*.asc)', "Open input geophysical data file")
+        inFilePath = Utilities.openFileDialog(self, 'MXPDA/Grad601 (*.dat)', "Open input geophysical data file")
         if not inFilePath:
             return
         self.inFileLine.setText(inFilePath)   
@@ -118,76 +99,77 @@ class MagDialog(QDialog, Ui_AGTMagDialog):
     def magProcesses(self):
         
         if not self.inputCheck():
-            return
+            return       
         self.encoding = Utilities.loadDefaultParameters()[2]
-        self.engine = Engine(rawDataFilename = self.inFileLine.text(), dataEncoding = self.encoding, crsRefExp = self.comboCRS.currentText(), 
-                             datOutput = self.datFilechkbox.isChecked(), addCoordFields = self.coordFieldschk.isChecked(), decimValue = self.decimSpin.value(), 
-                             medRemove =  self.medchk.isChecked(), percentile = self.percentilechk.isChecked(), percThreshold = self.percentSpin.value(), 
-                             trendRemove = self.trendchk.isChecked(), trendPolyOrder = self.polyOrdSpin.value(), trendPercentile = self.trendPercentileChk.isChecked(), 
-                             trendPercThreshold = self.trendPercentileSpinBox.value(), statPtRem = self.stationRmvchk.isChecked(), 
-                             statPtThresh = self.thresSpin.value(), gpsProbe = self.gpsSpin.value(), outputShapefile = self.outputFilename.text())
-        #try:
-        self.runMag()
-        #except (FileDeletionError, NoFeatureCreatedError, ParserError, Exception) as e:            
-         #   QMessageBox.warning(self, 'AGT', e.message)
-          #  return      
-        self.addShapeToCanvas()
+        self.engine = Engine(rawDataFilename = self.inFileLine.text(), dataEncoding = self.encoding, datOutput = self.datFilechkbox.isChecked(),
+                              addCoordFields = self.coordFieldschk.isChecked(), medRemove =  self.medchk.isChecked(), percentile = self.percentilechk.isChecked(), 
+                              percThreshold = self.percentSpin.value(), trendRemove = self.trendchk.isChecked(), trendPolyOrder = self.polyOrdSpin.value(),
+                              trendPercentile = self.trendPercentileChk.isChecked(), trendPercThreshold = self.trendPercentileSpinBox.value(), outputShapefile = self.outputFilename.text())
+        shapefiles = [] 
+        try:
+            self.runMagGrid()
+        except (FileDeletionError, NoFeatureCreatedError, ParserError, Exception) as e:            
+            QMessageBox.warning(self, 'AGT', e.message)
+            return
+        self.engine.createMagGridRelCoordShapefile()
+        self.progressBar.setValue(100)    
+        if self.checkBox_geo.isChecked():
+            geoDlg = GeorefDialog(self.iface, self.engine)
+            geoDlg.show()
+            result = geoDlg.exec_()                
+            if result == QDialog.Rejected:
+                QMessageBox.information(self, 'AGT', 'grid' + QtGui.QApplication.translate(u"ElectDlg",u'Georeferencing canceled.'))
+            else:                 
+                QMessageBox.information(self, 'AGT', 'grid' + QtGui.QApplication.translate(u"ElectDlg",u'Georeferencing done.'))
+                shapefiles.append(self.outputFilename.text()[:-4] + '_Gref.shp')
+        else:
+            shapefiles.append(self.outputFilename.text())               
+            QMessageBox.information(self, 'AGT', "Data exported.")
+        self.addShapeToCanvas(shapefiles)
         self.hideDialog()
         
         
-    def runMag(self):
-        
-        self.progressBar.setValue(5)
-        self.engine.magRawDataParser()
+    def runMagGrid(self):
+
         self.progressBar.setValue(20)
-        if self.MedianDecimRadioBut.isChecked():
-            self.engine.medMovWinDecimation()
-        else:
-            self.engine.magDecimation()
-        self.progressBar.setValue(35)                   
-        if self.stationRmvchk.isChecked():
-            self.engine.distanceFilter()
-        self.progressBar.setValue(40)        
-        self.engine.sortMagPoints()
-        self.progressBar.setValue(45)        
-        self.engine.createProfileList()
+        self.engine.magGridRawDataParser()
+        self.progressBar.setValue(45)
+        self.engine.CreateSimpleProfileListRelCoord()           
         self.progressBar.setValue(60)       
         self.engine.medianRemoval()
-        self.progressBar.setValue(70)        
-        if self.datFilechkbox.isChecked():
-            self.engine.createMagDatExport()
         self.progressBar.setValue(80)        
-        self.engine.createMagShapefile()
-        self.progressBar.setValue(100)
-        
-        
+        if self.datFilechkbox.isChecked():
+            self.engine.createMagGridRelCoordDatExport()      
+             
     def inputCheck(self):
         """Verifies whether the input is valid."""
       
         if not self.inFileLine.text():
-            msg = QtGui.QApplication.translate(u"MagDlg",'Please specify an input data file.')
+            msg = QtGui.QApplication.translate(u"MagGridDlg",'Please specify an input data file.')
             QMessageBox.warning(self, 'AGT', msg)
             return False
         if not self.outputFilename.text():
-            msg = QtGui.QApplication.translate(u"MagDlg",'Please specify an output shapefile.')
+            msg = QtGui.QApplication.translate(u"MagGridDlg",'Please specify an output shapefile.')
             QMessageBox.warning(self, 'AGT', msg)
             return False
         root, ext = os.path.splitext(self.outputFilename.text())
         if (ext.upper() != '.SHP'):
-            msg = QtGui.QApplication.translate(u"MagDlg",'The output file must have the filename.shp format.')
+            msg = QtGui.QApplication.translate(u"MagGridDlg",'The output file must have the filename.shp format.')
             QMessageBox.warning(self, 'AGT', msg)
             return False        
         return True
         
-    def addShapeToCanvas(self):
+    def addShapeToCanvas(self, shapefiles):
     
-        message = QtGui.QApplication.translate(u"MagDlg",'Created output Shapfile:')
-        message = '\n'.join([message, unicode(self.outputFilename.text())])
-        message = '\n'.join([message, QtGui.QApplication.translate(u"MagDlg","Would you like to add the new layer to your project?")])            
+        message = QtGui.QApplication.translate(u"MagGridDlg",'Created output Shapfile:')
+        for sf in shapefiles:           
+            message = '\n'.join([message, unicode(sf)])
+        message = '\n'.join([message, QtGui.QApplication.translate(u"MagGridDlg","Would you like to add the new layer to your project?")])            
         addToTOC = QMessageBox.question(self, "AGT", message,
             QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
         if addToTOC == QMessageBox.Yes:
-            Utilities.addShapeToCanvas(unicode(self.outputFilename.text()))
+            for sf in shapefiles:
+                Utilities.addShapeToCanvas(unicode(sf))       
                  
     def hideDialog(self):
         
@@ -195,18 +177,12 @@ class MagDialog(QDialog, Ui_AGTMagDialog):
         self.outputFilename.setText("")
         self.datFilechkbox.setCheckState(Qt.Unchecked)
         self.coordFieldschk.setCheckState(Qt.Unchecked)
-        self.percentilechk.setCheckState(Qt.Unchecked)        
-        self.MedianDecimRadioBut.setChecked(True)
+        self.percentilechk.setCheckState(Qt.Unchecked)       
         self.medchk.setCheckState(Qt.Checked)        
         self.trendchk.setCheckState(Qt.Unchecked)
-        self.stationRmvchk.setCheckState(Qt.Unchecked)
-        self.decimSpin.setValue(10)
         self.percentSpin.setValue(25)
         self.polyOrdSpin.setValue(3)
-        self.thresSpin.setValue(1.2)
-        self.gpsSpin.setValue(3)
         self.progressBar.setValue(0)
-        self.setDefaultCRS()
         self.hide()
     
     

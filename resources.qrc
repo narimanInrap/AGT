@@ -4,6 +4,8 @@
         <file>icons/mag_icon.png</file>
 		<file>icons/raster_icon.png</file>
 		<file>icons/em31_icon.png</file>
-        <file>icons/help.svg</file>        
+        <file>icons/help.svg</file>     
+        <file>icons/magGrid_icon.png</file>
+        <file>icons/param_icon.png</file>
     </qresource>
 </RCC>

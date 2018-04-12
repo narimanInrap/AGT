@@ -24,8 +24,6 @@
 #using Unicode for all strings
 from __future__ import unicode_literals
 
-
-
 import math
 from operator import itemgetter
 import numpy
@@ -47,8 +45,8 @@ from ..toolbox.AGTExceptions import *
 class Engine(object):
     
     filteredPointNum = []   
-    def __init__(self, rawDataFilename, dataEncoding, datOutput, crsRef = None, projectName = None, medianPercent = None, kernelSize = None, filter = None, 
-                 addCoordFields = None, decimation = None, decimValue = None, medRemove = None, percentile = None, percThreshold = None,
+    def __init__(self, rawDataFilename, dataEncoding, datOutput, crsRefImp = None, crsRefExp = None, projectName = None, medianPercent = None, kernelSize = None, filter = None, 
+                 addCoordFields = None, decimValue = None, medRemove = None, percentile = None, percThreshold = None,
                  trendRemove = None, trendPolyOrder = None, trendPercentile = None, trendPercThreshold = None, statPtRem = None, statPtThresh = None, 
                  gpsProbe = None, outputShapefile = None, sensorHeight = None, coilConfig = None):
         self.rawDataFilename = rawDataFilename
@@ -58,11 +56,14 @@ class Engine(object):
         self.OriginY = []
         self.rawData = []
         self.basicOutputFilename = projectName
-        if crsRef:
-            self.outputCrsCode = Utilities.crsRefDict[crsRef]
+        if crsRefImp:
+            self.inputCrsCode = Utilities.crsRefDict[crsRefImp]
         else:
-            self.outputCrsCode = 2154 #RGF93 / Lambert-93
-        self.inputCrsCode = 0
+            self.inputCrsCode = 2154 #RGF93 / Lambert-93        
+        if crsRefExp:
+            self.outputCrsCode = Utilities.crsRefDict[crsRefExp]
+        else:
+            self.outputCrsCode = 2154 #RGF93 / Lambert-93        
         self.crs = QgsCoordinateReferenceSystem(self.outputCrsCode)            
   
         #self.crs.createFromProj4("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs") #4326
@@ -76,7 +77,6 @@ class Engine(object):
         self.datOutput = datOutput
         # Magnetic    
         self.isAddCoordFields = addCoordFields
-        self.isDecimation = decimation
         self.decimationVal = decimValue
         self.isMedianRemoval = medRemove
         self.isPercentile = percentile
@@ -93,7 +93,8 @@ class Engine(object):
         self.sensorHeight = sensorHeight
         self.coilConfig = coilConfig
         # data
-        self.magPoints = []      
+        self.magPoints = []
+        self.sortedMagPoints = []    
         # profile
         self.correctedX = []
         self.profile = []
@@ -231,9 +232,56 @@ class Engine(object):
                 data = line.rstrip('\n\r').split()
                 self.magPoints.append((float(data[0]), float(data[1]), float(data[2]), str(data[3]), int(data[4]))) # (x, y, value, trace, probe)
         else:
-            raise ParserError(self.rawDataFilename, QtGui.QApplication.translate(u"Engine",'Can not open file.'))        
+            raise ParserError(self.rawDataFilename, QtGui.QApplication.translate(u"Engine",'Can not open file.'))       
+    
+    def magGridRawDataParser(self):
         
+        rawDataFile = QFile(self.rawDataFilename)
+        if not(rawDataFile.exists()):
+            return
+        if rawDataFile.open(QFile.ReadOnly|QFile.Text):
+            # header (metadata)
+            if not(rawDataFile.atEnd()):
+                headerLine = rawDataFile.readLine()            
+                rawDataFile.close()
+                if ('Time' in headerLine):
+                    self.Grad601GridParser()
+                else:
+                    self.MXPDAGridParser()                
+        
+    def Grad601GridParser(self):
        
+        rawDataFile = QFile(self.rawDataFilename)
+        if rawDataFile.open(QFile.ReadOnly|QFile.Text):
+            # header (metadata)
+            for i in range(14): # there are 14 lines of metadata
+                if not(rawDataFile.atEnd()):
+                    headerLine = rawDataFile.readLine()
+            # data
+            while not(rawDataFile.atEnd()):
+                line = str(rawDataFile.readLine())           
+                data = line.rstrip('\n\r').split()
+                # the data are already sorted
+                self.sortedMagPoints.append((float(data[1]), float(data[0]), float(data[2]))) # (x, y, value)
+        else:
+            raise ParserError(self.rawDataFilename, QtGui.QApplication.translate(u"Engine",'Can not open file.'))
+    
+    def MXPDAGridParser(self):
+        
+        rawDataFile = QFile(self.rawDataFilename)
+        if rawDataFile.open(QFile.ReadOnly|QFile.Text):
+            # header (metadata)
+            if not(rawDataFile.atEnd()):
+                headerLine = rawDataFile.readLine()
+            # data
+            while not(rawDataFile.atEnd()):
+                line = str(rawDataFile.readLine())           
+                data = line.rstrip('\n\r').split()
+                # the data are already sorted
+                self.sortedMagPoints.append((float(data[0]), float(data[1]), float(data[2]))) # (x, y, value)
+        else:
+            raise ParserError(self.rawDataFilename, QtGui.QApplication.translate(u"Engine",'Can not open file.'))
+               
     def filterRawData(self):    
     
         returnMsg = "" 
@@ -266,8 +314,8 @@ class Engine(object):
         shapefiles = []
         fields = QgsFields()
         fields.append(QgsField("id", QVariant.Int))
-        fields.append(QgsField("rel_x", QVariant.Int))
-        fields.append(QgsField("rel_y", QVariant.Int))
+        fields.append(QgsField("rel_x", QVariant.Double))
+        fields.append(QgsField("rel_y", QVariant.Double))
         fields.append(QgsField("res", QVariant.Double, 'double', 6, 2))
         
         filterFieldName = "med_" + str(self.medianPercent)
@@ -362,8 +410,8 @@ class Engine(object):
         shapefiles = []
         fields = QgsFields()
         fields.append(QgsField("id", QVariant.Int))
-        fields.append(QgsField("rel_x", QVariant.Int))
-        fields.append(QgsField("rel_y", QVariant.Int))
+        fields.append(QgsField("rel_x", QVariant.Double))
+        fields.append(QgsField("rel_y", QVariant.Double))
         fields.append(QgsField("res", QVariant.Double, 'double', 6, 2)) 
         folder = dirname(self.rawDataFilename)
         basicPath = folder + '/' + self.basicOutputFilename + '/Shapefiles'        
@@ -413,7 +461,16 @@ class Engine(object):
                           str(self.sortedMagPoints[i][3]) + ', ' + str(self.sortedMagPoints[i][4]) + ', ' + str(self.profile[i]) + '\n')
         fileObj.close()
     
-    def createGeorefShapefile(self, grid, channel, geoPoints, fields, fileName):
+    def createMagGridRelCoordDatExport(self):
+       
+        datFileName = self.outputShapefile.replace('.shp', '.dat')
+        fileObj = open(datFileName, 'w')
+        for i in range(0, len(self.sortedMagPoints)):            
+            fileObj.write(str(self.sortedMagPoints[i][0]) + ', ' + str(self.sortedMagPoints[i][1])+ ', ' + str(self.medianRemValues[i]) +
+                          str(self.profile[i]) + '\n')
+        fileObj.close()
+        
+    def createGeorefShapefile(self, geoPoints, fields, fileName):
         
         fields = QgsFields(fields)
         fields.append(QgsField("geo_x", QVariant.Double, 'double'))        
@@ -428,16 +485,22 @@ class Engine(object):
             feature.setAttributes(attrList)           
             features.append(feature)            
         self.createShapefile(fileName, fields, features)
-        if self.datOutput:
-            attInd = [fields.indexFromName('res')]
-            fieldList = fields.toList()            
-            filterField = filter(lambda f: f.displayName().find('med') != -1, fieldList)            
-            if filterField:
-                attInd.append(fields.indexFromName(filterField[0].displayName()))
-                filterName = "med_" + str(self.medianPercent)
-            else:
-                filterName = None
-            Utilities.shapefileToDAT(fileName, attInd, filterName)
+        if self.datOutput :           
+            if self.basicOutputFilename is not None: #RM only
+                attInd = [fields.indexFromName('res')]
+                fieldList = fields.toList()                              
+                filterField = filter(lambda f: f.displayName().find('med') != -1, fieldList)            
+                if filterField:
+                    attInd.append(fields.indexFromName(filterField[0].displayName()))
+                    filterName = "med_" + str(self.medianPercent)
+                else:
+                    filterName = None
+                Utilities.shapefileToDAT(fileName, attInd, filterName)          
+            else: #magGrid
+                attInd = fields.allAttributesList()
+                Utilities.shapefileToDAT(fileName, attInd)          
+            
+            
 
     def createShapefile(self, fileName, fields, features):
     
@@ -498,6 +561,33 @@ class Engine(object):
             features.append(feature)
         self.createShapefile(self.outputShapefile, fields, features)
         
+    def createMagGridRelCoordShapefile(self):
+
+        fields = QgsFields()
+        fields.append(QgsField('value', QVariant.Double, 'double', 12, 4))   
+        fields.append(QgsField('val_process', QVariant.Double, 'double', 12, 4))
+        fields.append(QgsField('profile', QVariant.Int))        
+        if self.isAddCoordFields:
+            fields.append(QgsField('X', QVariant.Double))
+            fields.append(QgsField('Y', QVariant.Double))
+        features = []                                    
+        for i in range(0, len(self.sortedMagPoints)):
+            feature = QgsFeature()
+            qPoint = QgsPoint(self.sortedMagPoints[i][0], self.sortedMagPoints[i][1])           
+            feature.setGeometry(QgsGeometry.fromPoint(qPoint))
+            if self.isAddCoordFields:            
+                feature.setAttributes([self.sortedMagPoints[i][2], 
+                                        self.medianRemValues[i],
+                                        self.profile[i],
+                                        self.sortedMagPoints[i][0], 
+                                        self.sortedMagPoints[i][1]])
+            else:
+                feature.setAttributes([self.sortedMagPoints[i][2], 
+                                       self.medianRemValues[i],
+                                       self.profile[i]])             
+            features.append(feature)
+        self.createShapefile(self.outputShapefile, fields, features)
+        
     def georeferencing(self, grid, x1, y1, xg1, yg1, x2, y2, xg2, yg2):
         
         xg = xg2 - xg1
@@ -516,22 +606,29 @@ class Engine(object):
             b = 1
         else:
             a = 1
-            b = 1       
-        folder = dirname(self.rawDataFilename)
-        basicPath = folder + '/' + self.basicOutputFilename + '/Shapefiles'
-        for channel in range(0, self.channelNbr):
-            channelPath = basicPath + '/' + 'channel' + str(channel + 1)            
-            fileName = channelPath + '/' + self.basicOutputFilename + '_channel' + str(channel + 1) + '_grid' + str(self.gridNames[grid]) + '.shp'                
-            vLayer = QgsVectorLayer(fileName , "georef", "ogr")
-            geoPoints = []
-            featuresIter = vLayer.getFeatures()
-            for feature in featuresIter:
-                p = feature.geometry().asPoint()
-                attrib = feature.attributes()
-                pg = self.ptTransformation(p, sinAngle, cosAngle, x1, y1, xg1, yg1, a, b)        
-                geoPoints.append((pg, attrib))              
-            self.createGeorefShapefile(grid, channel, geoPoints, vLayer.fields(), fileName)
-                                  
+            b = 1
+        if (grid is not None): # electrical       
+            folder = dirname(self.rawDataFilename)
+            basicPath = folder + '/' + self.basicOutputFilename + '/Shapefiles'     
+            for channel in range(0, self.channelNbr):
+                channelPath = basicPath + '/' + 'channel' + str(channel + 1)            
+                fileName = channelPath + '/' + self.basicOutputFilename + '_channel' + str(channel + 1) + '_grid' + str(self.gridNames[grid]) + '.shp'                
+                self.georeferecingTrans(fileName, sinAngle, cosAngle, x1, y1, xg1, yg1, a, b)
+        else: # grid magnetic
+            self.georeferecingTrans(self.outputShapefile, sinAngle, cosAngle, x1, y1, xg1, yg1, a, b)
+           
+    def georeferecingTrans(self, fileName, sinAngle, cosAngle, x1, y1, xg1, yg1, a, b):
+        
+        vLayer = QgsVectorLayer(fileName , "georef", "ogr")
+        geoPoints = []
+        featuresIter = vLayer.getFeatures()
+        for feature in featuresIter:
+            p = feature.geometry().asPoint()
+            attrib = feature.attributes()
+            pg = self.ptTransformation(p, sinAngle, cosAngle, x1, y1, xg1, yg1, a, b)        
+            geoPoints.append((pg, attrib))              
+        self.createGeorefShapefile(geoPoints, vLayer.fields(), fileName)
+                                    
     def ptTransformation(self, p, sinAngle, cosAngle, x1, y1, xg1, yg1, a, b):
            
         # translation
@@ -558,8 +655,32 @@ class Engine(object):
             for j in range (probeNb):
                 magDecimPoints.append(self.magPoints[i + j])           
         self.magPoints = magDecimPoints
-        
     
+    def medMovWinDecimation(self):        
+    
+        stamp = 0
+        magDecimPoints = []
+        probNb = max(list(zip(*self.magPoints)[4]))              
+        medianList = []
+        for i in range(0, probNb):
+            medianList.append([])      
+        for i in range (0, len(self.magPoints), probNb):
+            if stamp < self.decimationVal:   # creation of list containing necessary values for calculation of median on DecimaVal points
+                for j in range(0, probNb):
+                    medianList[j].append(self.magPoints[i + j][2])               
+                stamp += 1
+            else:
+                medianVals = list(map(lambda x : numpy.median(x), medianList)) # Median calculation               
+                for j in range(0, probNb):
+                    magDecimPoints.append((self.magPoints[i + j - (self.decimationVal/2)][0], self.magPoints[i + j - (self.decimationVal/2)][1], float(medianVals[j]), 
+                                           self.magPoints[i + j - (self.decimationVal/2)][3], self.magPoints[i + j - (self.decimationVal/2)][4]))             
+                medianList = []
+                stamp = 1
+                for j in range(0, probNb):
+                    medianList.append([])                   
+                    medianList[j].append(self.magPoints[i + j][2])                
+        self.magPoints = magDecimPoints    
+            
     def distanceFilter(self):
         
         probeNb = max(list(zip(*self.magPoints)[4]))
@@ -576,7 +697,7 @@ class Engine(object):
         self.magPoints = magStatPoints
                 
     
-    #Correction de la valeur UTM en x et creation d une colonne profil
+    # UTM value correction of X coordinates, and the creation of a profile column
     def createProfileList(self):
         
         utmVal = int(self.sortedMagPoints[0][0]/1000000) # determination of the UTM value (the 2 first digits of x)
@@ -593,86 +714,42 @@ class Engine(object):
                 n = i
                 self.profile.append(newProfile)
         
+    # Simple copy of X coordinates 
+    def CreateSimpleProfileListRelCoord(self):
         
-    
+        n = self.sortedMagPoints[0][0]
+        newProfile = 1
+        for x in zip(*self.sortedMagPoints)[0]: # profile correction
+            if x == n:
+                self.profile.append(newProfile)
+            else :
+                newProfile += 1
+                n = x
+                self.profile.append(newProfile)                
+                        
     def medianRemoval(self):
         
-        tempVals = [self.sortedMagPoints[0][2]]
-        tempY = [1]
+        tempVals = []
+        tempY = []
         profile = 1
         valueList = []
         position=[]
         position.append(0)
-        tamp=1
-        x=0
-    
-        for i in range(1,len(self.sortedMagPoints)):
-            if self.profile[i]==tamp:
-                x+=numpy.sqrt(((self.sortedMagPoints[i][0]-self.sortedMagPoints[i-1][0])**2)+((self.sortedMagPoints[i][2]-self.sortedMagPoints[i-1][2])**2))
+        temp = 1
+        x = 0    
+        for i in range(1, len(self.sortedMagPoints)):
+            if self.profile[i] == temp:
+                x += numpy.sqrt(((self.sortedMagPoints[i][0] - self.sortedMagPoints[i-1][0])**2) + ((self.sortedMagPoints[i][2] - self.sortedMagPoints[i-1][2])**2))
                 position.append(x)
             else:
-                tamp+=1
-                x=0
-                position.append(x)
-            
-            
-        for i in range(1, len(self.sortedMagPoints)):
+                temp += 1
+                x = 0
+                position.append(x)     
+        for i in range(len(self.sortedMagPoints)):          
             if i == len(self.sortedMagPoints) - 1: # Median correction for the last profile            
-                tempVals.append(self.sortedMagPoints[i][2])    
-                tempY.append(position[i]) 
-                
                 newValPoly, a1, p1 = [], [], []   
-                
-                if self.isMedianRemoval:
-                    filtTempVals = []
-                    if self.isPercentile:
-                        minThresh = numpy.percentile(tempVals, self.percThreshold)
-                        maxThresh = numpy.percentile(tempVals, (100 - self.percThreshold))
-                    for val in tempVals:
-                        if self.isPercentile:
-                            if val < maxThresh and val > minThresh:
-                                filtTempVals.append(val)
-                            else:
-                                filtTempVals.append(val)
-                    medianProf = numpy.median(filtTempVals)                    
-                else:
-                    filtTempVals=[]
-                    ytemp2=[]
-                    if self.isTrendPercentile:
-                            minThresh = numpy.percentile(tempVals, self.trendPercThreshold)
-                            maxThresh = numpy.percentile(tempVals, (100-self.trendPercThreshold))
-                            
-                    for val in range(0,len(tempVals)):
-                            if self.isTrendPercentile:
-                                if tempVals[val] < maxThresh and tempVals[val] > minThresh:
-                                    filtTempVals.append(tempVals[val])
-                                    ytemp2.append(tempY[val])
-                            else:
-                                filtTempVals.append(tempVals[val])
-                                ytemp2.append(tempY[val])
-                        
-                    a1 = numpy.polyfit(ytemp2, filtTempVals, self.trendPolyOrder)
-                    p1 = numpy.poly1d(a1)    
-                    newValPoly = [p1(val) for val in tempY]    
-                val = 0                
-                for i in range(0, len(tempVals)):
-                    if self.isMedianRemoval:
-                        val = tempVals[i] - medianProf 
-                    else:
-                        val = tempVals[i] - newValPoly[i] 
-                    valueList.append(val)
-                for val in valueList:
-                    self.medianRemValues.append(float(val))   
-                valueList = []                
-                
-            elif self.profile[i] == profile: # creation of a temporary vector for the correction
-                tempVals.append((self.sortedMagPoints)[i][2])    
+                tempVals.append(self.sortedMagPoints[i][2])    
                 tempY.append(position[i])
-                
-            else: # the beginning of a new profile, stop append and computation of the median or the polynomial                
-                profile += 1
-                newValPoly, a1, p1 = [], [], []
-                
                 if self.isMedianRemoval:
                     filtTempVals = []
                     if self.isPercentile:
@@ -686,39 +763,81 @@ class Engine(object):
                             filtTempVals.append(val)
                     medianProf = numpy.median(filtTempVals)                
                 else:
-                    filtTempVals=[]
-                    ytemp2=[]
+                    filtTempVals = []
+                    ytemp2 = []
                     if self.isTrendPercentile:
                             minThresh = numpy.percentile(tempVals, self.trendPercThreshold)
-                            maxThresh = numpy.percentile(tempVals, (100-self.trendPercThreshold))
-                    
-                    for val in range(0,len(tempVals)):
+                            maxThresh = numpy.percentile(tempVals, (100 - self.trendPercThreshold))                    
+                    for val in range(len(tempVals)):
                             if self.isTrendPercentile:
                                 if tempVals[val] < maxThresh and tempVals[val] > minThresh:
                                     filtTempVals.append(tempVals[val])
                                     ytemp2.append(tempY[val])
                             else:
                                 filtTempVals.append(tempVals[val])
-                                ytemp2.append(tempY[val])
-                        
+                                ytemp2.append(tempY[val])                        
+                    a1 = numpy.polyfit(ytemp2, filtTempVals, self.trendPolyOrder)
+                    p1 = numpy.poly1d(a1)    
+                    newValPoly = [p1(val) for val in tempY]                             
+                for j in range(0, len(tempVals)):
+                    if self.isMedianRemoval:
+                        val = tempVals[j]- medianProf 
+                    else:
+                        val = tempVals[j] - newValPoly[j] 
+                    valueList.append(val)
+                for val in valueList:
+                    self.medianRemValues.append(float(val))  
+                valueList = []             
+                tempVals=[]
+                tempY=[]  
+            elif self.profile[i] == profile: # creation of a temporary vector for the correction
+                tempVals.append(self.sortedMagPoints[i][2])    
+                tempY.append(position[i])                
+            else: # the beginning of a new profile, stop append and computation of the median or the polynomial                
+                profile += 1
+                newValPoly, a1, p1 = [], [], []                
+                if self.isMedianRemoval:
+                    filtTempVals = []
+                    if self.isPercentile:
+                        minThresh = numpy.percentile(tempVals, self.percThreshold)
+                        maxThresh = numpy.percentile(tempVals, (100 - self.percThreshold))
+                    for val in tempVals:
+                        if self.isPercentile:
+                            if val < maxThresh and val > minThresh:
+                                filtTempVals.append(val)
+                        else: 
+                            filtTempVals.append(val)
+                    medianProf = numpy.median(filtTempVals)                
+                else:
+                    filtTempVals = []
+                    ytemp2 = []
+                    if self.isTrendPercentile:
+                            minThresh = numpy.percentile(tempVals, self.trendPercThreshold)
+                            maxThresh = numpy.percentile(tempVals, (100 - self.trendPercThreshold))                    
+                    for val in range(len(tempVals)):
+                            if self.isTrendPercentile:
+                                if tempVals[val] < maxThresh and tempVals[val] > minThresh:
+                                    filtTempVals.append(tempVals[val])
+                                    ytemp2.append(tempY[val])
+                            else:
+                                filtTempVals.append(tempVals[val])
+                                ytemp2.append(tempY[val])                        
                     a1 = numpy.polyfit(ytemp2, filtTempVals, self.trendPolyOrder)
                     p1 = numpy.poly1d(a1)    
                     newValPoly = [p1(val) for val in tempY]    
                 val = 0                
-                for i in range(0, len(tempVals)):
+                for j in range(len(tempVals)):
                     if self.isMedianRemoval:
-                        val = tempVals[i] - medianProf 
+                        value = tempVals[j] - medianProf 
                     else:
-                        val = tempVals[i] - newValPoly[i] 
-                    valueList.append(val)
-                for val in valueList:
-                    self.medianRemValues.append(float(val))                
+                        value = tempVals[j] - newValPoly[j] 
+                    valueList.append(value)
+                    value=0
+                for valeur in valueList:
+                    self.medianRemValues.append(float(valeur))                
                 tempVals, tempY, valueList = [], [], [] 
-                tempVals.append(self.sortedMagPoints[i][2])    
+                tempVals.append(self.sortedMagPoints[i][2]) 
                 tempY.append(position[i])
-                
-
-#EM31
 
     def EM31RawDataParser(self):
         
@@ -744,53 +863,59 @@ class Engine(object):
         self.I = [a*1000 for a in zip(*self.EM31Points)[3]]
         self.Cond = EM31.ppmToCondList(self.Qppm)
             
-    ## FONCTiON DE CREATION DU SHAPEFILE
+  
     def createEM31Shapefile(self):
        
         self.Qppm = [float("{0:.4f}".format(x)) for x in self.Qppm]
         self.I = [float("{0:.4f}".format(x)) for x in self.I]
         self.Cond = [float("{0:.4f}".format(x)) for x in self.Cond]
         fields = QgsFields()
-        fields.append(QgsField('Condoctivity', QVariant.Double, 'double', 12, 4))        
+        fields.append(QgsField('Sigma_EM31', QVariant.Double, 'double', 12, 4)) 
+        fields.append(QgsField('Sigma_cor', QVariant.Double, 'double', 12, 4))
         fields.append(QgsField('Q', QVariant.Double, 'double', 12, 4))   
         fields.append(QgsField('I', QVariant.Double, 'double', 12, 4))
         fields.append(QgsField('Time', QVariant.String))  
         if self.isAddCoordFields:
             fields.append(QgsField('X', QVariant.Double))
-            fields.append(QgsField('Y', QVariant.Double))
-                
+            fields.append(QgsField('Y', QVariant.Double))            
         features = []                
         crsSrc = QgsCoordinateReferenceSystem(self.inputCrsCode)
-        xform = QgsCoordinateTransform(crsSrc, self.crs)   
-                                              
+        xform = QgsCoordinateTransform(crsSrc, self.crs)                                              
         for i in range(0, len(self.EM31Points)):
             feature = QgsFeature()
             qPoint = QgsPoint(self.EM31Points[i][0], self.EM31Points[i][1])
             xPoint = xform.transform(qPoint) #coordinate Transform
             feature.setGeometry(QgsGeometry.fromPoint(xPoint))
             if self.isAddCoordFields:            
-                feature.setAttributes([self.Qppm[i], 
+                feature.setAttributes([self.EM31Points[i][2], 
+                                       self.Cond[i],
+                                       self.Qppm[i], 
                                        self.I[i], 
-                                       self.Cond[i], 
                                        self.EM31Points[i][4], 
                                        xPoint[0],
                                        xPoint[1]]) 
             else:
-                feature.setAttributes([self.Qppm[i], 
-                                       self.I[i], 
+                feature.setAttributes([self.EM31Points[i][2],
                                        self.Cond[i], 
+                                       self.Qppm[i], 
+                                       self.I[i], 
                                        self.EM31Points[i][4]])             
             features.append(feature)
-        self.createShapefile(self.outputShapefile, fields, features)    
+        self.createShapefile(self.outputShapefile, fields, features)
     
+   
     def createEM31DatExport(self):
             
-            datFileName = self.outputShapefile.replace('.shp', '.dat')
-            fileObj = open(datFileName, 'w')
-            for i in range(0, len(self.EM31Points)):            
-                fileObj.write(str(self.Qppm[i]) + ', ' + str(self.I[i][1])+ ', ' + str(self.Cond[i]) + ', ' + 
-                              str(self.EM31Points[i][4]) + '\n')
-            fileObj.close()
+        datFileName = self.outputShapefile.replace('.shp', '.dat')
+        fileObj = open(datFileName, 'w')
+        xform = QgsCoordinateTransform(QgsCoordinateReferenceSystem(self.inputCrsCode), self.crs) # TODO clean up
+                    
+        for i in range(0, len(self.EM31Points)):
+            qPoint = QgsPoint(self.EM31Points[i][0], self.EM31Points[i][1])
+            xPoint = xform.transform(qPoint)
+            fileObj.write(str(xPoint[0]) + ', ' + str(xPoint[1]) + ', ' + str (self.EM31Points[i][2]) + ', ' + str(self.Cond[i]) + ', ' +
+                          str(self.Qppm[i]) + ', ' + str(self.I[i])+ ', ' + str(self.EM31Points[i][4]) + '\n')
+        fileObj.close()
 
 
 """

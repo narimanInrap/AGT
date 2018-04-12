@@ -1,302 +1,311 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="fr_FR" sourcelanguage="en">
+<!DOCTYPE TS><TS version="2.0" language="fr_FR" sourcelanguage="en">
 <context>
     <name>AGT</name>
     <message>
-        <location filename="agt.py" line="235"/>
+        <location filename="agt.py" line="262"/>
         <source>&amp;AGT</source>
         <translation>&amp;AGT</translation>
     </message>
     <message>
-        <location filename="agt.py" line="188"/>
+        <location filename="agt.py" line="189"/>
         <source>RM15/RM85 processing</source>
-        <translation>Traitements RM15/RM85</translation>
+        <translation>Traitement RM15/RM85</translation>
     </message>
     <message>
-        <location filename="agt.py" line="195"/>
-        <source>MXPDA processing</source>
-        <translation>Traitements MXPDA</translation>
-    </message>
-    <message>
-        <location filename="agt.py" line="226"/>
+        <location filename="agt.py" line="243"/>
         <source>help</source>
         <translation>aide</translation>
     </message>
     <message>
-        <location filename="agt.py" line="202"/>
+        <location filename="agt.py" line="210"/>
         <source>EM31 processing</source>
-        <translation>Traitements EM31</translation>
+        <translation>Traitement EM31</translation>
+    </message>
+    <message>
+        <location filename="agt.py" line="225"/>
+        <source>Default parameters</source>
+        <translation>Paramètres par défaut</translation>
+    </message>
+    <message>
+        <location filename="agt.py" line="196"/>
+        <source>MXPDA/Grad601 processing - Grid survey</source>
+        <translation>Traitement MXPDA/Grad601 - Grille</translation>
+    </message>
+    <message>
+        <location filename="agt.py" line="203"/>
+        <source>MXPDA processing - GNSS survey</source>
+        <translation>Traitement MXPDA - GNSS</translation>
     </message>
 </context>
 <context>
     <name>AGTEM31Dialog</name>
     <message>
-        <location filename="ui_EM31Dialog.py" line="171"/>
-        <source>Raw data (.dat)</source>
-        <translation>Données brutes</translation>
+        <location filename="ui_EM31Dialog.ui" line="14"/>
+        <source>EM31 processing</source>
+        <translation>Traitement EM31</translation>
     </message>
     <message>
-        <location filename="ui_EM31Dialog.py" line="177"/>
+        <location filename="ui_EM31Dialog.ui" line="20"/>
+        <source>Input file</source>
+        <translation>Fichier d&apos;entrée</translation>
+    </message>
+    <message>
+        <location filename="ui_EM31Dialog.ui" line="26"/>
+        <source>Import CRS projection</source>
+        <translation>SCR du fichier d&apos;entrée</translation>
+    </message>
+    <message>
+        <location filename="ui_EM31Dialog.ui" line="118"/>
         <source>browse</source>
         <translation>parcourir</translation>
     </message>
     <message>
-        <location filename="ui_EM31Dialog.py" line="173"/>
+        <location filename="ui_EM31Dialog.ui" line="56"/>
+        <source>Raw data (.dat)</source>
+        <translation>Données brutes</translation>
+    </message>
+    <message>
+        <location filename="ui_EM31Dialog.ui" line="75"/>
         <source>Output files</source>
-        <translation>Fichiers de sortie</translation>
+        <translation>fichiers de sortie</translation>
     </message>
     <message>
-        <location filename="ui_EM31Dialog.py" line="174"/>
-        <source>CRS projection</source>
-        <translation>Projection SCR</translation>
-    </message>
-    <message>
-        <location filename="ui_EM31Dialog.py" line="175"/>
-        <source>Export also as .DAT</source>
-        <translation>Export en .dat</translation>
-    </message>
-    <message>
-        <location filename="ui_EM31Dialog.py" line="176"/>
-        <source>Add coordinates fields</source>
-        <translation>Ajout des champs de coordonnées</translation>
-    </message>
-    <message>
-        <location filename="ui_EM31Dialog.py" line="178"/>
+        <location filename="ui_EM31Dialog.ui" line="81"/>
         <source>Shapefile</source>
         <translation>Shapefile</translation>
     </message>
     <message>
-        <location filename="ui_EM31Dialog.py" line="179"/>
-        <source>Character encoding</source>
-        <translation>Codage des caractères</translation>
+        <location filename="ui_EM31Dialog.ui" line="88"/>
+        <source>Export CRS projection</source>
+        <translation>SRC des fichiers de sortie</translation>
     </message>
     <message>
-        <location filename="ui_EM31Dialog.py" line="180"/>
+        <location filename="ui_EM31Dialog.ui" line="98"/>
+        <source>Export also as .DAT</source>
+        <translation>Exporter également en .DAT</translation>
+    </message>
+    <message>
+        <location filename="ui_EM31Dialog.ui" line="108"/>
+        <source>Add coordinates fields</source>
+        <translation>Ajouter les champs de coordonnées</translation>
+    </message>
+    <message>
+        <location filename="ui_EM31Dialog.ui" line="163"/>
         <source>Sensor height (m)</source>
-        <translation>Hauteur du capteur</translation>
+        <translation>Hauteur du capteur (m)</translation>
     </message>
     <message>
-        <location filename="ui_EM31Dialog.py" line="181"/>
-        <source>Coils configuration</source>
-        <translation>Configuration des bobines</translation>
-    </message>
-    <message>
-        <location filename="ui_EM31Dialog.py" line="182"/>
+        <location filename="ui_EM31Dialog.ui" line="205"/>
         <source>HCP</source>
         <translation>HCP</translation>
     </message>
     <message>
-        <location filename="ui_EM31Dialog.py" line="183"/>
+        <location filename="ui_EM31Dialog.ui" line="215"/>
         <source>VCP</source>
         <translation>VCP</translation>
     </message>
     <message>
-        <location filename="ui_EM31Dialog.py" line="184"/>
+        <location filename="ui_EM31Dialog.ui" line="250"/>
         <source>run</source>
         <translation>lancer</translation>
     </message>
     <message>
-        <location filename="ui_EM31Dialog.py" line="170"/>
-        <source>EM31 processing</source>
-        <translation>Traitements EM31</translation>
+        <location filename="ui_EM31Dialog.ui" line="198"/>
+        <source>Coils geometry</source>
+        <translation>Configuration de bobines</translation>
     </message>
 </context>
 <context>
     <name>AGTElecDownDialog</name>
     <message>
-        <location filename="ui_ElecDownDialog.py" line="181"/>
+        <location filename="ui_ElecDownDialog.ui" line="20"/>
         <source>RM15/RM85 download</source>
         <translation>Chargement RM15/RM85</translation>
     </message>
     <message>
-        <location filename="ui_ElecDownDialog.py" line="182"/>
+        <location filename="ui_ElecDownDialog.ui" line="58"/>
         <source>Output file</source>
         <translation>Fichier de sortie</translation>
     </message>
     <message>
-        <location filename="ui_ElecDownDialog.py" line="183"/>
+        <location filename="ui_ElecDownDialog.ui" line="68"/>
         <source>RM15</source>
         <translation>RM15</translation>
     </message>
     <message>
-        <location filename="ui_ElecDownDialog.py" line="184"/>
+        <location filename="ui_ElecDownDialog.ui" line="75"/>
         <source>RM85</source>
         <translation>RM85</translation>
     </message>
     <message>
-        <location filename="ui_ElecDownDialog.py" line="185"/>
+        <location filename="ui_ElecDownDialog.ui" line="85"/>
         <source>Number of grids</source>
         <translation>Nombre de grilles</translation>
     </message>
     <message>
-        <location filename="ui_ElecDownDialog.py" line="186"/>
+        <location filename="ui_ElecDownDialog.ui" line="92"/>
         <source>Grid size (m)</source>
-        <translation>Taille des grilles (m)</translation>
+        <translation>Taille des grilles</translation>
     </message>
     <message>
-        <location filename="ui_ElecDownDialog.py" line="187"/>
+        <location filename="ui_ElecDownDialog.ui" line="109"/>
         <source>browse</source>
         <translation>parcourir</translation>
     </message>
     <message>
-        <location filename="ui_ElecDownDialog.py" line="188"/>
+        <location filename="ui_ElecDownDialog.ui" line="123"/>
         <source>Number of probes</source>
-        <translation>Nombre d&apos;électrodes</translation>
+        <translation>Nombre de sondes</translation>
     </message>
     <message>
-        <location filename="ui_ElecDownDialog.py" line="189"/>
+        <location filename="ui_ElecDownDialog.ui" line="140"/>
         <source>Probe configuration</source>
-        <translation>Configuration des électrodes</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui_ElecDownDialog.py" line="190"/>
+        <location filename="ui_ElecDownDialog.ui" line="147"/>
         <source>Line step (m)</source>
-        <translation>Pas en Y (m)</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui_ElecDownDialog.py" line="191"/>
+        <location filename="ui_ElecDownDialog.ui" line="164"/>
         <source>Probe spacing (m)</source>
-        <translation>Distance inter-électrode (m)</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui_ElecDownDialog.py" line="192"/>
+        <location filename="ui_ElecDownDialog.ui" line="171"/>
         <source>Number of channels</source>
-        <translation>Nombre de voies</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui_ElecDownDialog.py" line="193"/>
+        <location filename="ui_ElecDownDialog.ui" line="195"/>
         <source> X</source>
-        <translation>X</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui_ElecDownDialog.py" line="194"/>
+        <location filename="ui_ElecDownDialog.ui" line="202"/>
         <source>Current intensity (mA)</source>
-        <translation>Intensité du courrant (mA)</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui_ElecDownDialog.py" line="196"/>
+        <location filename="ui_ElecDownDialog.ui" line="229"/>
+        <source>Number of collected points/step</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui_ElecDownDialog.ui" line="251"/>
         <source>COM port</source>
-        <translation>Port COM</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui_ElecDownDialog.py" line="197"/>
+        <location filename="ui_ElecDownDialog.ui" line="261"/>
         <source>Baud rate</source>
-        <translation>Baud</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui_ElecDownDialog.py" line="198"/>
+        <location filename="ui_ElecDownDialog.ui" line="290"/>
         <source>run</source>
         <translation>lancer</translation>
-    </message>
-    <message>
-        <location filename="ui_ElecDownDialog.py" line="195"/>
-        <source>Number of collected points/step</source>
-        <translation>Nombre de points mesurés par pas</translation>
     </message>
 </context>
 <context>
     <name>AGTElectDialogBase</name>
     <message>
-        <location filename="ui_electDialog.py" line="157"/>
+        <location filename="ui_electDialog.ui" line="20"/>
         <source>RM15/RM85 processing</source>
-        <translation>Traitements RM15/RM85</translation>
+        <translation>Traitement RM15/RM85</translation>
     </message>
     <message>
-        <location filename="ui_electDialog.py" line="158"/>
+        <location filename="ui_electDialog.ui" line="38"/>
         <source>Raw data (.dat)</source>
-        <translation>Données brutes</translation>
+        <translation>Données brutes (.dat)</translation>
     </message>
     <message>
-        <location filename="ui_electDialog.py" line="159"/>
+        <location filename="ui_electDialog.ui" line="55"/>
         <source>browse</source>
         <translation>parcourir</translation>
     </message>
     <message>
-        <location filename="ui_electDialog.py" line="160"/>
-        <source>run</source>
-        <translation>lancer</translation>
-    </message>
-    <message>
-        <location filename="ui_electDialog.py" line="161"/>
-        <source>Median value percentage %   </source>
-        <translation>Pourcentage pour le filtre médiane %</translation>
-    </message>
-    <message>
-        <location filename="ui_electDialog.py" line="162"/>
-        <source>Median filter</source>
-        <translation>Filtre médiane</translation>
-    </message>
-    <message>
-        <location filename="ui_electDialog.py" line="163"/>
-        <source>Kernel size      </source>
-        <translation>Taille du masque</translation>
-    </message>
-    <message>
-        <location filename="ui_electDialog.py" line="164"/>
+        <location filename="ui_electDialog.ui" line="71"/>
         <source>Output files</source>
         <translation>Fichiers de sortie</translation>
     </message>
     <message>
-        <location filename="ui_electDialog.py" line="165"/>
+        <location filename="ui_electDialog.ui" line="77"/>
         <source>Project name</source>
         <translation>Nom du projet</translation>
     </message>
     <message>
-        <location filename="ui_electDialog.py" line="166"/>
-        <source>Character encoding</source>
-        <translation>Codage des caractères</translation>
-    </message>
-    <message>
-        <location filename="ui_electDialog.py" line="167"/>
+        <location filename="ui_electDialog.ui" line="94"/>
         <source>Export also as .DAT</source>
-        <translation>Export en .dat</translation>
+        <translation>Exporter également en .DAT</translation>
     </message>
     <message>
-        <location filename="ui_electDialog.py" line="168"/>
+        <location filename="ui_electDialog.ui" line="116"/>
+        <source>Median filter</source>
+        <translation>Filtre par la médiane</translation>
+    </message>
+    <message>
+        <location filename="ui_electDialog.ui" line="123"/>
+        <source>Median value percentage %   </source>
+        <translation>Valeur de la médiane en pourcentage %</translation>
+    </message>
+    <message>
+        <location filename="ui_electDialog.ui" line="146"/>
+        <source>Kernel size      </source>
+        <translation>Taille du masque</translation>
+    </message>
+    <message>
+        <location filename="ui_electDialog.ui" line="198"/>
         <source>Georeferencing</source>
         <translation>Géoréférencement</translation>
+    </message>
+    <message>
+        <location filename="ui_electDialog.ui" line="224"/>
+        <source>run</source>
+        <translation>lancer</translation>
     </message>
 </context>
 <context>
     <name>AGTGeorefDialog</name>
     <message>
-        <location filename="ui_georefDialog.py" line="169"/>
+        <location filename="ui_georefDialog.ui" line="20"/>
         <source>Georeferencing</source>
         <translation>Géoréférencement</translation>
     </message>
     <message>
-        <location filename="ui_georefDialog.py" line="170"/>
+        <location filename="ui_georefDialog.ui" line="43"/>
         <source>Point 2</source>
         <translation>Point 2</translation>
     </message>
     <message>
-        <location filename="ui_georefDialog.py" line="177"/>
+        <location filename="ui_georefDialog.ui" line="151"/>
         <source>x</source>
         <translation>x</translation>
     </message>
     <message>
-        <location filename="ui_georefDialog.py" line="178"/>
+        <location filename="ui_georefDialog.ui" line="191"/>
         <source>Select point on the map</source>
-        <translation>Sélectionner le point sur la carte</translation>
+        <translation>Choisir le point sur la carte</translation>
     </message>
     <message>
-        <location filename="ui_georefDialog.py" line="179"/>
+        <location filename="ui_georefDialog.ui" line="212"/>
         <source>y</source>
         <translation>y</translation>
     </message>
     <message>
-        <location filename="ui_georefDialog.py" line="181"/>
+        <location filename="ui_georefDialog.ui" line="226"/>
         <source>to</source>
         <translation>à</translation>
     </message>
     <message>
-        <location filename="ui_georefDialog.py" line="176"/>
+        <location filename="ui_georefDialog.ui" line="140"/>
         <source>Point 1</source>
         <translation>Point 1</translation>
     </message>
     <message>
-        <location filename="ui_georefDialog.py" line="182"/>
+        <location filename="ui_georefDialog.ui" line="252"/>
         <source>run</source>
         <translation>lancer</translation>
     </message>
@@ -304,120 +313,193 @@
 <context>
     <name>AGTGridDialog</name>
     <message>
-        <location filename="ui_GridDialog.py" line="96"/>
-        <source>Grid&apos;s first point X coordinate</source>
-        <translation>Longitude (X) du premierpoint de la grille</translation>
-    </message>
-    <message>
-        <location filename="ui_GridDialog.py" line="97"/>
-        <source>Grid&apos;s name (number)</source>
-        <translation>Nom(numéro) de la grille</translation>
-    </message>
-    <message>
-        <location filename="ui_GridDialog.py" line="98"/>
-        <source>Grid&apos;s first point Y coordinate</source>
-        <translation>Latitude (Y) du premierpoint de la grille</translation>
-    </message>
-    <message>
-        <location filename="ui_GridDialog.py" line="95"/>
+        <location filename="ui_GridDialog.ui" line="14"/>
         <source>Grid Dialog</source>
-        <translation>Grid Dialog</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui_GridDialog.py" line="99"/>
+        <location filename="ui_GridDialog.ui" line="37"/>
+        <source>Grid&apos;s first point X coordinate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui_GridDialog.ui" line="44"/>
+        <source>Grid&apos;s name (number)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui_GridDialog.ui" line="51"/>
+        <source>Grid&apos;s first point Y coordinate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui_GridDialog.ui" line="79"/>
         <source>Apply</source>
-        <translation>Appliquer</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>AGTMagDialog</name>
     <message>
-        <location filename="ui_magDialog.py" line="285"/>
-        <source>MXPDA processing</source>
-        <translation>Traitements MXPDA</translation>
-    </message>
-    <message>
-        <location filename="ui_magDialog.py" line="286"/>
+        <location filename="ui_magDialog.ui" line="32"/>
         <source>Raw data (.asc)</source>
         <translation>Données brutes</translation>
     </message>
     <message>
-        <location filename="ui_magDialog.py" line="292"/>
+        <location filename="ui_magDialog.ui" line="114"/>
         <source>browse</source>
         <translation>parcourir</translation>
     </message>
     <message>
-        <location filename="ui_magDialog.py" line="288"/>
+        <location filename="ui_magDialog.ui" line="71"/>
         <source>Output files</source>
         <translation>Fichiers de sortie</translation>
     </message>
     <message>
-        <location filename="ui_magDialog.py" line="289"/>
-        <source>CRS projection</source>
-        <translation>Projection SCR</translation>
-    </message>
-    <message>
-        <location filename="ui_magDialog.py" line="290"/>
-        <source>Export also as .DAT</source>
-        <translation>Export en .dat</translation>
-    </message>
-    <message>
-        <location filename="ui_magDialog.py" line="291"/>
-        <source>Add coordinates fields</source>
-        <translation>Ajout des champs de coordonnées</translation>
-    </message>
-    <message>
-        <location filename="ui_magDialog.py" line="293"/>
+        <location filename="ui_magDialog.ui" line="77"/>
         <source>Shapefile</source>
         <translation>Shapefile</translation>
     </message>
     <message>
-        <location filename="ui_magDialog.py" line="294"/>
-        <source>Character encoding</source>
-        <translation>Codage des caractères</translation>
+        <location filename="ui_magDialog.ui" line="84"/>
+        <source>Export CRS projection</source>
+        <translation>SCR des fichiers de sortie</translation>
     </message>
     <message>
-        <location filename="ui_magDialog.py" line="295"/>
+        <location filename="ui_magDialog.ui" line="94"/>
+        <source>Export also as .DAT</source>
+        <translation>Exporter également en .DAT</translation>
+    </message>
+    <message>
+        <location filename="ui_magDialog.ui" line="104"/>
+        <source>Add coordinates fields</source>
+        <translation>Ajouter les champs de coordonnées</translation>
+    </message>
+    <message>
+        <location filename="ui_magDialog.ui" line="159"/>
         <source>Decimation</source>
         <translation>Décimation</translation>
     </message>
     <message>
-        <location filename="ui_magDialog.py" line="296"/>
-        <source>Median removal</source>
-        <translation>Elimination de la médiane</translation>
+        <location filename="ui_magDialog.ui" line="165"/>
+        <source>Raw</source>
+        <translation>Brute</translation>
     </message>
     <message>
-        <location filename="ui_magDialog.py" line="300"/>
+        <location filename="ui_magDialog.ui" line="248"/>
+        <source>Median removal</source>
+        <translation>Suppression de la médiane</translation>
+    </message>
+    <message>
+        <location filename="ui_magDialog.ui" line="366"/>
         <source>Percentile threshold</source>
         <translation>Seuillage percentile</translation>
     </message>
     <message>
-        <location filename="ui_magDialog.py" line="298"/>
+        <location filename="ui_magDialog.ui" line="339"/>
         <source>Polynomial order</source>
-        <translation>Degré du polynome</translation>
+        <translation>Degré du polynôme</translation>
     </message>
     <message>
-        <location filename="ui_magDialog.py" line="299"/>
+        <location filename="ui_magDialog.ui" line="359"/>
         <source>Trend removal</source>
-        <translation>Suppression d&apos;un polynôme</translation>
+        <translation>Suppression d’un polynôme</translation>
     </message>
     <message>
-        <location filename="ui_magDialog.py" line="301"/>
+        <location filename="ui_magDialog.ui" line="398"/>
         <source>Threshold</source>
-        <translation>Seuillage</translation>
+        <translation>Seuil</translation>
     </message>
     <message>
-        <location filename="ui_magDialog.py" line="302"/>
-        <source>GPS located on probe</source>
-        <translation>Emplacement du GPS sur la sonde</translation>
-    </message>
-    <message>
-        <location filename="ui_magDialog.py" line="303"/>
+        <location filename="ui_magDialog.ui" line="469"/>
         <source>Stationary point removal</source>
         <translation>Suppression des points stationnaires</translation>
     </message>
     <message>
-        <location filename="ui_magDialog.py" line="304"/>
+        <location filename="ui_magDialog.ui" line="489"/>
+        <source>run</source>
+        <translation>lancer</translation>
+    </message>
+    <message>
+        <location filename="ui_magDialog.ui" line="20"/>
+        <source>MXPDA processing - GNSS</source>
+        <translation>Traitement MXPDA - GNSS</translation>
+    </message>
+    <message>
+        <location filename="ui_magDialog.ui" line="424"/>
+        <source>GNSS located on probe</source>
+        <translation>GNSS situé au niveau de la sonde</translation>
+    </message>
+    <message>
+        <location filename="ui_magDialog.ui" line="172"/>
+        <source>Moving median</source>
+        <translation>Médiane glissante</translation>
+    </message>
+</context>
+<context>
+    <name>AGTMagGridDialog</name>
+    <message>
+        <location filename="ui_MagGridDialog.ui" line="20"/>
+        <source>MXPDA/GRAD601 processing - Grid survey</source>
+        <translation>Traitement MXPDA/Grad601 - Grille</translation>
+    </message>
+    <message>
+        <location filename="ui_MagGridDialog.ui" line="32"/>
+        <source>Raw data (.dat)</source>
+        <translation>Données brutes (.dat)</translation>
+    </message>
+    <message>
+        <location filename="ui_MagGridDialog.ui" line="97"/>
+        <source>browse</source>
+        <translation>parcourir</translation>
+    </message>
+    <message>
+        <location filename="ui_MagGridDialog.ui" line="71"/>
+        <source>Output files</source>
+        <translation>Fichiers de sortie</translation>
+    </message>
+    <message>
+        <location filename="ui_MagGridDialog.ui" line="80"/>
+        <source>Add coordinates fields</source>
+        <translation>Ajouter les champs de coordonnées</translation>
+    </message>
+    <message>
+        <location filename="ui_MagGridDialog.ui" line="107"/>
+        <source>Export also as .DAT</source>
+        <translation>Exporter également en .DAT</translation>
+    </message>
+    <message>
+        <location filename="ui_MagGridDialog.ui" line="114"/>
+        <source>Shapefile</source>
+        <translation>Shapefile</translation>
+    </message>
+    <message>
+        <location filename="ui_MagGridDialog.ui" line="154"/>
+        <source>Median removal</source>
+        <translation>Suppression de la médiane</translation>
+    </message>
+    <message>
+        <location filename="ui_MagGridDialog.ui" line="247"/>
+        <source>Percentile threshold</source>
+        <translation>Seuillage percentile</translation>
+    </message>
+    <message>
+        <location filename="ui_MagGridDialog.ui" line="233"/>
+        <source>Trend removal</source>
+        <translation>Suppression d’un polynôme</translation>
+    </message>
+    <message>
+        <location filename="ui_MagGridDialog.ui" line="240"/>
+        <source>Polynomial order</source>
+        <translation>Degré du polynôme</translation>
+    </message>
+    <message>
+        <location filename="ui_MagGridDialog.ui" line="301"/>
+        <source>Georeferencing</source>
+        <translation>Géoréférencement</translation>
+    </message>
+    <message>
+        <location filename="ui_MagGridDialog.ui" line="321"/>
         <source>run</source>
         <translation>lancer</translation>
     </message>
@@ -425,49 +507,82 @@
 <context>
     <name>AGTRasterDialog</name>
     <message>
-        <location filename="ui_rasterDialog.py" line="138"/>
+        <location filename="ui_rasterDialog.ui" line="20"/>
         <source>Interpolation</source>
         <translation>Interpolation</translation>
     </message>
     <message>
-        <location filename="ui_rasterDialog.py" line="139"/>
+        <location filename="ui_rasterDialog.ui" line="34"/>
         <source>Input shapefile</source>
         <translation>Shapefile en entrée</translation>
     </message>
     <message>
-        <location filename="ui_rasterDialog.py" line="142"/>
+        <location filename="ui_rasterDialog.ui" line="88"/>
         <source>browse</source>
         <translation>parcourir</translation>
     </message>
     <message>
-        <location filename="ui_rasterDialog.py" line="141"/>
+        <location filename="ui_rasterDialog.ui" line="68"/>
         <source>Output raster file</source>
-        <translation>Fichier de sortie raster</translation>
+        <translation>Fichier raster de sortie</translation>
     </message>
     <message>
-        <location filename="ui_rasterDialog.py" line="143"/>
+        <location filename="ui_rasterDialog.ui" line="109"/>
         <source>run</source>
         <translation>lancer</translation>
     </message>
     <message>
-        <location filename="ui_rasterDialog.py" line="144"/>
+        <location filename="ui_rasterDialog.ui" line="119"/>
         <source>Field</source>
         <translation>Champ</translation>
     </message>
     <message>
-        <location filename="ui_rasterDialog.py" line="145"/>
+        <location filename="ui_rasterDialog.ui" line="131"/>
         <source>Cell size</source>
-        <translation>Taille du pixel</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui_rasterDialog.py" line="146"/>
+        <location filename="ui_rasterDialog.ui" line="152"/>
         <source>Search radius</source>
         <translation>Rayon de recherche</translation>
     </message>
     <message>
-        <location filename="ui_rasterDialog.py" line="147"/>
+        <location filename="ui_rasterDialog.ui" line="173"/>
         <source>Interpolation process</source>
-        <translation>Traitement par interpolation</translation>
+        <translation>Interpolation</translation>
+    </message>
+</context>
+<context>
+    <name>EM31Dlg</name>
+    <message>
+        <location filename="EM31Dialog.py" line="130"/>
+        <source>Please specify an input data file.</source>
+        <translation>Veuillez spécifier un fichier d&apos;entrée.</translation>
+    </message>
+    <message>
+        <location filename="EM31Dialog.py" line="134"/>
+        <source>Please specify an output shapefile.</source>
+        <translation>Veuillez spécifier un fichier de sortie(shapefile).</translation>
+    </message>
+    <message>
+        <location filename="EM31Dialog.py" line="139"/>
+        <source>The output file must have the filename.shp format.</source>
+        <translation>Le fichier de sortie doit être de type .shp.</translation>
+    </message>
+    <message>
+        <location filename="EM31Dialog.py" line="158"/>
+        <source>Created output Shapfile:</source>
+        <translation>Le shapefile de sortie généré:</translation>
+    </message>
+    <message>
+        <location filename="EM31Dialog.py" line="160"/>
+        <source>Would you like to add the new layer to your project?</source>
+        <translation>Voulez-vous ajouter la nouvelle couche à votre projet?</translation>
+    </message>
+    <message>
+        <location filename="EM31Dialog.py" line="93"/>
+        <source>Input file</source>
+        <translation>fichier d&apos;entrée</translation>
     </message>
 </context>
 <context>
@@ -486,57 +601,57 @@
 <context>
     <name>ElectDlg</name>
     <message>
-        <location filename="electDialog.py" line="79"/>
+        <location filename="electDialog.py" line="66"/>
         <source>Please specify an input data file.</source>
         <translation>Veuillez spécifier un fichier d&apos;entrée.</translation>
     </message>
     <message>
-        <location filename="electDialog.py" line="83"/>
+        <location filename="electDialog.py" line="70"/>
         <source>Please specify a project name.</source>
         <translation>Veuillez spécifier un nom de projet.</translation>
     </message>
     <message>
-        <location filename="electDialog.py" line="93"/>
+        <location filename="electDialog.py" line="80"/>
         <source>Please specify the kernel size.</source>
         <translation>Veuillez spécifier la taille du masque.</translation>
     </message>
     <message>
-        <location filename="electDialog.py" line="97"/>
+        <location filename="electDialog.py" line="84"/>
         <source>Please specify the median value percentage.</source>
         <translation>Veuillez spécifier le pourcentage de la valeur médiane.</translation>
     </message>
     <message>
-        <location filename="electDialog.py" line="101"/>
+        <location filename="electDialog.py" line="88"/>
         <source>The mask size must be an odd number.</source>
         <translation>La taille du masque doit être un nombre impair.</translation>
     </message>
     <message>
-        <location filename="electDialog.py" line="172"/>
+        <location filename="electDialog.py" line="150"/>
         <source>procedure stopped</source>
         <translation>La procédure a été arrêtée</translation>
     </message>
     <message>
-        <location filename="electDialog.py" line="194"/>
+        <location filename="MagGridDialog.py" line="121"/>
         <source>Georeferencing canceled.</source>
         <translation>Géoréférencement a été annulé.</translation>
     </message>
     <message>
-        <location filename="electDialog.py" line="196"/>
+        <location filename="MagGridDialog.py" line="123"/>
         <source>Georeferencing done.</source>
         <translation>Géoréférencement a été effectué.</translation>
     </message>
     <message>
-        <location filename="electDialog.py" line="206"/>
+        <location filename="electDialog.py" line="184"/>
         <source>Output Shapfiles:</source>
         <translation>Les shapefiles de sortie:</translation>
     </message>
     <message>
-        <location filename="electDialog.py" line="209"/>
+        <location filename="electDialog.py" line="187"/>
         <source>Would you like to add the new layers to your project?</source>
         <translation>Voulez-vous ajouter les nouvelles couches à votre projet?</translation>
     </message>
     <message>
-        <location filename="electDialog.py" line="87"/>
+        <location filename="electDialog.py" line="74"/>
         <source>The project name you have chosen already exists, you might overwrite some shapefiles. Do you want to continue?</source>
         <translation>Le nom de projet choisi existe déjà, vous risquez d&apos;écraser des shapefiles. Voulez-vous continuer?</translation>
     </message>
@@ -569,40 +684,109 @@
 <context>
     <name>MagDlg</name>
     <message>
-        <location filename="magDialog.py" line="182"/>
+        <location filename="magDialog.py" line="168"/>
         <source>Please specify an input data file.</source>
         <translation>Veuillez spécifier un fichier d&apos;entrée.</translation>
     </message>
     <message>
-        <location filename="magDialog.py" line="186"/>
+        <location filename="magDialog.py" line="172"/>
         <source>Please specify an output shapefile.</source>
         <translation>Veuillez spécifier un fichier de sortie(shapefile).</translation>
     </message>
     <message>
-        <location filename="magDialog.py" line="191"/>
+        <location filename="magDialog.py" line="177"/>
         <source>The output file must have the filename.shp format.</source>
         <translation>Le fichier de sortie doit être de type .shp.</translation>
     </message>
     <message>
-        <location filename="magDialog.py" line="198"/>
+        <location filename="magDialog.py" line="184"/>
         <source>Created output Shapfile:</source>
         <translation>Le shapefile de sortie généré:</translation>
     </message>
     <message>
-        <location filename="magDialog.py" line="200"/>
+        <location filename="magDialog.py" line="186"/>
         <source>Would you like to add the new layer to your project?</source>
         <translation>Voulez-vous ajouter la nouvelle couche à votre projet?</translation>
     </message>
 </context>
 <context>
+    <name>MagGridDlg</name>
+    <message>
+        <location filename="MagGridDialog.py" line="148"/>
+        <source>Please specify an input data file.</source>
+        <translation>Veuillez spécifier un fichier d&apos;entrée.</translation>
+    </message>
+    <message>
+        <location filename="MagGridDialog.py" line="152"/>
+        <source>Please specify an output shapefile.</source>
+        <translation>Veuillez spécifier un fichier de sortie(shapefile).</translation>
+    </message>
+    <message>
+        <location filename="MagGridDialog.py" line="157"/>
+        <source>The output file must have the filename.shp format.</source>
+        <translation>Le fichier de sortie doit être de type .shp.</translation>
+    </message>
+    <message>
+        <location filename="MagGridDialog.py" line="164"/>
+        <source>Created output Shapfile:</source>
+        <translation>Le shapefile de sortie généré:</translation>
+    </message>
+    <message>
+        <location filename="MagGridDialog.py" line="167"/>
+        <source>Would you like to add the new layer to your project?</source>
+        <translation>Voulez-vous ajouter la nouvelle couche à votre projet?</translation>
+    </message>
+</context>
+<context>
+    <name>ParamDlg</name>
+    <message>
+        <location filename="ParametersDialog.py" line="103"/>
+        <source>Default parameters saved.</source>
+        <translation>Les paramètres par défaut ont été enregistrés.</translation>
+    </message>
+</context>
+<context>
+    <name>ParametersDialog</name>
+    <message>
+        <location filename="ui_ParametersDialog.ui" line="14"/>
+        <source>Default parameters</source>
+        <translation>Paramètres par défaut</translation>
+    </message>
+    <message>
+        <location filename="ui_ParametersDialog.ui" line="23"/>
+        <source>Import CRS projection (except MXPDA)</source>
+        <translation>SCR du fichier d&apos;entrée (à l&apos;exception du MXPDA)</translation>
+    </message>
+    <message>
+        <location filename="ui_ParametersDialog.ui" line="52"/>
+        <source>Export CRS projection</source>
+        <translation>SCR des fichiers de sortie</translation>
+    </message>
+    <message>
+        <location filename="ui_ParametersDialog.ui" line="87"/>
+        <source>Character encoding</source>
+        <translation>Encodage de caractères</translation>
+    </message>
+    <message>
+        <location filename="ui_ParametersDialog.ui" line="126"/>
+        <source>Save</source>
+        <translation>Enregistrer</translation>
+    </message>
+    <message>
+        <location filename="ui_ParametersDialog.ui" line="133"/>
+        <source>Cancel</source>
+        <translation>Annuler</translation>
+    </message>
+</context>
+<context>
     <name>Utility</name>
     <message>
-        <location filename="AGTUtilities.py" line="103"/>
+        <location filename="AGTUtilities.py" line="128"/>
         <source>pole-pole</source>
         <translation>pole-pole</translation>
     </message>
     <message>
-        <location filename="AGTUtilities.py" line="146"/>
+        <location filename="AGTUtilities.py" line="171"/>
         <source>Save output file</source>
         <translation>Sauvegarder le fichier de sortie</translation>
     </message>
@@ -610,12 +794,12 @@
 <context>
     <name>georefDlg</name>
     <message>
-        <location filename="georefDialog.py" line="81"/>
+        <location filename="georefDialog.py" line="83"/>
         <source>Please specify all coordinates.</source>
         <translation>Veuillez renseigner toutes les coordoonées.</translation>
     </message>
     <message>
-        <location filename="georefDialog.py" line="94"/>
+        <location filename="georefDialog.py" line="96"/>
         <source>All point coordinates must be floating point numbers.</source>
         <translation>Les coordonnées des points doivent être des nombres réels (float).</translation>
     </message>

@@ -31,8 +31,7 @@ from qgis.core import *
 from os.path import splitext
 from os.path import dirname
 from os.path import basename
-
-import sqlite3
+import os, sqlite3
 
 #from ..lib.serial.tools import list_ports
 #import serial.tools.list_ports
@@ -45,6 +44,32 @@ class Utilities(object):
     crsRefDict = {}
     interpolProcDict = {}
     
+    # Returns a tupple containing the default parameters saved in the parameters' file
+    @staticmethod
+    def loadDefaultParameters():
+        
+        defaultCrsImport = unicode('RGF93 / Lambert-93, 2154')        
+        defaultCrsExport = unicode('RGF93 / Lambert-93, 2154')
+        defaultEncoding = unicode('UTF-8')
+        try:
+            paramFilename = '{}/../param.txt'.format(os.path.dirname(__file__))
+            paramFile = open(paramFilename, 'r')
+            defaultCrsImport = unicode(paramFile.readline().strip())
+            defaultCrsExport = unicode(paramFile.readline().strip())
+            defaultEncoding = unicode(paramFile.readline().strip())
+            if (defaultEncoding not in AGTEnconding.getEncodings()):
+                defaultEncoding = unicode('UTF-8')
+            if (defaultCrsImport not in Utilities.getCRSList()):
+                defaultCrsImport = unicode('RGF93 / Lambert-93, 2154')
+            if (defaultCrsExport not in Utilities.getCRSList()):
+                defaultCrsExport = unicode('RGF93 / Lambert-93, 2154')
+        except IOError as e:
+            #msg = 'Error({0}): {1}.\n'.format(e.errno, e.strerror)
+            #msg += 'Default parameters not found.'            
+            pass
+        finally:
+            return(defaultCrsImport, defaultCrsExport, defaultEncoding)
+        
     # Returns the list of all CRSes and fills the CRS dictionary
     @staticmethod
     def getCRSList():

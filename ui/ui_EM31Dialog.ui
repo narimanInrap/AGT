@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>372</width>
-    <height>464</height>
+    <width>359</width>
+    <height>448</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,24 +17,24 @@
    <item row="0" column="0">
     <widget class="QGroupBox" name="groupBox_3">
      <property name="title">
-      <string/>
+      <string>Input file</string>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <item>
-       <widget class="QLabel" name="label">
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_georefscr_3">
         <property name="text">
-         <string>Raw data (.dat)</string>
+         <string>Import CRS projection</string>
         </property>
        </widget>
       </item>
-      <item>
+      <item row="1" column="1">
        <widget class="QLineEdit" name="inFileLine">
         <property name="locale">
          <locale language="English" country="UnitedStates"/>
         </property>
        </widget>
       </item>
-      <item>
+      <item row="1" column="2">
        <widget class="QPushButton" name="ButtonBrowse">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -49,6 +49,16 @@
          <string>browse</string>
         </property>
        </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Raw data (.dat)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" colspan="2">
+       <widget class="QComboBox" name="comboCRSImport"/>
       </item>
      </layout>
     </widget>
@@ -65,27 +75,21 @@
       <string>Output files</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="1" column="3" colspan="3">
-       <widget class="QComboBox" name="comboEncoding">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="locale">
-         <locale language="English" country="UnitedStates"/>
+      <item row="0" column="0">
+       <widget class="QLabel" name="outputLabel_2">
+        <property name="text">
+         <string>Shapefile</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="0" colspan="2">
+      <item row="1" column="0" colspan="2">
        <widget class="QLabel" name="label_georefscr_2">
         <property name="text">
-         <string>CRS projection</string>
+         <string>Export CRS projection</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="0" colspan="4">
+      <item row="2" column="0" colspan="4">
        <widget class="QCheckBox" name="datFilechkbox">
         <property name="layoutDirection">
          <enum>Qt::RightToLeft</enum>
@@ -95,7 +99,7 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="4" colspan="2">
+      <item row="2" column="4" colspan="2">
        <widget class="QCheckBox" name="coordFieldschk">
         <property name="layoutDirection">
          <enum>Qt::RightToLeft</enum>
@@ -122,21 +126,7 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="outputLabel_2">
-        <property name="text">
-         <string>Shapefile</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" colspan="2">
-       <widget class="QLabel" name="label_enconding_2">
-        <property name="text">
-         <string>Character encoding</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="3" colspan="3">
+      <item row="1" column="3" colspan="3">
        <widget class="QComboBox" name="comboCRS">
         <property name="enabled">
          <bool>true</bool>
@@ -166,15 +156,15 @@
      <property name="title">
       <string/>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="0" column="0">
        <widget class="QLabel" name="label_3">
         <property name="text">
          <string>Sensor height (m)</string>
         </property>
        </widget>
       </item>
-      <item>
+      <item row="0" column="1">
        <widget class="QDoubleSpinBox" name="heightSpin">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -201,15 +191,15 @@
      <property name="title">
       <string/>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
-      <item>
+     <layout class="QGridLayout" name="gridLayout_5">
+      <item row="0" column="0">
        <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>Coils configuration</string>
+         <string>Coils geometry</string>
         </property>
        </widget>
       </item>
-      <item>
+      <item row="0" column="1">
        <widget class="QRadioButton" name="radioButtonHCP">
         <property name="text">
          <string>HCP</string>
@@ -219,7 +209,7 @@
         </property>
        </widget>
       </item>
-      <item>
+      <item row="0" column="2">
        <widget class="QRadioButton" name="radioButtonVCP">
         <property name="text">
          <string>VCP</string>
@@ -240,15 +230,15 @@
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_4">
-      <item>
+     <layout class="QGridLayout" name="gridLayout_6">
+      <item row="0" column="0">
        <widget class="QProgressBar" name="progressBar">
         <property name="value">
          <number>0</number>
         </property>
        </widget>
       </item>
-      <item>
+      <item row="0" column="1">
        <widget class="QPushButton" name="runButton">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">

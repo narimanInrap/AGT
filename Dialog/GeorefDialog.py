@@ -37,7 +37,7 @@ from ..toolbox.AGTUtilities import Utilities, AGTEnconding
 
 
 class GeorefDialog(QDialog, Ui_AGTGeorefDialog):
-    def __init__(self, iface, engine, grid, parent = None):
+    def __init__(self, iface, engine, grid = None, parent = None):
         """Constructor."""
         super(GeorefDialog, self).__init__(parent)        
         self.setupUi(self)
@@ -50,10 +50,12 @@ class GeorefDialog(QDialog, Ui_AGTGeorefDialog):
         self.grid = grid       
         self.clickTool = QgsMapToolEmitPoint(self.iface.mapCanvas())
         self.iface.mapCanvas().setMapTool(self.clickTool)
-        self.clickTool.canvasClicked.connect(self.selectPoint)        
-        self.x1.setText(str(self.engine.getOriginX()[grid]))
-        self.y1.setText(str(self.engine.getOriginY()[grid]))
-        self.gridLabel.setText('grid ' + str(engine.getGridNames()[grid]))    
+        self.clickTool.canvasClicked.connect(self.selectPoint)
+        if (grid is not None):      
+            self.x1.setText(str(self.engine.getOriginX()[grid]))
+            self.y1.setText(str(self.engine.getOriginY()[grid]))
+        if (grid is not None):
+            self.gridLabel.setText('grid ' + str(engine.getGridNames()[grid]))    
                
     def button1Checked(self):
         

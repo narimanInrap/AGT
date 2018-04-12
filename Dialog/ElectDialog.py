@@ -56,21 +56,8 @@ class ElectDialog(QDialog, Ui_AGTElectDialogBase):
         self.setupUi(self)      
         QObject.connect(self.ButtonBrowse, SIGNAL('clicked()'), self.inFile) 
         QObject.connect(self.allProcess_button, SIGNAL('clicked()'), self.allProcesses)
-        self.iface = iface      
-        self.populateEncodings(AGTEnconding.getEncodings())
-     
-    # adopted from 'points2one Plugin'
-    # Copyright (C) 2010 Pavol Kapusta
-    # Copyright (C) 2010, 2013 Goyo
-    def populateEncodings(self, names):
-        """Populates the combo box of available encodings."""
-        
-        self.comboEncoding.clear()
-        self.comboEncoding.addItems(names)
-        index = self.comboEncoding.findText(AGTEnconding.getDefaultEncoding('UTF-8'))
-        if index == -1:
-            index = 0  # Make sure some encoding is selected.
-        self.comboEncoding.setCurrentIndex(index)      
+        self.iface = iface
+        self.encoding = Utilities.loadDefaultParameters()[1]        
       
     def inputCheck(self):
         """Verifies whether the input is valid."""
@@ -114,16 +101,11 @@ class ElectDialog(QDialog, Ui_AGTElectDialogBase):
     def inFile(self):
         """Opens an open file dialog"""  
                 
-        inFilePath = Utilities.openFileDialog(self, 'Electrical geophysical data (*.shp *.DAT)', "Open input geophysical data file")
+        inFilePath = Utilities.openFileDialog(self, 'RM15/RM85 *.DAT', "Open input geophysical data file")
         if not inFilePath:
             return
         self.inFileLine.setText(inFilePath) 
-    
-    def getDataEncoding(self):
-        """Returns the selected encoding for the input file."""
-        
-        return unicode(self.comboEncoding.currentText())
-    
+      
     def hideDialog(self):
         
         self.inFileLine.setText("")
@@ -133,12 +115,7 @@ class ElectDialog(QDialog, Ui_AGTElectDialogBase):
         self.checkBox_geo.setCheckState(Qt.Unchecked)
         self.spinBox_mvp.setValue(30)
         self.spinBox_maskR.setValue(3)
-        self.progressBar.setValue(0)
-        index = self.comboEncoding.findText(AGTEnconding.getDefaultEncoding('UTF-8'))
-        if index == -1:
-            index = 0  # Make sure some encoding is selected.
-        self.comboEncoding.setCurrentIndex(index)      
-      
+        self.progressBar.setValue(0)              
         self.hide()
         
 #     def relativeCoordProc(self):
@@ -160,7 +137,8 @@ class ElectDialog(QDialog, Ui_AGTElectDialogBase):
         
         if not self.inputCheck():
             return
-        self.engine = Engine(rawDataFilename = self.inFileLine.text(), dataEncoding = self.getDataEncoding(), datOutput = self.datFilechkbox.isChecked(), 
+        self.encoding = Utilities.loadDefaultParameters()[2]
+        self.engine = Engine(rawDataFilename = self.inFileLine.text(), dataEncoding = self.encoding, datOutput = self.datFilechkbox.isChecked(), 
                              projectName = self.outputFilename.text(), medianPercent = self.spinBox_mvp.value(), kernelSize = self.spinBox_maskR.value(), 
                              filter = self.checkBox_filt.isChecked())
         shapefiles = []        

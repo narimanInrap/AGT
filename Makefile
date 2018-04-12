@@ -36,6 +36,9 @@ SOURCES = \
 	Dialog/rasterDialog.py\
 	Dialog/ElecDownDialog.py\
 	Dialog/GridDialog.py\
+	Dialog/MagGridDialog.py\
+	Dialog/ParametersDialog.py\
+	Dialog/EM31Dialog.py\
 	ui/ui_electDialog.py\
 	ui/ui_georefDialog.py\
 	ui/ui_magDialog.py\
@@ -43,6 +46,17 @@ SOURCES = \
 	ui/ui_ElecDownDialog.py\
 	ui/ui_GridDialog.py\
 	ui/ui_EM31Dialog.py\
+	ui/ui_MagGridDialog.py\
+	ui/ui_ParametersDialog.py\
+	ui/ui_electDialog.ui\
+	ui/ui_georefDialog.ui\
+	ui/ui_magDialog.ui\
+	ui/ui_rasterDialog.ui\
+	ui/ui_ElecDownDialog.ui\
+	ui/ui_GridDialog.ui\
+	ui/ui_EM31Dialog.ui\
+	ui/ui_MagGridDialog.ui\
+	ui/ui_ParametersDialog.ui\
 	toolbox/AGTUtilities.py\
 	toolbox/AGTExceptions.py
 	
@@ -51,23 +65,40 @@ PLUGINNAME = AGT
 PY_FILES = \
 	agt.py \
 	Dialog/electDialog.py \
-	Dialog/georefDialog.py \
+	Dialog/georefDialog.py\
 	Dialog/magDialog.py \
-	Dialog/rasterDialog.py \
-	Dialog/ElecDownDialog.py \
-	Dialog/GridDialog.py \
+	Dialog/rasterDialog.py\
+	Dialog/ElecDownDialog.py\
+	Dialog/GridDialog.py\
+	Dialog/MagGridDialog.py\
+	Dialog/ParametersDialog.py\
+	Dialog/EM31Dialog.py\
+	ui/ui_electDialog.py\
+	ui/ui_georefDialog.py\
+	ui/ui_magDialog.py\
+	ui/ui_rasterDialog.py\
+	ui/ui_ElecDownDialog.py\
+	ui/ui_GridDialog.py\
+	ui/ui_EM31Dialog.py\
+	ui/ui_MagGridDialog.py\
+	ui/ui_ParametersDialog.py\
+	toolbox/AGTUtilities.py\
+	toolbox/AGTExceptions.py\
 	__init__.py
 
-EXTRAS = icons/elec_icon.png icons/mag_icon.png icons/raster_icon.png icons/help.svg icons/download_icon.png metadata.txt
+EXTRAS = icons/elec_icon.png icons/mag_icon.png icons/help.svg icons/download_icon.png icons/magGrid_icon.png icons/param_icon.png metadata.txt 
 
 COMPILED_UI_FILES = ui/ui_electDialog.py \
-	ui/ui_georefDialog.py \
-	ui/ui_magDialog.py \
-	ui/ui_rasterDialog.py \
-	ui/ui_ElecDownDialog.py \
-	ui/ui_GridDialog.py \
-	ui/ui_EM31Dialog.py
-
+	ui/ui_electDialog.py\
+	ui/ui_georefDialog.py\
+	ui/ui_magDialog.py\
+	ui/ui_rasterDialog.py\
+	ui/ui_ElecDownDialog.py\
+	ui/ui_GridDialog.py\
+	ui/ui_EM31Dialog.py\
+	ui/ui_MagGridDialog.py\
+	ui/ui_ParametersDialog.py
+	
 
 COMPILED_RESOURCE_FILES = resources_rc.py
 
