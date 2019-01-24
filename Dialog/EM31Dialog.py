@@ -33,6 +33,7 @@ from ..core.CoilEnum import CoilConfigEnum
 from ..ui.ui_EM31Dialog import Ui_AGTEM31Dialog
 from ..toolbox.AGTUtilities import Utilities, AGTEnconding
 from ..toolbox.AGTExceptions import *
+from ..toolbox.DefParamEnum import DefParamEnum
 
 
 class EM31Dialog(QDialog, Ui_AGTEM31Dialog):
@@ -63,7 +64,7 @@ class EM31Dialog(QDialog, Ui_AGTEM31Dialog):
     def setDefaultCRSImport(self):    
         
         #index = self.comboCRS.findText(u'WGS 84 / UTM zone 31N, 32631')
-        self.defaultCrsImport = Utilities.loadDefaultParameters()[0]        
+        self.defaultCrsImport = Utilities.loadDefaultParameters()[DefParamEnum.crsImport]        
         index = self.comboCRSImport.findText(self.defaultCrsImport)      
         if index == -1:        
             index = 0  # Make sure some encoding is selected.            
@@ -72,7 +73,7 @@ class EM31Dialog(QDialog, Ui_AGTEM31Dialog):
     def setDefaultCRSExport(self):    
         
         #index = self.comboCRS.findText(u'WGS 84 / UTM zone 31N, 32631')
-        self.defaultCrs = Utilities.loadDefaultParameters()[1]        
+        self.defaultCrs = Utilities.loadDefaultParameters()[DefParamEnum.crsExport]        
         index = self.comboCRS.findText(self.defaultCrs)      
         if index == -1:        
             index = 0  # Make sure some encoding is selected.            
@@ -111,7 +112,7 @@ class EM31Dialog(QDialog, Ui_AGTEM31Dialog):
         coil = CoilConfigEnum.VCP
         if self.radioButtonHCP.isChecked():
             coil = CoilConfigEnum.HCP
-        self.encoding = Utilities.loadDefaultParameters()[2]
+        self.encoding = Utilities.loadDefaultParameters()[DefParamEnum.encoding]
         self.engine = Engine(rawDataFilename = self.inFileLine.text(), dataEncoding = self.encoding, crsRefImp = self.comboCRSImport.currentText(), crsRefExp = self.comboCRS.currentText(), 
                              datOutput = self.datFilechkbox.isChecked(), addCoordFields = self.coordFieldschk.isChecked(), outputShapefile = self.outputFilename.text(),
                              sensorHeight = self.heightSpin.value(), coilConfig = coil)

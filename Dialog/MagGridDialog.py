@@ -36,6 +36,7 @@ from ..core.AGTEngine import Engine
 from ..ui.ui_MagGridDialog import Ui_AGTMagGridDialog
 from ..toolbox.AGTUtilities import Utilities, AGTEnconding
 from ..toolbox.AGTExceptions import *
+from ..toolbox.DefParamEnum import DefParamEnum
 from GeorefDialog import GeorefDialog
 
 #FORM_CLASS, _ = uic.loadUiType(os.path.join(
@@ -58,7 +59,7 @@ class MagGridDialog(QDialog, Ui_AGTMagGridDialog):
         QObject.connect(self.medchk, SIGNAL('stateChanged(int)'), self.medianChecked)
         QObject.connect(self.trendchk, SIGNAL('stateChanged(int)'), self.TrendChecked)
         self.iface = iface    
-        self.encoding = Utilities.loadDefaultParameters()
+        self.encoding = Utilities.loadDefaultParameters()[DefParamEnum.encoding]
       
     def medianChecked(self):
     
@@ -100,7 +101,7 @@ class MagGridDialog(QDialog, Ui_AGTMagGridDialog):
         
         if not self.inputCheck():
             return       
-        self.encoding = Utilities.loadDefaultParameters()[2]
+        self.encoding = Utilities.loadDefaultParameters()[DefParamEnum.encoding]
         self.engine = Engine(rawDataFilename = self.inFileLine.text(), dataEncoding = self.encoding, datOutput = self.datFilechkbox.isChecked(),
                               addCoordFields = self.coordFieldschk.isChecked(), medRemove =  self.medchk.isChecked(), percentile = self.percentilechk.isChecked(), 
                               percThreshold = self.percentSpin.value(), trendRemove = self.trendchk.isChecked(), trendPolyOrder = self.polyOrdSpin.value(),
@@ -118,9 +119,9 @@ class MagGridDialog(QDialog, Ui_AGTMagGridDialog):
             geoDlg.show()
             result = geoDlg.exec_()                
             if result == QDialog.Rejected:
-                QMessageBox.information(self, 'AGT', 'grid' + QtGui.QApplication.translate(u"ElectDlg",u'Georeferencing canceled.'))
+                QMessageBox.information(self, 'AGT', 'grid' + QtGui.QApplication.translate(u"MagGridDlg",u'Georeferencing canceled'))
             else:                 
-                QMessageBox.information(self, 'AGT', 'grid' + QtGui.QApplication.translate(u"ElectDlg",u'Georeferencing done.'))
+                QMessageBox.information(self, 'AGT', 'grid' + QtGui.QApplication.translate(u"MagGridDlg",u'Georeferencing done'))
                 shapefiles.append(self.outputFilename.text()[:-4] + '_Gref.shp')
         else:
             shapefiles.append(self.outputFilename.text())               

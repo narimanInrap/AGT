@@ -37,6 +37,7 @@ from ..core.AGTEngine import Engine
 from ..ui.ui_electDialog import Ui_AGTElectDialogBase
 from ..toolbox.AGTUtilities import Utilities, AGTEnconding
 from ..toolbox.AGTExceptions import *
+from ..toolbox.DefParamEnum import DefParamEnum
 from GeorefDialog import GeorefDialog
 
 
@@ -57,7 +58,7 @@ class ElectDialog(QDialog, Ui_AGTElectDialogBase):
         QObject.connect(self.ButtonBrowse, SIGNAL('clicked()'), self.inFile) 
         QObject.connect(self.allProcess_button, SIGNAL('clicked()'), self.allProcesses)
         self.iface = iface
-        self.encoding = Utilities.loadDefaultParameters()[1]        
+        self.encoding = Utilities.loadDefaultParameters()[DefParamEnum.encoding]        
       
     def inputCheck(self):
         """Verifies whether the input is valid."""
@@ -137,7 +138,7 @@ class ElectDialog(QDialog, Ui_AGTElectDialogBase):
         
         if not self.inputCheck():
             return
-        self.encoding = Utilities.loadDefaultParameters()[2]
+        self.encoding = Utilities.loadDefaultParameters()[DefParamEnum.encoding]
         self.engine = Engine(rawDataFilename = self.inFileLine.text(), dataEncoding = self.encoding, datOutput = self.datFilechkbox.isChecked(), 
                              projectName = self.outputFilename.text(), medianPercent = self.spinBox_mvp.value(), kernelSize = self.spinBox_maskR.value(), 
                              filter = self.checkBox_filt.isChecked())
@@ -169,9 +170,9 @@ class ElectDialog(QDialog, Ui_AGTElectDialogBase):
                 geoDlg.show()
                 result = geoDlg.exec_()                
                 if result == QDialog.Rejected:
-                    QMessageBox.information(self, 'AGT', 'grid' + str(self.engine.getGridNames()[g]) + ': ' + QtGui.QApplication.translate(u"ElectDlg",u'Georeferencing canceled.'))     
+                    QMessageBox.information(self, 'AGT', 'grid' + str(self.engine.getGridNames()[g]) + ': ' + QtGui.QApplication.translate(u"ElectDlg",u'Georeferencing canceled'))     
                     break              
-                QMessageBox.information(self, 'AGT', 'grid' + str(self.engine.getGridNames()[g]) + ': ' + QtGui.QApplication.translate(u"ElectDlg",u'Georeferencing done.'))
+                QMessageBox.information(self, 'AGT', 'grid' + str(self.engine.getGridNames()[g]) + ': ' + QtGui.QApplication.translate(u"ElectDlg",u'Georeferencing done'))
             shapefiles = map(lambda st : st[:-4] + '_Gref.shp', shapefiles)
         else:
             QMessageBox.information(self, 'AGT', "Data exported.")            

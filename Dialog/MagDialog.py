@@ -34,6 +34,7 @@ from ..core.AGTEngine import Engine
 from ..ui.ui_magDialog import Ui_AGTMagDialog
 from ..toolbox.AGTUtilities import Utilities, AGTEnconding
 from ..toolbox.AGTExceptions import *
+from ..toolbox.DefParamEnum import DefParamEnum
 
 #FORM_CLASS, _ = uic.loadUiType(os.path.join(
 #   os.path.dirname(__file__), 'AGT_dialog_base.ui'))
@@ -93,7 +94,7 @@ class MagDialog(QDialog, Ui_AGTMagDialog):
     
     def setDefaultCRS(self):    
         
-        self.defaultCrs = Utilities.loadDefaultParameters()[1]
+        self.defaultCrs = Utilities.loadDefaultParameters()[DefParamEnum.crsExport]
         index = self.comboCRS.findText(self.defaultCrs)      
         if index == -1:        
             index = 0  # Make sure some encoding is selected.            
@@ -119,7 +120,7 @@ class MagDialog(QDialog, Ui_AGTMagDialog):
         
         if not self.inputCheck():
             return
-        self.encoding = Utilities.loadDefaultParameters()[2]
+        self.encoding = Utilities.loadDefaultParameters()[DefParamEnum.encoding]
         self.engine = Engine(rawDataFilename = self.inFileLine.text(), dataEncoding = self.encoding, crsRefExp = self.comboCRS.currentText(), 
                              datOutput = self.datFilechkbox.isChecked(), addCoordFields = self.coordFieldschk.isChecked(), decimValue = self.decimSpin.value(), 
                              medRemove =  self.medchk.isChecked(), percentile = self.percentilechk.isChecked(), percThreshold = self.percentSpin.value(), 
