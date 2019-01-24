@@ -215,7 +215,107 @@ McNeill J.D., 1980 - Electromagnetic terrain conductivity measurement at low ind
 Thiesson J., Kessouri P., Schamper C., Tabbagh A. 2014 - Calibration of frequency-domain electromagnetic devices used in near-surface surveying. Near Surface Geophysics, 12, 481-491.
 
 
-.. index:: code source
+.. index:: GEM2Geophex EMP400
+
+Module de traitement des données électromagnétiques de type EMI (GEM2 de Geophex, EMP400 de GSSI)
+======================
+
+Ce module permet d’effectuer différents traitements sur les mesures réalisées avec le GEM2 (Geophex) ou l'EMP400 (GSSI) :
+
+-	Fusion des données GNSS et GEM2/EMP400 (avec prise en compte du décalage en temps des deux horloges) 
+-	Correction du décalage de la position entre l’antenne GNSS et le GEM2/EMP400
+-	Décimation des points de mesures
+-	Filtrage de la médiane par profil
+-	Filtrage 1D glissant par la médiane ou par la moyenne
+-	Calcul de la conductivité électrique
+-	Calcul de la susceptibilité magnétique avec correction des effets d’induction
+-	Etalonnage de l’appareil de mesure sur la base d’un sondage électrique ou d’une valeur de résistivité moyenne du terrain
+
+\ **Fichier en entrée du GEM2** \
+
+Le fichier en entrée est un fichier ascii (.csv) dans le format d’export proposé par le logiciel EMExport de la suite Geophex. Trois modes d’acquisition sont possibles (acquisition sans GNSS, acquisition avec GNSS connecté au GEM2, acquisition séparée du GNSS) et il contient une série de données variable en fonction du mode d’acquisition.
+
+
+\ **Acquisition GEM2 avec GNSS** \
+
+Line,Sample,X,Y,Mark,Status,GPSStat,GPSalt,Time[ms],Time[hhmmss.sss],PowerLn,I_5025Hz,Q_5025Hz,
+I_10325Hz,Q_10325Hz,I_21275Hz,Q_21275Hz,I_43725Hz,Q_43725Hz,I_89925Hz,Q_89925Hz,QSum
+
+0, 21,   509779.22,  5061220.33,   0,0,4,  575.22, 35967000.100,095927.0001,    0.3,-1.22403e+003, 6.32362e+000,-1.55238e+003,-1.78986e+002,-1.99524e+003, 1.17386e+003,-2.12842e+003, 4.58693e+003, 3.66881e+003, 3.00984e+003, 8.59797e+003
+
+\ **Acquisition GEM2 sans GNSS** \
+
+Line,Sample,X,Y,Mark,Status,Time[ms],Time[hhmmss.sss],PowerLn,I_5025Hz,Q_5025Hz,I_10325Hz,
+Q_10325Hz,I_21275Hz,Q_21275Hz,I_43725Hz,Q_43725Hz,I_89925Hz,Q_89925Hz,QSum
+
+0,0, 0.00, 0.00, 0, 0, 52275802.200, 143115.8022, 0.2, 1.47162e+003,
+-3.85928e+002,9.69091e+002,1.29074e+001,4.03300e+002,1.14524e+003,6.69531e+001,5.15901e+003, 6.22617e+003, 5.16867e+003, 1.10741e+004,0,1, 0.00,1.06,0,0, 52275842.200,143115.8422, 0.1, 1.67830e+003, 1.36072e+001, 1.14406e+003,-1.37615e+002, 5.27930e+002, 1.16965e+003,-2.98461e+001, 5.38998e+003, 5.90062e+003, 5.46728e+003, 1.19029e+004
+
+\ **Fichier en entrée de l’EMP400** \
+
+Le fichier en entrée est un fichier ascii (.EMI) dans le format d’export de l’EMP400. Deux modes d’acquisition sont possibles (acquisition sans GNSS et acquisition avec un GNSS indépendant) et il contient une série de données variable en fonction des paramètres d’acquisition. Attention, l’EMP400 contient un GPS de précision métrique. Etant donné la précision, ces points GNSS ne sont pas pris en compte dans le plugin. 
+
+\ **Acquisition EMP400** \
+
+En tête de 36 lignes
+
+Record#, XCoord, YCoord, Time, InPhase[15000], Quad[15000], Conductivity[15000], InPhase[8000], Quad[8000], Conductivity[8000], InPhase[5000], Quad[5000], Conductivity[5000], Remark, Mark, Lat, Long, Alt, Tilt, Errors
+   31,    0.500,   18.000,07:19:22.385,-21373 ,1129 ,25.706 ,-6046 ,684 ,29.208 ,-2588 ,438 ,29.882 ,,, 45.6537417,  3.1515333,376.0000000,,NO ERRORS
+
+
+Le programme reconnait automatiquement le nombre de fréquences utilisées lors de l’acquisition des mesures et détermine la valeur de chacune de ces fréquences. Il détecte également si l’acquisition a été réalisée avec un GNSS ou non. Ces informations sont ensuite utilisées dans les différents traitements appliqués sur le jeu de données.
+
+L’utilisateur doit préciser le système de coordonnées de référence (SCR) utilisé lors de l’acquisition. Par défaut il s’agit du WGS84 UTM31Nord. Ce système peut être changé dans l’onglet Paramètres du plugin et enregistré comme système de référence par défaut.
+
+Le fichier GNSS en entrée est un fichier ascii (.dat). Il doit contenir une suite d’informations basiques, les valeurs de la position en X et en Y ainsi que l’altitude et l’heure d’acquisition sous la forme (hh:mm:ss). Il faudra prendre soin de spécifier le SCR utilisé pour l’acquisition des points GNSS.
+
+\ **Format du fichier GNSS** \
+
+* /X, Y, Z, Heure/
+* 1709059.979, 6946271.346, 232.25,12:11:05
+* 1709059.975, 6946271.352, 232.22,12:11:06
+* 1709009.729, 6946415.921, 232.15,12:42:52
+
+\ **Traitement** \
+
+	\ *Fusion des données GEM2/EMP400 et GNSS* \ 
+	
+	Cette fonction permet de fusionner un fichier du GEM2/EMP400 et un fichier GNSS sur la base de l’heure d’acquisition de chaque point de mesure. Par défaut le fichier EM en entrée est un fichier sans acquisition GNSS. Le calage se fait sur la base des horloges des deux appareils. On peut préciser le décalage en temps existant entre les deux appareils afin de s’assurer d’un positionnement optimal des points de mesures.\ *Data decimation* \
+	
+	\ *Décimation* \
+	
+	Cette fonction permet de réduire le nombre de point de mesures en n’en gardant qu’un sur n (n étant spécifié par l’utilisateur). Les points conservés sont filtrés par une médiane sur une fenêtre glissante de n points.
+	
+	\ *Décalage spatial/GNSS* \
+	
+	Dans le cas d’une acquisition avec GNSS connecté sur le système EM, il se peut qu’il y ait un décalage spatial pour des raisons pratiques entre la position de l’antenne GNSS et la mesure EM. La correction en X et en Y est réalisée suivant le sens d’avancement de l’opérateur et de l’appareil.
+	
+	\ *Suppression de la médiane par profil (phase et quadrature)* \
+	
+	Cette fonction permet de retirer à chacun des profils leur valeur médiane afin d’éliminer les effets de profil induits par des différences de hauteur entre les profils ou par une horizontalité non respectée du capteur. Le calcul de la médiane par profil peut être effectué sur les points en phase et/ou sur les points en quadrature.
+	
+	\ *Filtrage par fenêtre glissante* \
+	
+	Cette fonction permet d’effectuer un filtrage 1D par fenêtre glissante le long du profil d’acquisition. Le filtrage peut être effectué sur le signal en phase et/ou sur le signal en quadrature. On peut préciser la taille de la fenêtre glissante ainsi que la méthode utilisée pour effectuer le calcul (moyenne ou médiane).
+	
+	\ *Calcul des paramètres physiques* \
+	
+		
+		\ *Etalonnage* \
+		
+		Le module propose d’effectuer un étalonnage de l’appareil sur la base d’une mesure haut-bas sur un point de sondage électrique ou de résistivité électrique moyenne connu. Pour réaliser l’étalonnage, cliquer sur le bouton Paramètres de calibrage. Il faut alors renseigner le fichier de calibrage EMI. Celui-ci correspond à un fichier contenant les mesures haut-bas (Thiesson et al. 2014) nécessaire au calibrage des points. Le fichier doit contenir 6 points de mesures, alternant points hauts et points bas en commençant par la mesure en bas. Le GEM2/EMP400 ne permettant pas d’acquérir des points discrets, chaque point de mesure correspond à un profil acquis en continu et moyenné pour calculer la valeur de chaque point. Il faut ensuite renseigner la hauteur de l’appareil posé au sol et de l’appareil maintenu en hauteur (tenir compte de la structure de l’appareil – pour un appareil posé au sol il faut compter 0,02 m de hauteur). On peut ensuite choisir comme niveau de référence soit une valeur de résistivité moyennée connue ou un modèle à 5 couches. Si l’utilisateur à un modèle à 3 ou 4 couches, il faut renseigner les dernières de façon identique (Exemple : pour un modèle 3 couches, e1, e2, e3, e4 et rau1, rau2, rau3, rau4, rau5 avec rau3=rau4=rau5). Cliquer sur Enregistrer pour sauver les valeurs de paramétrage de l’étalonnage.
+		
+		\ *Conductivité électrique et susceptibilité magnétique* \
+		
+		Le module de traitement propose de calculer les valeurs de conductivité électrique apparente et de susceptibilité magnétique en se basant sur la solution des intégrales et la transformée de Hankel (Thiesson et al. 2014). Cette solution tient compte de la hauteur de l’appareil et de la configuration de bobines utilisée. Elle peut être appliquée quel que soit le type de sol étudié (valable également dans des contextes de sols très conducteurs).
+		
+		Dans le cas de la susceptibilité magnétique, le module permet de retirer l’effet de la conductivité sur le signal en phase. Pour cela, il faut cocher la case Correction de conductivité. Attention cette option entraîne un temps de traitement relativement long. Il faut aussi s’assurer dans un premier temps que les valeurs de conductivités calculées auparavant (nécessaires à ce calcul) ne soient pas négatives auquel cas l’estimation de la susceptibilité sera erronée. 
+
+Les points sont ensuite enregistrés dans un fichier .shp dans le système de coordonnées défini par l’utilisateur. Le fichier contient les positions en X et Y, les valeurs en phase et en quadrature (après application des différents filtres), ainsi que les valeurs de conductivité et de susceptibilité pour chaque fréquence. Il contient également le numéro de profil, le temps et la qualité du signal GNSS ainsi que l’altitude du point de mesure (dans le cas d’une acquisition GNSS). 
+
+
+Thiesson J., Kessouri P., Schamper C., Tabbagh A. 2014 - Calibration of frequency-domain electromagnetic devices used in near-surface surveying. Near Surface Geophysics, 12, 481-491.
+
 
 Code source
 ===========
@@ -227,7 +327,6 @@ https://github.com/narimanInrap/AGT.git
 évolutions futures
 ===================
 
-* Module de traitement des données électromagnétique (GeoPhex gem-2)
 * Module de téléchargement RM15/RM85
 * Module de traitement avancé
 
