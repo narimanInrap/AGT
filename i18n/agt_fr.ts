@@ -1,41 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="fr_FR" sourcelanguage="en">
+<!DOCTYPE TS>
+<TS version="2.0" language="fr_FR" sourcelanguage="en">
 <context>
     <name>AGT</name>
     <message>
-        <location filename="agt.py" line="262"/>
+        <location filename="agt.py" line="270"/>
         <source>&amp;AGT</source>
         <translation>&amp;AGT</translation>
     </message>
     <message>
-        <location filename="agt.py" line="189"/>
+        <location filename="agt.py" line="191"/>
         <source>RM15/RM85 processing</source>
         <translation>Traitement RM15/RM85</translation>
     </message>
     <message>
-        <location filename="agt.py" line="243"/>
+        <location filename="agt.py" line="251"/>
         <source>help</source>
         <translation>aide</translation>
     </message>
     <message>
-        <location filename="agt.py" line="210"/>
+        <location filename="agt.py" line="212"/>
         <source>EM31 processing</source>
         <translation>Traitement EM31</translation>
     </message>
     <message>
-        <location filename="agt.py" line="225"/>
+        <location filename="agt.py" line="233"/>
         <source>Default parameters</source>
         <translation>Paramètres par défaut</translation>
     </message>
     <message>
-        <location filename="agt.py" line="196"/>
+        <location filename="agt.py" line="198"/>
         <source>MXPDA/Grad601 processing - Grid survey</source>
         <translation>Traitement MXPDA/Grad601 - Grille</translation>
     </message>
     <message>
-        <location filename="agt.py" line="203"/>
+        <location filename="agt.py" line="205"/>
         <source>MXPDA processing - GNSS survey</source>
         <translation>Traitement MXPDA - GNSS</translation>
+    </message>
+    <message>
+        <location filename="agt.py" line="226"/>
+        <source>GEM2/EMP400 processing</source>
+        <translation>Traitement GEM2/EMP400</translation>
+    </message>
+</context>
+<context>
+    <name>AGTCalibrationDialog</name>
+    <message>
+        <location filename="ui_CalibrationDialog.ui" line="23"/>
+        <source>EMI calibration file </source>
+        <translation>Fichier de calibrage EMI</translation>
+    </message>
+    <message>
+        <location filename="ui_CalibrationDialog.ui" line="39"/>
+        <source>browse</source>
+        <translation>parcourir</translation>
+    </message>
+    <message>
+        <location filename="ui_CalibrationDialog.ui" line="62"/>
+        <source>Altitude mesure bottom</source>
+        <translation>Hauteur point haut</translation>
+    </message>
+    <message>
+        <location filename="ui_CalibrationDialog.ui" line="101"/>
+        <source>Altitude mesure top</source>
+        <translation>Hauteur point bas</translation>
+    </message>
+    <message>
+        <location filename="ui_CalibrationDialog.ui" line="149"/>
+        <source>Electrical model</source>
+        <translation>Modèle électrique</translation>
+    </message>
+    <message>
+        <location filename="ui_CalibrationDialog.ui" line="175"/>
+        <source>Thickness</source>
+        <translation>Epaisseur</translation>
+    </message>
+    <message>
+        <location filename="ui_CalibrationDialog.ui" line="182"/>
+        <source>Resistivity</source>
+        <translation>Résistivité</translation>
+    </message>
+    <message>
+        <location filename="ui_CalibrationDialog.ui" line="189"/>
+        <source>Layer 1</source>
+        <translation>Couche 1</translation>
+    </message>
+    <message>
+        <location filename="ui_CalibrationDialog.ui" line="234"/>
+        <source>Layer 2</source>
+        <translation>Couche 2</translation>
+    </message>
+    <message>
+        <location filename="ui_CalibrationDialog.ui" line="279"/>
+        <source>Layer 3</source>
+        <translation>Couche 3</translation>
+    </message>
+    <message>
+        <location filename="ui_CalibrationDialog.ui" line="324"/>
+        <source>Layer 4</source>
+        <translation>Couche 4</translation>
+    </message>
+    <message>
+        <location filename="ui_CalibrationDialog.ui" line="369"/>
+        <source>Layer 5</source>
+        <translation>Couche 5</translation>
+    </message>
+    <message>
+        <location filename="ui_CalibrationDialog.ui" line="395"/>
+        <source>Mean resistivity</source>
+        <translation>Résistivité moyenne</translation>
+    </message>
+    <message>
+        <location filename="ui_CalibrationDialog.ui" line="418"/>
+        <source>Save</source>
+        <translation>Enregistrer</translation>
+    </message>
+    <message>
+        <location filename="ui_CalibrationDialog.ui" line="425"/>
+        <source>Cancel</source>
+        <translation>Annuler</translation>
+    </message>
+    <message>
+        <location filename="ui_CalibrationDialog.ui" line="14"/>
+        <source>Calibration</source>
+        <translation>Calibrage</translation>
     </message>
 </context>
 <context>
@@ -505,6 +594,184 @@
     </message>
 </context>
 <context>
+    <name>AGTMultiFreqDialog</name>
+    <message>
+        <location filename="ui_MultiFreqDialog.ui" line="744"/>
+        <source>browse</source>
+        <translation>parcourir</translation>
+    </message>
+    <message>
+        <location filename="ui_MultiFreqDialog.ui" line="384"/>
+        <source>GNSS data (.dat)</source>
+        <translation>Données GNSS</translation>
+    </message>
+    <message>
+        <location filename="ui_MultiFreqDialog.ui" line="758"/>
+        <source>CRS projection</source>
+        <translation>Projection SCR</translation>
+    </message>
+    <message>
+        <location filename="ui_MultiFreqDialog.ui" line="313"/>
+        <source>Device height (m)</source>
+        <translation>Hauteur du capteur (m) </translation>
+    </message>
+    <message>
+        <location filename="ui_MultiFreqDialog.ui" line="26"/>
+        <source>Coils geometry</source>
+        <translation>Configuration de bobines</translation>
+    </message>
+    <message>
+        <location filename="ui_MultiFreqDialog.ui" line="33"/>
+        <source>HCP (vertical dipole)</source>
+        <translation>HCP (dipôle vertical)</translation>
+    </message>
+    <message>
+        <location filename="ui_MultiFreqDialog.ui" line="43"/>
+        <source>VCP (horizontal dipole)</source>
+        <translation>VCP (dipôle horizontal)</translation>
+    </message>
+    <message>
+        <location filename="ui_MultiFreqDialog.ui" line="108"/>
+        <source>Y</source>
+        <translation>Y</translation>
+    </message>
+    <message>
+        <location filename="ui_MultiFreqDialog.ui" line="59"/>
+        <source>Spatial shift/GNSS</source>
+        <translation>Décalage spatial/GNSS</translation>
+    </message>
+    <message>
+        <location filename="ui_MultiFreqDialog.ui" line="66"/>
+        <source>X</source>
+        <translation>X</translation>
+    </message>
+    <message>
+        <location filename="ui_MultiFreqDialog.ui" line="481"/>
+        <source>Quadrature</source>
+        <translation>Quadrature</translation>
+    </message>
+    <message>
+        <location filename="ui_MultiFreqDialog.ui" line="131"/>
+        <source>Physical parameters computation</source>
+        <translation>Calcul des paramètres physiques</translation>
+    </message>
+    <message>
+        <location filename="ui_MultiFreqDialog.ui" line="197"/>
+        <source>Electrical conductivity</source>
+        <translation>Conductivité électrique</translation>
+    </message>
+    <message>
+        <location filename="ui_MultiFreqDialog.ui" line="164"/>
+        <source>Calibration</source>
+        <translation>Etalonnage</translation>
+    </message>
+    <message>
+        <location filename="ui_MultiFreqDialog.ui" line="157"/>
+        <source>Magnetic susceptibility</source>
+        <translation>Susceptibilité magnétique</translation>
+    </message>
+    <message>
+        <location filename="ui_MultiFreqDialog.ui" line="137"/>
+        <source>Calibration parameters</source>
+        <translation>Paramètres d&apos;étalonnage</translation>
+    </message>
+    <message>
+        <location filename="ui_MultiFreqDialog.ui" line="510"/>
+        <source>Decimation</source>
+        <translation>Décimation</translation>
+    </message>
+    <message>
+        <location filename="ui_MultiFreqDialog.ui" line="751"/>
+        <source>Shapefile</source>
+        <translation>Shapefile</translation>
+    </message>
+    <message>
+        <location filename="ui_MultiFreqDialog.ui" line="371"/>
+        <source>run</source>
+        <translation>lancer</translation>
+    </message>
+    <message>
+        <location filename="ui_MultiFreqDialog.ui" line="207"/>
+        <source>Conductivity correction of In Phase</source>
+        <translation>Correction de conductivité en phase</translation>
+    </message>
+    <message>
+        <location filename="ui_MultiFreqDialog.ui" line="414"/>
+        <source>Seconds:</source>
+        <translation>Secondes:</translation>
+    </message>
+    <message>
+        <location filename="ui_MultiFreqDialog.ui" line="431"/>
+        <source>Minutes:</source>
+        <translation>Minutes:</translation>
+    </message>
+    <message>
+        <location filename="ui_MultiFreqDialog.ui" line="438"/>
+        <source>GNSS Time Shift</source>
+        <translation>Décalage temporel du GNSS</translation>
+    </message>
+    <message>
+        <location filename="ui_MultiFreqDialog.ui" line="465"/>
+        <source>Hours:</source>
+        <translation>Heures:</translation>
+    </message>
+    <message>
+        <location filename="ui_MultiFreqDialog.ui" line="475"/>
+        <source>Median removal (by profile)</source>
+        <translation>Filtre par la médiane (par profil)</translation>
+    </message>
+    <message>
+        <location filename="ui_MultiFreqDialog.ui" line="561"/>
+        <source>Sliding Window</source>
+        <translation>Fenêtre glissante</translation>
+    </message>
+    <message>
+        <location filename="ui_MultiFreqDialog.ui" line="703"/>
+        <source>Window size</source>
+        <translation>Taille de la fenêtre</translation>
+    </message>
+    <message>
+        <location filename="ui_MultiFreqDialog.ui" line="690"/>
+        <source>Mean</source>
+        <translation>Moyenne</translation>
+    </message>
+    <message>
+        <location filename="ui_MultiFreqDialog.ui" line="671"/>
+        <source>Median</source>
+        <translation>Médiane</translation>
+    </message>
+    <message>
+        <location filename="ui_MultiFreqDialog.ui" line="642"/>
+        <source>Quadrature filtering</source>
+        <translation>Filtrage en quadrature</translation>
+    </message>
+    <message>
+        <location filename="ui_MultiFreqDialog.ui" line="297"/>
+        <source>Raw data</source>
+        <translation>Données brutes</translation>
+    </message>
+    <message>
+        <location filename="ui_MultiFreqDialog.ui" line="735"/>
+        <source>Output file</source>
+        <translation>Fichier de sortie</translation>
+    </message>
+    <message>
+        <location filename="ui_MultiFreqDialog.ui" line="488"/>
+        <source>In-phase</source>
+        <translation>Phase</translation>
+    </message>
+    <message>
+        <location filename="ui_MultiFreqDialog.ui" line="635"/>
+        <source>In-phase filtering</source>
+        <translation>Filtrage en phase</translation>
+    </message>
+    <message>
+        <location filename="ui_MultiFreqDialog.ui" line="14"/>
+        <source>GEM2 / EMP400</source>
+        <translation>GEM2 / EMP400</translation>
+    </message>
+</context>
+<context>
     <name>AGTRasterDialog</name>
     <message>
         <location filename="ui_rasterDialog.ui" line="20"/>
@@ -555,32 +822,32 @@
 <context>
     <name>EM31Dlg</name>
     <message>
-        <location filename="EM31Dialog.py" line="130"/>
+        <location filename="EM31Dialog.py" line="132"/>
         <source>Please specify an input data file.</source>
         <translation>Veuillez spécifier un fichier d&apos;entrée.</translation>
     </message>
     <message>
-        <location filename="EM31Dialog.py" line="134"/>
+        <location filename="EM31Dialog.py" line="136"/>
         <source>Please specify an output shapefile.</source>
         <translation>Veuillez spécifier un fichier de sortie(shapefile).</translation>
     </message>
     <message>
-        <location filename="EM31Dialog.py" line="139"/>
+        <location filename="EM31Dialog.py" line="141"/>
         <source>The output file must have the filename.shp format.</source>
         <translation>Le fichier de sortie doit être de type .shp.</translation>
     </message>
     <message>
-        <location filename="EM31Dialog.py" line="158"/>
+        <location filename="EM31Dialog.py" line="160"/>
         <source>Created output Shapfile:</source>
         <translation>Le shapefile de sortie généré:</translation>
     </message>
     <message>
-        <location filename="EM31Dialog.py" line="160"/>
+        <location filename="EM31Dialog.py" line="162"/>
         <source>Would you like to add the new layer to your project?</source>
         <translation>Voulez-vous ajouter la nouvelle couche à votre projet?</translation>
     </message>
     <message>
-        <location filename="EM31Dialog.py" line="93"/>
+        <location filename="EM31Dialog.py" line="95"/>
         <source>Input file</source>
         <translation>fichier d&apos;entrée</translation>
     </message>
@@ -601,57 +868,47 @@
 <context>
     <name>ElectDlg</name>
     <message>
-        <location filename="electDialog.py" line="66"/>
+        <location filename="electDialog.py" line="67"/>
         <source>Please specify an input data file.</source>
         <translation>Veuillez spécifier un fichier d&apos;entrée.</translation>
     </message>
     <message>
-        <location filename="electDialog.py" line="70"/>
+        <location filename="electDialog.py" line="71"/>
         <source>Please specify a project name.</source>
         <translation>Veuillez spécifier un nom de projet.</translation>
     </message>
     <message>
-        <location filename="electDialog.py" line="80"/>
+        <location filename="electDialog.py" line="81"/>
         <source>Please specify the kernel size.</source>
         <translation>Veuillez spécifier la taille du masque.</translation>
     </message>
     <message>
-        <location filename="electDialog.py" line="84"/>
+        <location filename="electDialog.py" line="85"/>
         <source>Please specify the median value percentage.</source>
         <translation>Veuillez spécifier le pourcentage de la valeur médiane.</translation>
     </message>
     <message>
-        <location filename="electDialog.py" line="88"/>
+        <location filename="electDialog.py" line="89"/>
         <source>The mask size must be an odd number.</source>
         <translation>La taille du masque doit être un nombre impair.</translation>
     </message>
     <message>
-        <location filename="electDialog.py" line="150"/>
+        <location filename="electDialog.py" line="151"/>
         <source>procedure stopped</source>
         <translation>La procédure a été arrêtée</translation>
     </message>
     <message>
-        <location filename="MagGridDialog.py" line="121"/>
-        <source>Georeferencing canceled.</source>
-        <translation>Géoréférencement a été annulé.</translation>
-    </message>
-    <message>
-        <location filename="MagGridDialog.py" line="123"/>
-        <source>Georeferencing done.</source>
-        <translation>Géoréférencement a été effectué.</translation>
-    </message>
-    <message>
-        <location filename="electDialog.py" line="184"/>
+        <location filename="electDialog.py" line="185"/>
         <source>Output Shapfiles:</source>
         <translation>Les shapefiles de sortie:</translation>
     </message>
     <message>
-        <location filename="electDialog.py" line="187"/>
+        <location filename="electDialog.py" line="188"/>
         <source>Would you like to add the new layers to your project?</source>
         <translation>Voulez-vous ajouter les nouvelles couches à votre projet?</translation>
     </message>
     <message>
-        <location filename="electDialog.py" line="74"/>
+        <location filename="electDialog.py" line="75"/>
         <source>The project name you have chosen already exists, you might overwrite some shapefiles. Do you want to continue?</source>
         <translation>Le nom de projet choisi existe déjà, vous risquez d&apos;écraser des shapefiles. Voulez-vous continuer?</translation>
     </message>
@@ -659,6 +916,25 @@
         <location filename="ElecDownDialog.py" line="115"/>
         <source>Procedure canceled.</source>
         <translation>Procédure annulée.</translation>
+    </message>
+    <message>
+        <location filename="electDialog.py" line="175"/>
+        <source>Georeferencing done</source>
+        <translation>Géoréférencement effectué</translation>
+    </message>
+    <message>
+        <location filename="electDialog.py" line="173"/>
+        <source>Georeferencing canceled</source>
+        <translation>Géoréférencement annulé</translation>
+    </message>
+</context>
+<context>
+    <name>Engine</name>
+    <message>
+        <location filename="AGTUtilities.py" line="67"/>
+        <source>No feature was created. The {} shapefile was deleted.
+</source>
+        <translation>Aucune forme n&apos;a été créée. Le shapfile {} a été supprimé.</translation>
     </message>
 </context>
 <context>
@@ -684,27 +960,27 @@
 <context>
     <name>MagDlg</name>
     <message>
-        <location filename="magDialog.py" line="168"/>
+        <location filename="magDialog.py" line="171"/>
         <source>Please specify an input data file.</source>
         <translation>Veuillez spécifier un fichier d&apos;entrée.</translation>
     </message>
     <message>
-        <location filename="magDialog.py" line="172"/>
+        <location filename="magDialog.py" line="175"/>
         <source>Please specify an output shapefile.</source>
         <translation>Veuillez spécifier un fichier de sortie(shapefile).</translation>
     </message>
     <message>
-        <location filename="magDialog.py" line="177"/>
+        <location filename="magDialog.py" line="180"/>
         <source>The output file must have the filename.shp format.</source>
         <translation>Le fichier de sortie doit être de type .shp.</translation>
     </message>
     <message>
-        <location filename="magDialog.py" line="184"/>
+        <location filename="magDialog.py" line="187"/>
         <source>Created output Shapfile:</source>
         <translation>Le shapefile de sortie généré:</translation>
     </message>
     <message>
-        <location filename="magDialog.py" line="186"/>
+        <location filename="magDialog.py" line="189"/>
         <source>Would you like to add the new layer to your project?</source>
         <translation>Voulez-vous ajouter la nouvelle couche à votre projet?</translation>
     </message>
@@ -712,35 +988,45 @@
 <context>
     <name>MagGridDlg</name>
     <message>
-        <location filename="MagGridDialog.py" line="148"/>
+        <location filename="MagGridDialog.py" line="149"/>
         <source>Please specify an input data file.</source>
         <translation>Veuillez spécifier un fichier d&apos;entrée.</translation>
     </message>
     <message>
-        <location filename="MagGridDialog.py" line="152"/>
+        <location filename="MagGridDialog.py" line="153"/>
         <source>Please specify an output shapefile.</source>
         <translation>Veuillez spécifier un fichier de sortie(shapefile).</translation>
     </message>
     <message>
-        <location filename="MagGridDialog.py" line="157"/>
+        <location filename="MagGridDialog.py" line="158"/>
         <source>The output file must have the filename.shp format.</source>
         <translation>Le fichier de sortie doit être de type .shp.</translation>
     </message>
     <message>
-        <location filename="MagGridDialog.py" line="164"/>
+        <location filename="MagGridDialog.py" line="165"/>
         <source>Created output Shapfile:</source>
         <translation>Le shapefile de sortie généré:</translation>
     </message>
     <message>
-        <location filename="MagGridDialog.py" line="167"/>
+        <location filename="MagGridDialog.py" line="168"/>
         <source>Would you like to add the new layer to your project?</source>
         <translation>Voulez-vous ajouter la nouvelle couche à votre projet?</translation>
+    </message>
+    <message>
+        <location filename="MagGridDialog.py" line="122"/>
+        <source>Georeferencing canceled</source>
+        <translation>Géoréférencement annulé</translation>
+    </message>
+    <message>
+        <location filename="MagGridDialog.py" line="124"/>
+        <source>Georeferencing done</source>
+        <translation>Géoréférencement effectué</translation>
     </message>
 </context>
 <context>
     <name>ParamDlg</name>
     <message>
-        <location filename="ParametersDialog.py" line="103"/>
+        <location filename="ParametersDialog.py" line="105"/>
         <source>Default parameters saved.</source>
         <translation>Les paramètres par défaut ont été enregistrés.</translation>
     </message>
@@ -781,12 +1067,12 @@
 <context>
     <name>Utility</name>
     <message>
-        <location filename="AGTUtilities.py" line="128"/>
+        <location filename="AGTUtilities.py" line="205"/>
         <source>pole-pole</source>
         <translation>pole-pole</translation>
     </message>
     <message>
-        <location filename="AGTUtilities.py" line="171"/>
+        <location filename="AGTUtilities.py" line="248"/>
         <source>Save output file</source>
         <translation>Sauvegarder le fichier de sortie</translation>
     </message>
