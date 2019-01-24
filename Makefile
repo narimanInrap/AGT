@@ -57,6 +57,8 @@ SOURCES = \
 	ui/ui_EM31Dialog.ui\
 	ui/ui_MagGridDialog.ui\
 	ui/ui_ParametersDialog.ui\
+	ui/ui_CalibrationDialog.ui\
+	ui/ui_MultiFreqDialog.ui\
 	toolbox/AGTUtilities.py\
 	toolbox/AGTExceptions.py
 	
@@ -82,11 +84,13 @@ PY_FILES = \
 	ui/ui_EM31Dialog.py\
 	ui/ui_MagGridDialog.py\
 	ui/ui_ParametersDialog.py\
+	ui/ui_CalibrationDialog.py\
+	ui/ui_MultiFreqDialog.py\
 	toolbox/AGTUtilities.py\
 	toolbox/AGTExceptions.py\
 	__init__.py
 
-EXTRAS = icons/elec_icon.png icons/mag_icon.png icons/help.svg icons/download_icon.png icons/magGrid_icon.png icons/param_icon.png metadata.txt 
+EXTRAS = icons/elec_icon.png icons/mag_icon.png icons/help.svg icons/download_icon.png icons/magGrid_icon.png icons/param_icon.png metadata.txt icons/GEM2_icon.png
 
 COMPILED_UI_FILES = ui/ui_electDialog.py \
 	ui/ui_electDialog.py\
@@ -97,7 +101,9 @@ COMPILED_UI_FILES = ui/ui_electDialog.py \
 	ui/ui_GridDialog.py\
 	ui/ui_EM31Dialog.py\
 	ui/ui_MagGridDialog.py\
-	ui/ui_ParametersDialog.py
+	ui/ui_ParametersDialog.py\
+	ui/ui_CalibrationDialog.py\
+	ui/ui_MultiFreqDialog.py
 	
 
 COMPILED_RESOURCE_FILES = resources_rc.py

@@ -23,9 +23,17 @@ Electromagnetic data processing module (Geonics EM31) contains:
 	Import
 	Processing:
 		Apparent conductivity calculation
+Electromagnetic data processing module (Geophex GEM2, GSSI EMP400) contains:
+	Importing
+	Processing:
+		Spatial GNSS/GEM2/EMP400 shift
+		Median filtering by profile (in-phase, out-of-phase)
+		Moving window filter
+		Geophysical parameter calculation:
+			Calibration
+			Electrical conductivity and magnetic susceptibility computation
 
 Coming soon:	
-	EMI data processing module (GeoPhex gem-2, dualEM)
 	RM15/RM85 Download module
 	Advanced processing module 
 

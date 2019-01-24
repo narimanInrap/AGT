@@ -9,7 +9,7 @@
 [general]
 name=AGT - Archaeological Geophysics Toolbox
 qgisMinimumVersion=2.0
-description=This plugin provides basic tools for processing archaeo-geophysical data: Geoscan Research RM15/RM85, Sensys MXPDA, Bartington Grad601, Geonics EM31
+description=This plugin provides basic tools for processing archaeo-geophysical data: Geoscan Research RM15/RM85, Sensys MXPDA, Bartington Grad601, Geonics EM31, Geophex GEM2, GSSI EMP400
 about = Electrical resistivity processing module (Geoscan Research RM15/RM85) contains:
 		1. Importing
 		2. Processing:
@@ -18,7 +18,7 @@ about = Electrical resistivity processing module (Geoscan Research RM15/RM85) co
 		Magnetic data processing module (Sensys MXPDA - GNSS) contains:
 		1. Importing
 		2. Processing:
-			a. Decimation (raw - moving median window)
+			a. Decimation (raw - moving median)
 			b. Median removal
 			c. Trend removal
 			d. Stationary point removal
@@ -32,12 +32,20 @@ about = Electrical resistivity processing module (Geoscan Research RM15/RM85) co
 		1. Importing
 		2. Processing:
 			a. Apparent conductivity calculation		
+		Electromagnetic data processing module (Geophex GEM2, GSSI EMP400) contains:
+		1. Importing
+		2. Processing:
+			a. Spatial GNSS/GEM2/EMP400 shift
+			b. Median filtering by profile (in-phase, out-of-phase)
+			c. Moving window filter
+			d. Geophysical parameter calculation:
+				i. Calibration
+				ii. Electrical conductivity and magnetic susceptibility computation
 Coming soon:	
-	EMI data processing module (GeoPhex gem-2, dualEM)
 	RM15/RM85 Download module
 	Advanced processing module 
 
-version=1.3
+version=2.0
 author=INRAP - Guillaume Hulin, Francois-Xavier Simon, Nariman Hatami
 email=developpement-qgis@inrap.fr
 repository=https://github.com/narimanInrap/AGT
@@ -50,7 +58,7 @@ repository=https://github.com/narimanInrap/AGT
 # changelog=
 
 # Tags are comma separated with spaces allowed
-tags=archaeology, geophysics, RM85, RM15, INRAP, AGT, MXPDA, processing, EMI, EM31, GNNS, grid survey, Grad601 
+tags=archaeology, geophysics, RM85, RM15, INRAP, AGT, MXPDA, processing, EMI, EM31, GNNS, grid survey, Grad601, Geophex, GEM2, GSSI, EMP400 
 
 homepage=https://github.com/narimanInrap/AGT/blob/master/README.md
 tracker=https://github.com/narimanInrap/AGT/issues

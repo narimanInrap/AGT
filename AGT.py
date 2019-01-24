@@ -38,11 +38,12 @@ import resources_rc
 # Import the code for the dialog
 from Dialog.ElectDialog import ElectDialog
 from Dialog.MagDialog import MagDialog
-from Dialog.RasterDialog import RasterDialog 
+from Dialog.RasterDialog import RasterDialog
 #from Dialog.ElecDownDialog import ElecDownDialog
 from Dialog.EM31Dialog import EM31Dialog
 from Dialog.MagGridDialog import MagGridDialog
 from Dialog.ParametersDialog import ParametersDialog
+from Dialog.GEM2Dialog import GEM2Dialog
 
 class AGT:
     """QGIS Plugin Implementation."""
@@ -78,6 +79,7 @@ class AGT:
         #self.rasterDlg = RasterDialog(self.iface)
         self.magGridDlg = MagGridDialog(self.iface)
         self.paramDlg = ParametersDialog(self.iface)
+        self.gem2Dlg = GEM2Dialog(self.iface)
 
         # Declare instance attributes
         self.actions = []
@@ -219,7 +221,13 @@ class AGT:
 #             text=self.tr(u'Interpolation'),
 #             callback=self.runRaster,
 #             parent=self.iface.mainWindow())
-#          
+#       
+        icon_path = ':/plugins/AGT/icons/GEM2_icon.png'
+        self.add_action(
+            icon_path,
+            text=self.tr(u'GEM2/EMP400 processing'),
+            callback=self.runGEM2,
+            parent=self.iface.mainWindow())
         
         icon_path = ':/plugins/AGT/icons/param_icon.png'
         self.add_action(
@@ -235,7 +243,7 @@ class AGT:
             text=self.tr(u'help'),
             callback=self.help,
             parent=self.iface.mainWindow(),
-            add_to_toolbar = False)        
+            add_to_toolbar = False)
         # separator
         self.toolbar.addSeparator()
         
@@ -337,6 +345,19 @@ class AGT:
             pass
         else:
             self.em31Dlg.hideDialog()
+    
+    def runGEM2(self):
+        # show the dialog
+        self.gem2Dlg.show()
+        # Run the dialog event loop
+        result = self.gem2Dlg.exec_()
+        # See if OK was pressed
+        if result:
+            # Do something useful here - delete the line containing pass and
+            # substitute with your code.
+            pass
+        else:
+            self.gem2Dlg.hideDialog() 
              
     def runRaster(self):
         """Run method that performs all the real work"""

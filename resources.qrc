@@ -7,5 +7,6 @@
         <file>icons/help.svg</file>     
         <file>icons/magGrid_icon.png</file>
         <file>icons/param_icon.png</file>
+		<file>icons/GEM2_icon.png</file>
     </qresource>
 </RCC>
