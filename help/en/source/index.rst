@@ -220,6 +220,102 @@ McNeill J.D., 1980 - Electromagnetic terrain conductivity measurement at low ind
 Thiesson J., Kessouri P., Schamper C., Tabbagh A., 2014 - Calibration of frequency-domain electromagnetic devices used in near-surface surveying. Near Surface Geophysics, 12, 481-491.
 
 
+.. index:: GEM2Geophex EMP400
+
+EMI multi-frequency data processing module (GEM2 from Geophex, EMP400 from GSSI)
+======================
+
+This module enables different processing methods to be performed on the data collected with the GEM2 (Geophex) or the EMP400 (GSSI).
+
+-	Merging of GNSS and GEM2/EMP400 datasets (with clock offset correction)
+-	Positionning shift correction between the GNSS antenna and the GEM2/EMP400 device 
+-	Data decimation
+-	Median filtering by profile
+-	1D moving window filter (median or average method)
+-	Electrical conductivity computation
+-	Magnetic susceptibility computation with correction of the induction effect
+-	Device calibration based on vertical resistivity sounding or mean resistivity
+
+
+\ **GEM2 file input** \
+
+The input file is an ascii file (.csv) in export format proposed by the software EMExport of the Geophex series. The module allows three different acquisition protocols (without GNSS, with a GNSS connected to the GEM2 and with a GNSS not connected to the GEM2) and it contains a variable data series based on an acquisition with GNSS or acquisition without GNSS. 
+
+
+\ **GEM2 survey with GNSS** \
+
+Line,Sample,X,Y,Mark,Status,GPSStat,GPSalt,Time[ms],Time[hhmmss.sss],PowerLn,I_5025Hz,Q_5025Hz,
+I_10325Hz,Q_10325Hz,I_21275Hz,Q_21275Hz,I_43725Hz,Q_43725Hz,I_89925Hz,Q_89925Hz,QSum
+
+0, 21,   509779.22,  5061220.33,   0,0,4,  575.22, 35967000.100,095927.0001,    0.3,-1.22403e+003, 6.32362e+000,-1.55238e+003,-1.78986e+002,-1.99524e+003, 1.17386e+003,-2.12842e+003, 4.58693e+003, 3.66881e+003, 3.00984e+003, 8.59797e+003
+
+\ **GEM2 survey without GNSS** \
+
+Line,Sample,X,Y,Mark,Status,Time[ms],Time[hhmmss.sss],PowerLn,I_5025Hz,Q_5025Hz,I_10325Hz,
+Q_10325Hz,I_21275Hz,Q_21275Hz,I_43725Hz,Q_43725Hz,I_89925Hz,Q_89925Hz,QSum
+
+0,0, 0.00, 0.00, 0, 0, 52275802.200, 143115.8022, 0.2, 1.47162e+003,
+-3.85928e+002,9.69091e+002,1.29074e+001,4.03300e+002,1.14524e+003,6.69531e+001,5.15901e+003, 6.22617e+003, 5.16867e+003, 1.10741e+004,0,1, 0.00,1.06,0,0, 52275842.200,143115.8422, 0.1, 1.67830e+003, 1.36072e+001, 1.14406e+003,-1.37615e+002, 5.27930e+002, 1.16965e+003,-2.98461e+001, 5.38998e+003, 5.90062e+003, 5.46728e+003, 1.19029e+004
+
+\ **EMP400 file input** \ 
+The input file is an ascii file (.EMI) in export format proposed by the EMP400. The module allows two survey modes (without GNSS and with separate GNSS) and it contains a variable data series based on the survey procedure. Note that the EMP400 has a GNSS but, due to the low precision, the plugin doesn’t consider these data. 
+
+\ **EMP400 survey** \
+
+Header of 36 lines
+
+Record#, XCoord, YCoord, Time, InPhase[15000], Quad[15000], Conductivity[15000], InPhase[8000], Quad[8000], Conductivity[8000], InPhase[5000], Quad[5000], Conductivity[5000], Remark, Mark, Lat, Long, Alt, Tilt, Errors
+   31,    0.500,   18.000,07:19:22.385,-21373 ,1129 ,25.706 ,-6046 ,684 ,29.208 ,-2588 ,438 ,29.882 ,,, 45.6537417,  3.1515333,376.0000000,,NO ERRORS
+
+The plugin automatically detects the number of frequencies employed for the data collection and the value of each frequency. Then, it detects whether the acquisition was performed with a GNSS or not. These specifications are then used in the different processing methods applied to the dataset.
+
+The user has to specify the reference coordinate system (RCS) used during the survey. By default it is the WGS84 UTM31 North system. This RCS can be changed in the tab Parameters and saved as the new reference system default.
+
+The input GNSS file is an ascii file (.dat). It must contain basic information, X and Y position, altitude and time of acquisition (hh:mm:ss.ss). Care must be taken to specify the RCS used for the GNSS data acquisition.
+
+\ **Input GNSS file format** \
+
+* /X, Y, Z, Time/
+* 1709059.979, 6946271.346, 232.25,12:11:05
+* 1709059.975, 6946271.352, 232.22,12:11:06
+* 1709009.729, 6946415.921, 232.15,12:42:52
+
+\ **Processing** \
+
+	\ *Merging GNSS and GEM2/EMP400 data* \ 
+	This function is dedicated to merging the GEM2/EMP400 input file and the GNSS input file based on the time of acquisition of each data. By default the GEM2/EMP400 input file is a file without GNSS data. Timing is based on the time stamp of both devices. We can specify the offset existing between the two clocks in order to optimize the data positioning.	
+	\ *Data decimation* \
+	
+	This function reduces the number of data by keeping a fraction of them (1/n, n is chosen by the user). Final data is based on the result of a median calculated with a moving window on the n decimated points.
+	
+	\ *Spatial GNSS/GEM2/EMP400 shift* \
+	
+	In the case of a GEM2/EMP400-GNSS acquisition, for practical reasons, it is possible to have a spatial shift between the GNSS antenna and the center of the GEM2/EMP400. Shift correction is calculated in accordance with the direction of the surveyor and the device.
+	
+	\ *Median filtering by profile (In-phase/Out-of-phase)* \
+	
+	This function allows the removal of the median value for each profile in order to reduce the effects due to the difference in ground clearance, or an inaccurate horizontal orientation. Median calculation by profile can be applied on in-phase and/or out-of-phase datasets.
+	
+	\ *Moving window filter* \
+	
+	This function applies a 1D moving window filter along each profile. The user can select the method (median or average method), the in-phase or out-of-phase component and the window size.
+	
+	\ *Geophysical parameter calculation* \
+	
+		
+		\ *Calibration* \
+		
+		This processing enables a device calibration based on the up and down measurements collected at the location of a vertical electrical sounding or a known mean electrical resistivity value. In order to do the calibration, click on the button Calibration parameter. You will then have to fill in the EMI calibration file path. This file contains the up and down measurements (Thiesson et al. 2014) needed for the calibration. It must contain 6 measurement points, alternating between the up and down measurement, starting with a down measurement. As the GEM2/EMP400 is unable to acquire discrete points, each measurement corresponds to a static continuous profile to determine the value of each point (with an average calculation). The user has to specify the height of the device from the ground for both up and down measurements (when the GEM2/EMP400 is lying on the ground the respective height value is 0.02 m due to the frame of the GEM2/EMP400). It is then possible to choose for the reference value, an average resistivity value or a 5 layers model. If you only have a 3 or 4 layers, fill the last one(s) with the same value (Example: for a 3 layers model, rau3=rau4=rau5). 
+		
+		\ *Electrical conductivity and magnetic susceptibility computation* \
+		
+		The processing module estimates the apparent electrical conductivity values and the apparent magnetic susceptibility values based on the solution of the integrals and the Hankel transform (Thiesson et al. 2014). This solution takes into account the device’s height and the coils’ configuration. It can therefore be applied regardless of the type of soil and is even valid in high conductivity soil medium. 
+		
+		For the apparent magnetic susceptibility computation, the process enables the removal of the conductivity effect on the in-phase signal. Warning: This option implies a relatively long processing time. It is also necessary to firstly check that the validity of the previously calculated conductivity (necessary for this calculation) is not negative in which case the estimation of the susceptibility will be incorrect.
+
+The processed points are saved in a shapefile with the user-defined RCS. It contains X and Y positions, in-phase and out-of-phase processed values and the computed conductivity and susceptibility values for each frequency. In addition, the shapefile contains the profile number, the time stamp, the GNSS quality and the altitude. 
+
+Thiesson J., Kessouri P., Schamper C., Tabbagh A. 2014 - Calibration of frequency-domain electromagnetic devices used in near-surface surveying. Near Surface Geophysics, 12, 481-491.
 
 .. index:: code source
 
@@ -233,7 +329,6 @@ https://github.com/narimanInrap/AGT.git
 Future developments
 ===================
 
-* Electromagnetic processing module (GeoPhex gem-2, dualEM)
 * RM15/RM85 Download module
 * Advanced processing module
 	 
