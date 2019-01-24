@@ -28,11 +28,13 @@ from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import QSettings, QTextCodec
 from qgis.core import *
 
+
 from os.path import splitext
 from os.path import dirname
 from os.path import basename
 import os, sqlite3
 
+from AGTExceptions import *
 #from ..lib.serial.tools import list_ports
 #import serial.tools.list_ports
 
@@ -43,6 +45,31 @@ class Utilities(object):
     
     crsRefDict = {}
     interpolProcDict = {}
+    
+    @staticmethod
+    def createShapefile(fileName, fields, features, encoding, crs):
+    
+        check = QtCore.QFile(fileName)
+        if check.exists():
+            if not QgsVectorFileWriter.deleteShapeFile(fileName):
+                raise FileDeletionError(fileName)  
+        writer = QgsVectorFileWriter(fileName, encoding,
+                                     fields, QGis.WKBPoint, crs)
+        #if writer.hasError() != QgsVectorFileWriter.NoError:
+        #   print "Error when creating shapefile: ",  w.errorMessage() lever une exception        
+        featCounter = 0       
+        for feature in features:
+            writer.addFeature(feature)
+            featCounter += 1
+        if featCounter == 0:
+            del writer    
+            if not QgsVectorFileWriter.deleteShapeFile(fileName):
+                msg = QtGui.QApplication.translate(u"Engine",u'No feature was created. The {} shapefile was deleted.\n').format(fileName)
+                raise FileDeletionError(msg + fileName)
+            raise NoFeatureCreatedError(fileName)          
+        del writer
+    
+    
     
     # Returns a tupple containing the default parameters saved in the parameters' file
     @staticmethod
@@ -68,7 +95,56 @@ class Utilities(object):
             #msg += 'Default parameters not found.'            
             pass
         finally:
+            paramFile.close()
             return(defaultCrsImport, defaultCrsExport, defaultEncoding)
+    
+    
+    @staticmethod
+    def loadDefaultCalibration():
+        
+        defaultInlineFile = ''
+        defaultAltBottom = 0.02
+        defaultAltTop = 2.0
+        defaultLayerNb = 5
+        defaultMeanResist = 30
+        defaultLayerTh1 = 0.2
+        defaultLayerTh2 = 0.5
+        defaultLayerTh3 = 1.0
+        defaultLayerTh4 = 2.0
+        defaultResist1 = 30.0
+        defaultResist2 = 30.0
+        defaultResist3 = 30.0
+        defaultResist4 = 30.0
+        defaultResist5 = 30.0
+        try:
+            calibFilename = '{}/../calibration.txt'.format(os.path.dirname(__file__))
+            calibFile = open(calibFilename, 'r')
+            defaultInlineFile = unicode(calibFile.readline().strip())
+            defaultAltBottom = float(calibFile.readline().strip())
+            defaultAltTop = float(calibFile.readline().strip())
+            defaultLayerNb = int(calibFile.readline().strip())
+            defaultMeanResist = float(calibFile.readline().strip())
+            if defaultLayerNb == 1:
+                calibFile.close()
+                return (defaultInlineFile, defaultAltBottom, defaultAltTop, defaultLayerNb, defaultMeanResist)
+            defaultLayerTh1 = float(calibFile.readline().strip())
+            defaultLayerTh2 = float(calibFile.readline().strip())
+            defaultLayerTh3 = float(calibFile.readline().strip())
+            defaultLayerTh4 = float(calibFile.readline().strip())
+            defaultResist1 = float(calibFile.readline().strip())
+            defaultResist2 = float(calibFile.readline().strip())
+            defaultResist3 = float(calibFile.readline().strip())
+            defaultResist4 = float(calibFile.readline().strip())
+            defaultResist5 = float(calibFile.readline().strip())           
+        except IOError as e:
+            #msg = 'Error({0}): {1}.\n'.format(e.errno, e.strerror)
+            #msg += 'Default calibration parameters not found.'            
+            pass
+        finally:
+            calibFile.close()
+            return(defaultInlineFile, defaultAltBottom, defaultAltTop, defaultLayerNb, defaultMeanResist, defaultLayerTh1, defaultLayerTh2, 
+                   defaultLayerTh3, defaultLayerTh4, defaultResist1, defaultResist2, defaultResist3, defaultResist4, defaultResist5)  
+        
         
     # Returns the list of all CRSes and fills the CRS dictionary
     @staticmethod
