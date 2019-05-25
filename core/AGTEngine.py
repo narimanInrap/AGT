@@ -170,7 +170,7 @@ class Engine(object):
                 if self.isFilter:
                     Engine.filteredPointNum.append(0)
                     self.rawDataMat.append([])
-                    measureNbr = self.channelNbr - channelCount                   
+                    measureNbr = (self.ElectNbr - 1) - channelCount                   
                     width = measureNbr*self.gridWid                        
                     for j in range(0, width):
                         l = []
@@ -189,7 +189,7 @@ class Engine(object):
             barLen = (self.ElectNbr - 1)*self.ElectGap                 
             while not(rawDataFile.atEnd()):
                 for channelCount in range(0, self.channelNbr):
-                    measureNbr = self.channelNbr - channelCount                    
+                    measureNbr = (self.ElectNbr - 1) - channelCount                    
                     xShift = (channelCount + 1)*self.ElectGap/2 # the measured point is in the middle of the two measuring elecrodes
                     if yStep < 0:
                         xShift = -xShift
@@ -209,7 +209,7 @@ class Engine(object):
                         pointId[gridCount*self.channelNbr + channelCount] += 1
                 y += yStep
                 j += jStep
-                if(j == self.gridLen or j == -1):
+                if(j == self.gridLen*(1/self.PointDist) or j == -1):
                     yStep *= -1
                     jStep *= -1
                     y += yStep 
