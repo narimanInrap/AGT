@@ -25,7 +25,8 @@ AGT - Archaeological Geophysics Toolbox
 #using Unicode for all strings
 from __future__ import unicode_literals
 
-from PyQt4 import QtGui
+from PyQt5.QtCore import QCoreApplication
+
 from fileinput import filename
 
 class FileDeletionError(Exception):
@@ -36,7 +37,7 @@ class FileDeletionError(Exception):
         self.message = self.__str__()
         
     def __str__(self):
-        msg = QtGui.QApplication.translate("Exceptions","Error deleting Shapefile {}.", None, QtGui.QApplication.UnicodeUTF8)
+        msg = QCoreApplication.translate("Exceptions","Error deleting Shapefile {}.")
         return msg.format(repr(self.fileName))
 
 class NoFeatureCreatedError(Exception):
@@ -47,7 +48,7 @@ class NoFeatureCreatedError(Exception):
         self.message = self.__str__()
     
     def __str__(self):
-        msg = QtGui.QApplication.translate("Exceptions", "No feature was created. The shapefile was deleted {}.\n", None, QtGui.QApplication.UnicodeUTF8)
+        msg = QCoreApplication.translate("Exceptions", "No feature was created. The shapefile was deleted {}.\n")
         return msg.format(self.filename)
 
 class ParserError(Exception):
@@ -58,5 +59,5 @@ class ParserError(Exception):
         self.message = self.__str__() + msg
         
     def __str__(self):
-        msg = QtGui.QApplication.translate("Exceptions", "Error reading {}.\n", None, QtGui.QApplication.UnicodeUTF8)
+        msg = QCoreApplication.translate("Exceptions", "Error reading {}.\n")
         return msg.format(self.filename)

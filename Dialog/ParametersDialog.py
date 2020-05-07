@@ -25,54 +25,36 @@
 from __future__ import unicode_literals
 import os, codecs
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5 import uic, QtWidgets
+from PyQt5.QtCore import QSettings, QTextCodec, QCoreApplication, Qt
+
+from qgis.core import *
+from qgis.gui import *
 
 from ..ui.ui_ParametersDialog import Ui_ParametersDialog
 from ..toolbox.AGTUtilities import Utilities, AGTEnconding
 
-class ParametersDialog(QDialog, Ui_ParametersDialog):
-    def __init__(self, iface, parent=None):
+class ParametersDialog(QtWidgets.QDialog, Ui_ParametersDialog):
+    def __init__(self, parent=None):
         """Constructor."""
         super(ParametersDialog, self).__init__(parent)
-        # Set up the user interface from Designer.
-        # After setupUI you can access any designer object by doing
-        # self.<objectname>, and you can use autoconnect slots - see
-        # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
-        # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)        
-        self.iface = iface
-        QObject.connect(self.saveButton, SIGNAL('clicked()'), self.saveParams)
-        QObject.connect(self.cancelButton, SIGNAL('clicked()'), self.hideDialog)
+#         self.iface = iface
+        self.saveButton.clicked.connect(self.saveParams)
+        self.cancelButton.clicked.connect(self.hideDialog)
         self.defaultEncoding = ''
         self.defaultCrsImport = ''
-        self.defaultCrsExport = ''        
-        self.populateCRS(Utilities.getCRSList())        
+        self.defaultCrsExport = ''      
         self.populateEncodings(AGTEnconding.getEncodings())
         
-    def populateCRS(self, crsNames):
-        
-        self.comboCRS.clear()
-        self.comboCRS.addItems(crsNames)
-        self.comboCRSImport.clear()
-        self.comboCRSImport.addItems(crsNames)
-        self.setDefaultCRSImport()
-        self.setDefaultCRSExport()
-        
     def setDefaultCRSImport(self):
-
-        index = self.comboCRSImport.findText(self.defaultCrsImport)     
-        if index == -1:        
-            index = 0  # Make sure some encoding is selected.            
-        self.comboCRSImport.setCurrentIndex(index)
-    
+        
+        self.qgsProjectionSelectionImport.setCrs(self.defaultCrsImport)
+     
     def setDefaultCRSExport(self):
-
-        index = self.comboCRS.findText(self.defaultCrsExport)     
-        if index == -1:        
-            index = 0  # Make sure some encoding is selected.            
-        self.comboCRS.setCurrentIndex(index)
-    
+        
+        self.qgsProjectionSelectionExport.setCrs(self.defaultCrsExport)
+       
     def populateEncodings(self, names):
         """Populates the combo box of available encodings."""
         
@@ -96,12 +78,12 @@ class ParametersDialog(QDialog, Ui_ParametersDialog):
         paramFilename = '{}/../param.txt'.format(os.path.dirname(__file__))
         paramFile = codecs.open(paramFilename, 'w', encoding = 'UTF-8')        
         #paramFile = open(paramFilename, 'w', encoding = 'utf-8') pour python 3
-        paramFile.write(self.comboCRSImport.currentText() + '\n')
-        paramFile.write(self.comboCRS.currentText() + '\n')
+        paramFile.write('EPSG:' + str(self.qgsProjectionSelectionImport.crs().postgisSrid()) + '\n')
+        paramFile.write('EPSG:' + str(self.qgsProjectionSelectionExport.crs().postgisSrid()) + '\n')
         paramFile.write(self.comboEncoding.currentText() + '\n')       
         paramFile.close()
-        msg = QApplication.translate(u"ParamDlg",'Default parameters saved.')            
-        QMessageBox.information(self, 'AGT', msg)
+        msg = QCoreApplication.translate(u"ParamDlg",'Default parameters saved.')            
+        QtWidgets.QMessageBox.information(self, 'AGT', msg)
         self.hideDialog()
     
     def hideDialog(self):        

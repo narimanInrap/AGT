@@ -26,9 +26,11 @@ from __future__ import unicode_literals
 
 import os, codecs
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5 import uic, QtWidgets
+from PyQt5.QtCore import QSettings, QTextCodec, QCoreApplication, Qt
 
+from qgis.core import *
+from qgis.gui import *
 
 
 from ..core.AGTEngine import Engine
@@ -38,9 +40,9 @@ from ..toolbox.AGTUtilities import Utilities, AGTEnconding
 from ..toolbox.AGTExceptions import *
 
 
-class CalibrationDialog(QDialog, Ui_AGTCalibrationDialog):
+class CalibrationDialog(QtWidgets.QDialog, Ui_AGTCalibrationDialog):
   
-    def __init__(self, iface, parent=None):
+    def __init__(self, parent=None):
         """Constructor."""
         super(CalibrationDialog, self).__init__(parent)
         # Set up the user interface from Designer.
@@ -49,12 +51,15 @@ class CalibrationDialog(QDialog, Ui_AGTCalibrationDialog):
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
-        QObject.connect(self.meanResisCheckBox, SIGNAL('stateChanged(int)'), self.meanResisChecked)
-        QObject.connect(self.saveButton, SIGNAL('clicked()'), self.saveCalib)
-        QObject.connect(self.cancelButton, SIGNAL('clicked()'), self.hideDialog)
-        QObject.connect(self.ButtonBrowse, SIGNAL('clicked()'), self.inFile)
-        
-        self.iface = iface
+        self.meanResisCheckBox.stateChanged.connect(self.meanResisChecked)
+        #QObject.connect(self.meanResisCheckBox, SIGNAL('stateChanged(int)'), self.meanResisChecked)
+        self.saveButton.clicked.connect(self.saveCalib)
+#         QObject.connect(self.saveButton, SIGNAL('clicked()'), self.saveCalib)
+        self.cancelButton.clicked.connect(self.hideDialog)
+#         QObject.connect(self.cancelButton, SIGNAL('clicked()'), self.hideDialog)
+        self.ButtonBrowse.clicked.connect(self.inFile)
+#         QObject.connect(self.ButtonBrowse, SIGNAL('clicked()'), self.inFile)
+#         self.iface = iface
         self.defaultInlineFile = ''
         self.defaultAltBottom = 0.02
         self.defaultAltTop = 2.0
@@ -142,8 +147,8 @@ class CalibrationDialog(QDialog, Ui_AGTCalibrationDialog):
             calibFile.write(unicode(self.resistL4.value())+ '\n')
             calibFile.write(unicode(self.resistL5.value())+ '\n')           
         calibFile.close()
-        msg = QApplication.translate(u"calibrationDlg",'Default calibration saved.')            
-        QMessageBox.information(self, 'AGT', msg)
+        msg = QCoreApplication.translate(u"calibrationDlg",'Default calibration saved.')            
+        QtWidgets.QMessageBox.information(self, 'AGT', msg)
         self.hideDialog()    
 
     def setDefault(self):

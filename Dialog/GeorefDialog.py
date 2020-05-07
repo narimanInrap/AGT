@@ -26,8 +26,9 @@ from __future__ import unicode_literals
 
 import os
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5 import uic, QtWidgets
+from PyQt5.QtCore import QSettings, QTextCodec, QCoreApplication, Qt
+
 from qgis.gui import QgsMapTool, QgsMapToolEmitPoint
 
 from ..core.AGTEngine import Engine
@@ -36,15 +37,14 @@ from ..ui.ui_georefDialog import Ui_AGTGeorefDialog
 from ..toolbox.AGTUtilities import Utilities, AGTEnconding
 
 
-class GeorefDialog(QDialog, Ui_AGTGeorefDialog):
+class GeorefDialog(QtWidgets.QDialog, Ui_AGTGeorefDialog):
     def __init__(self, iface, engine, grid = None, parent = None):
         """Constructor."""
         super(GeorefDialog, self).__init__(parent)        
         self.setupUi(self)
-        QObject.connect(self.mouseclickPointMap1, SIGNAL('pressed()'), self.button1Checked)
-        QObject.connect(self.mouseclickPointMap2, SIGNAL('pressed()'), self.button2Checked)    
-        QObject.connect(self.runButton, SIGNAL('clicked()'), self.run)
-        #QObject.connect(self., QtCore.SIGNAL(_fromUtf8("accepted()")), Ui_AGTGeorefDialog.AGTGeorefDialog.accept)
+        self.mouseclickPointMap1.pressed.connect(self.button1Checked)
+        self.mouseclickPointMap2.pressed.connect(self.button2Checked)
+        self.runButton.clicked.connect(self.run)
         self.iface = iface
         self.engine = engine
         self.grid = grid       
@@ -80,8 +80,8 @@ class GeorefDialog(QDialog, Ui_AGTGeorefDialog):
         
         if (not self.x1.text() or not self.y1.text() or not self.xt1.text() or not self.yt1.text() or
             not self.x2.text() or not self.y2.text() or not self.xt2.text() or not self.yt2.text()):
-            msg = QApplication.translate(u"georefDlg",'Please specify all coordinates.')
-            QMessageBox.warning(self, 'AGT', msg)
+            msg = QCoreApplication.translate(u"georefDlg",'Please specify all coordinates.')
+            QtWidgets.QMessageBox.warning(self, 'AGT', msg)
             return False
         try:
             float(self.x1.text())
@@ -93,8 +93,8 @@ class GeorefDialog(QDialog, Ui_AGTGeorefDialog):
             float(self.xt2.text())
             float(self.yt2.text())
         except ValueError:
-            msg = QApplication.translate(u"georefDlg",'All point coordinates must be floating point numbers.')
-            QMessageBox.warning(self, 'AGT', msg)
+            msg = QCoreApplication.translate(u"georefDlg",'All point coordinates must be floating point numbers.')
+            QtWidgets.QMessageBox.warning(self, 'AGT', msg)
             return False
         return True
     

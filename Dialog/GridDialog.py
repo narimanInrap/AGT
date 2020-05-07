@@ -26,31 +26,33 @@ from __future__ import unicode_literals
 
 import os
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5 import uic, QtWidgets
+from PyQt5.QtCore import QSettings, QTextCodec, QCoreApplication, Qt
+
 from qgis.gui import QgsMapTool, QgsMapToolEmitPoint
 
 from ..ui.ui_GridDialog import Ui_AGTGridDialog
 from ..toolbox.AGTUtilities import Utilities
 
 
-class GridDialog(QDialog, Ui_AGTGridDialog):
-    def __init__(self, iface, engine, grid, parent = None):
+class GridDialog(QtWidgets.QDialog, Ui_AGTGridDialog):
+    def __init__(self, engine, grid, parent = None):
         """Constructor."""
         super(GridDialog, self).__init__(parent)        
         self.setupUi(self)
-        QObject.connect(self.runButton, SIGNAL('clicked()'), self.run)
-        self.iface = iface
+#         QObject.connect(self.runButton, SIGNAL('clicked()'), self.run)
+        self.runButton.clicked.connect(self.run)
+#         self.iface = iface
         self.engine = engine
         self.grid = grid       
-        self.gridLabel.setText(QApplication.translate(u"gridDlg",'grid number ') + str(grid))        
+        self.gridLabel.setText(QCoreApplication.translate(u"gridDlg",'grid number ') + str(grid))        
 
         
     def inputCheck(self):
     
         if (not self.nameSpin.text() or not self.xSpin.text() or not self.ySpin.text()):
-            msg = QApplication.translate(u"gridDlg",'Please fill out all fields.')
-            QMessageBox.warning(self, 'AGT', msg)
+            msg = QCoreApplication.translate(u"gridDlg",'Please fill out all fields.')
+            QtWidgets.QMessageBox.warning(self, 'AGT', msg)
             return False
         return True
     

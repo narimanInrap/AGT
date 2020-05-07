@@ -28,8 +28,9 @@ import os
 
 from os.path import dirname
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5 import uic, QtWidgets
+from PyQt5.QtCore import QSettings, QTextCodec, QCoreApplication, Qt
+
 
 from ..core.AGTEngine import Engine
 
@@ -38,25 +39,20 @@ from ..ui.ui_electDialog import Ui_AGTElectDialogBase
 from ..toolbox.AGTUtilities import Utilities, AGTEnconding
 from ..toolbox.AGTExceptions import *
 from ..toolbox.DefParamEnum import DefParamEnum
-from GeorefDialog import GeorefDialog
+from .GeorefDialog import GeorefDialog
 
 
 #FORM_CLASS, _ = uic.loadUiType(os.path.join(
 #   os.path.dirname(__file__), 'agt_dialog_base.ui'))
 
 
-class ElectDialog(QDialog, Ui_AGTElectDialogBase):
+class ElectDialog(QtWidgets.QDialog, Ui_AGTElectDialogBase):
     def __init__(self, iface, parent=None):
         """Constructor."""
         super(ElectDialog, self).__init__(parent)
-        # Set up the user interface from Designer.
-        # After setupUI you can access any designer object by doing
-        # self.<objectname>, and you can use autoconnect slots - see
-        # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
-        # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)      
-        QObject.connect(self.ButtonBrowse, SIGNAL('clicked()'), self.inFile) 
-        QObject.connect(self.allProcess_button, SIGNAL('clicked()'), self.allProcesses)
+        self.ButtonBrowse.clicked.connect(self.inFile)
+        self.allProcess_button.clicked.connect(self.allProcesses)
         self.iface = iface
         self.encoding = Utilities.loadDefaultParameters()[DefParamEnum.encoding]        
       
@@ -64,30 +60,30 @@ class ElectDialog(QDialog, Ui_AGTElectDialogBase):
         """Verifies whether the input is valid."""
         
         if not self.inFileLine.text():
-            msg = QtGui.QApplication.translate(u"ElectDlg", 'Please specify an input data file.')            
-            QMessageBox.warning(self, 'AGT', msg)
+            msg = QCoreApplication.translate(u"ElectDlg", 'Please specify an input data file.')            
+            QtWidgets.QMessageBox.warning(self, 'AGT', msg)
             return False
         if not self.outputFilename.text():
-            msg = QtGui.QApplication.translate(u"ElectDlg",'Please specify a project name.')
-            QMessageBox.warning(self, 'AGT', msg)
+            msg = QCoreApplication.translate(u"ElectDlg",'Please specify a project name.')
+            QtWidgets.QMessageBox.warning(self, 'AGT', msg)
             return False       
         if os.path.exists(dirname(self.inFileLine.text()) + '/' + self.outputFilename.text()):
-            msg = QtGui.QApplication.translate(u"ElectDlg", 'The project name you have chosen already exists, you might overwrite some shapefiles. Do you want to continue?')
-            keepPrjName = QMessageBox.question(self, 'AGT', msg,  QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
-            if keepPrjName == QMessageBox.No:
+            msg = QCoreApplication.translate(u"ElectDlg", 'The project name you have chosen already exists, you might overwrite some shapefiles. Do you want to continue?')
+            keepPrjName = QtWidgets.QMessageBox.question(self, 'AGT', msg,  QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.NoButton)
+            if keepPrjName == QtWidgets.QMessageBox.No:
                 return False
         if self.checkBox_filt.isChecked():
             if not self.spinBox_maskR.value():
-                msg = QtGui.QApplication.translate(u"ElectDlg",'Please specify the kernel size.')
-                QMessageBox.warning(self, 'AGT', msg)
+                msg = QCoreApplication.translate(u"ElectDlg",'Please specify the kernel size.')
+                QtWidgets.QMessageBox.warning(self, 'AGT', msg)
                 return False
             if not self.spinBox_mvp.value():
-                msg = QtGui.QApplication.translate(u"ElectDlg",'Please specify the median value percentage.')
-                QMessageBox.warning(self, 'AGT', msg)
+                msg = QCoreApplication.translate(u"ElectDlg",'Please specify the median value percentage.')
+                QtWidgets.QMessageBox.warning(self, 'AGT', msg)
                 return False
             if self.spinBox_maskR.value()%2 == 0:
-                msg = QtGui.QApplication.translate(u"ElectDlg",'The mask size must be an odd number.')
-                QMessageBox.warning(self, 'AGT', msg)
+                msg = QCoreApplication.translate(u"ElectDlg",'The mask size must be an odd number.')
+                QtWidgets.QMessageBox.warning(self, 'AGT', msg)
                 return False
         return True    
 
@@ -146,9 +142,10 @@ class ElectDialog(QDialog, Ui_AGTElectDialogBase):
         try:
             self.engine.rawDataParser()
             self.progressBar.setValue(35)
-        except (ParserError, ValueError) as e:       
-            QMessageBox.warning(self, 'AGT', e.message)
-            QMessageBox.warning(self, 'AGT', QtGui.QApplication.translate(u"ElectDlg",'procedure stopped'))
+        except (ParserError, ValueError) as e:
+            msg = '{}'.format(e)
+            QtWidgets.QMessageBox.warning(self, 'AGT', msg)
+            QtWidgets.QMessageBox.warning(self, 'AGT', QCoreApplication.translate(u"ElectDlg",'procedure stopped'))
             return    
         try:
             if self.datFilechkbox.isChecked():
@@ -157,11 +154,12 @@ class ElectDialog(QDialog, Ui_AGTElectDialogBase):
             if self.checkBox_filt.isChecked():      
                 filteredPtsMsg = self.engine.filterRawData()
                 shapefiles = self.engine.createFilteredShapefile()
-                QMessageBox.information(self, 'AGT', filteredPtsMsg)
+                QtWidgets.QMessageBox.information(self, 'AGT', filteredPtsMsg)
             else:     
                 shapefiles = self.engine.createRelCoordShapefile()
-        except (FileDeletionError, NoFeatureCreatedError) as e:                    
-            QMessageBox.warning(self, 'AGT', e.message )
+        except (FileDeletionError, NoFeatureCreatedError) as e:
+            msg = '{}'.format(e)                   
+            QtWidgets.QMessageBox.warning(self, 'AGT', msg)
             return 
         self.progressBar.setValue(100)         
         if self.checkBox_geo.isChecked():
@@ -169,29 +167,26 @@ class ElectDialog(QDialog, Ui_AGTElectDialogBase):
                 geoDlg = GeorefDialog(self.iface, self.engine, g)
                 geoDlg.show()
                 result = geoDlg.exec_()                
-                if result == QDialog.Rejected:
-                    QMessageBox.information(self, 'AGT', 'grid' + str(self.engine.getGridNames()[g]) + ': ' + QtGui.QApplication.translate(u"ElectDlg",u'Georeferencing canceled'))     
+                if result == QtWidgets.QDialog.Rejected:
+                    QtWidgets.QMessageBox.information(self, 'AGT', 'grid' + str(self.engine.getGridNames()[g]) + ': ' + QCoreApplication.translate(u"ElectDlg",u'Georeferencing canceled'))     
                     break              
-                QMessageBox.information(self, 'AGT', 'grid' + str(self.engine.getGridNames()[g]) + ': ' + QtGui.QApplication.translate(u"ElectDlg",u'Georeferencing done'))
-            shapefiles = map(lambda st : st[:-4] + '_Gref.shp', shapefiles)
+                QtWidgets.QMessageBox.information(self, 'AGT', 'grid' + str(self.engine.getGridNames()[g]) + ': ' + QCoreApplication.translate(u"ElectDlg",u'Georeferencing done'))
+            shapefiles = list(map(lambda st : st[:-4] + '_Gref.shp', shapefiles))
         else:
-            QMessageBox.information(self, 'AGT', "Data exported.")            
+            QtWidgets.QMessageBox.information(self, 'AGT', "Data exported.")            
         self.addShapesToCanvas(shapefiles)  
         self.hideDialog()
         
         
     def addShapesToCanvas(self, shapefiles):
-    
-        message = QtGui.QApplication.translate(u"ElectDlg",'Output Shapfiles:')        
+        
+        message = QCoreApplication.translate(u"ElectDlg",'Output Shapfiles:')        
         for sf in shapefiles:           
             message = '\n'.join([message, unicode(sf)])
-        message = '\n'.join([message, QtGui.QApplication.translate(u"ElectDlg","Would you like to add the new layers to your project?")])            
-        addToTOC = QMessageBox.question(self, "AGT", message,
-            QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
-        if addToTOC == QMessageBox.Yes:
+        message = '\n'.join([message, QCoreApplication.translate(u"ElectDlg","Would you like to add the new layers to your project?")])            
+        addToTOC = QtWidgets.QMessageBox.question(self, "AGT", message,
+            QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.NoButton)
+        if addToTOC == QtWidgets.QMessageBox.Yes:
             for sf in shapefiles:
-                Utilities.addShapeToCanvas(unicode(sf))                
-        
-
-    
- 
+                Utilities.addShapeToCanvas(unicode(sf))
+           

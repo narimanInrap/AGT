@@ -29,17 +29,17 @@ import sys
  
 from os.path import dirname
  
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
- 
+from PyQt5 import uic, QtWidgets
+from PyQt5.QtCore import QSettings, QTextCodec, QCoreApplication, Qt
+
 from ..ui.ui_ElecDownDialog import Ui_AGTElecDownDialog
 from ..toolbox.AGTUtilities import Utilities, AGTEnconding
 from ..core.DownloadEngine import DownloadEngine
-from GridDialog import GridDialog
+from .GridDialog import GridDialog
  
  
-class ElecDownDialog(QDialog, Ui_AGTElecDownDialog):
-    def __init__(self, iface, parent=None):
+class ElecDownDialog(QtWidgets.QDialog, Ui_AGTElecDownDialog):
+    def __init__(self, parent=None):
         """Constructor."""
         super(ElecDownDialog, self).__init__(parent)
         # Set up the user interface from Designer.
@@ -48,9 +48,11 @@ class ElecDownDialog(QDialog, Ui_AGTElecDownDialog):
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)    
-        self.iface = iface
-        QObject.connect(self.ButtonBrowse, SIGNAL('clicked()'), self.outFile)
-        QObject.connect(self.runButton, SIGNAL('clicked()'), self.run)            
+#         self.iface = iface
+#         QObject.connect(self.ButtonBrowse, SIGNAL('clicked()'), self.outFile)
+        self.ButtonBrowse.clicked.connect(self.outFile)
+#         QObject.connect(self.runButton, SIGNAL('clicked()'), self.run)
+        self.runButton.clicked.connect(self.run)   
         self.populateProbeConfig(Utilities.getProbeConfigList())
         self.populateComCombo(Utilities.getComPortList())
         self.populateBaudCombo(Utilities.getBaudRateList())
@@ -94,8 +96,8 @@ class ElecDownDialog(QDialog, Ui_AGTElecDownDialog):
         """Verifies whether the input is valid."""
          
         if not self.outputFilename.text():
-            msg = QApplication.translate(u"ElecDownDlg",'Please specify an output file name.')
-            QMessageBox.warning(self, 'AGT', msg)
+            msg = QCoreApplication.translate(u"ElecDownDlg",'Please specify an output file name.')
+            QtWidgets.QMessageBox.warning(self, 'AGT', msg)
             return False
         return True
      
@@ -111,18 +113,18 @@ class ElecDownDialog(QDialog, Ui_AGTElecDownDialog):
             gridDlg = GridDialog(self.iface, self.engine, g)
             gridDlg.show()
             result = gridDlg.exec_()              
-            if result == QDialog.Rejected:
-                QMessageBox.information(self, 'AGT', 'grid ' + str(g) + ': ' + QApplication.translate(u"ElectDlg",u'Procedure canceled.'))     
+            if result == QtWidgets.QDialog.Rejected:
+                QtWidgets.QMessageBox.information(self, 'AGT', 'grid ' + str(g) + ': ' + QCoreApplication.translate(u"ElectDlg",u'Procedure canceled.'))     
                 return       
             self.engine.RMDownload()        
         try:
         #    self.engine.RMDownload()
             pass            
         except:       
-            QMessageBox.warning(self, 'AGT', QApplication.translate(u"ElecDownDlg",'Unexpected error, procedure stopped.'))
-            QMessageBox.warning(self, 'AGT', str(sys.exc_info()[0]))
+            QtWidgets.QMessageBox.warning(self, 'AGT', QCoreApplication.translate(u"ElecDownDlg",'Unexpected error, procedure stopped.'))
+            QtWidgets.QMessageBox.warning(self, 'AGT', str(sys.exc_info()[0]))
             return
-        QMessageBox.information(self, 'AGT', "Data download completed. data exported in: \n {}".format(self.outputFilename.text())) 
+        QtWidgets.QMessageBox.information(self, 'AGT', "Data download completed. data exported in: \n {}".format(self.outputFilename.text())) 
         self.hideDialog()
  
     def hideDialog(self):

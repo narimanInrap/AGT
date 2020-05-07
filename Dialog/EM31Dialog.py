@@ -25,8 +25,9 @@
 from __future__ import unicode_literals
 
 import os
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5 import uic, QtWidgets
+from PyQt5.QtCore import QSettings, QTextCodec, QCoreApplication, Qt
+
 
 from ..core.AGTEngine import Engine
 from ..core.CoilEnum import CoilConfigEnum
@@ -36,62 +37,33 @@ from ..toolbox.AGTExceptions import *
 from ..toolbox.DefParamEnum import DefParamEnum
 
 
-class EM31Dialog(QDialog, Ui_AGTEM31Dialog):
-    def __init__(self, iface, parent=None):
+class EM31Dialog(QtWidgets.QDialog, Ui_AGTEM31Dialog):
+    def __init__(self, parent=None):
         """Constructor."""
         super(EM31Dialog, self).__init__(parent)
-        # Set up the user interface from Designer.
-        # After setupUI you can access any designer object by doing
-        # self.<objectname>, and you can use autoconnect slots - see
-        # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
-        # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
-        QObject.connect(self.ButtonBrowse, SIGNAL('clicked()'), self.inFile)
-        QObject.connect(self.ButtonBrowseShape, SIGNAL('clicked()'), self.outFileBrowse)
-        QObject.connect(self.runButton, SIGNAL('clicked()'), self.EM31Process)
-        self.iface = iface
-        self.defaultCrsImport = ''        
-        self.defaultCrs = ''
-        self.encoding = ''    
-        self.populateCRS(Utilities.getCRSList())        
+        self.ButtonBrowse.clicked.connect(self.inFile)
+        self.ButtonBrowseShape.clicked.connect(self.outFileBrowse)
+        self.runButton.clicked.connect(self.EM31Process)
+        self.encoding = ''         
         
-
     def tr(self, message):
         """Get the translation for a string using Qt translation API.        
         """
         return QCoreApplication.translate(u"EM31Dlg", message)        
    
-    def setDefaultCRSImport(self):    
+    def setDefaultCRSImport(self):
         
-        #index = self.comboCRS.findText(u'WGS 84 / UTM zone 31N, 32631')
-        self.defaultCrsImport = Utilities.loadDefaultParameters()[DefParamEnum.crsImport]        
-        index = self.comboCRSImport.findText(self.defaultCrsImport)      
-        if index == -1:        
-            index = 0  # Make sure some encoding is selected.            
-        self.comboCRSImport.setCurrentIndex(index)   
+        self.qgsProjectionSelectionImport.setCrs(Utilities.loadDefaultParameters()[DefParamEnum.crsImport])
     
-    def setDefaultCRSExport(self):    
+    def setDefaultCRSExport(self):   
         
-        #index = self.comboCRS.findText(u'WGS 84 / UTM zone 31N, 32631')
-        self.defaultCrs = Utilities.loadDefaultParameters()[DefParamEnum.crsExport]        
-        index = self.comboCRS.findText(self.defaultCrs)      
-        if index == -1:        
-            index = 0  # Make sure some encoding is selected.            
-        self.comboCRS.setCurrentIndex(index)
-   
-    def populateCRS(self, crsNames):
-        
-        self.comboCRSImport.clear()
-        self.comboCRSImport.addItems(crsNames)     
-        self.setDefaultCRSImport()
-        self.comboCRS.clear()
-        self.comboCRS.addItems(crsNames)     
-        self.setDefaultCRSExport()     
+        self.qgsProjectionSelectionExport.setCrs(Utilities.loadDefaultParameters()[DefParamEnum.crsExport] )
 
     def inFile(self):
         """Opens an open file dialog"""  
         
-        inputMsg = QtGui.QApplication.translate(u"EM31Dlg", "Input file")
+        inputMsg = QCoreApplication.translate(u"EM31Dlg", "Input file")
         inFilePath = Utilities.openFileDialog(self, 'EM31 (*.dat)', inputMsg)
         if not inFilePath:
             return
@@ -113,7 +85,7 @@ class EM31Dialog(QDialog, Ui_AGTEM31Dialog):
         if self.radioButtonHCP.isChecked():
             coil = CoilConfigEnum.HCP
         self.encoding = Utilities.loadDefaultParameters()[DefParamEnum.encoding]
-        self.engine = Engine(rawDataFilename = self.inFileLine.text(), dataEncoding = self.encoding, crsRefImp = self.comboCRSImport.currentText(), crsRefExp = self.comboCRS.currentText(), 
+        self.engine = Engine(rawDataFilename = self.inFileLine.text(), dataEncoding = self.encoding, crsRefImp = self.qgsProjectionSelectionImport.crs(), crsRefExp = self.qgsProjectionSelectionExport.crs(), 
                              datOutput = self.datFilechkbox.isChecked(), addCoordFields = self.coordFieldschk.isChecked(), outputShapefile = self.outputFilename.text(),
                              sensorHeight = self.heightSpin.value(), coilConfig = coil)
         #try:
@@ -128,17 +100,17 @@ class EM31Dialog(QDialog, Ui_AGTEM31Dialog):
         """Verifies whether the input is valid."""
       
         if not self.inFileLine.text():
-            msg = QtGui.QApplication.translate(u"EM31Dlg",'Please specify an input data file.')
-            QMessageBox.warning(self, 'AGT', msg)
+            msg = QCoreApplication.translate(u"EM31Dlg",'Please specify an input data file.')
+            QtWidgets.QMessageBox.warning(self, 'AGT', msg)
             return False
         if not self.outputFilename.text():
-            msg = QtGui.QApplication.translate(u"EM31Dlg",'Please specify an output shapefile.')
-            QMessageBox.warning(self, 'AGT', msg)
+            msg = QCoreApplication.translate(u"EM31Dlg",'Please specify an output shapefile.')
+            QtWidgets.QMessageBox.warning(self, 'AGT', msg)
             return False
         root, ext = os.path.splitext(self.outputFilename.text())
         if (ext.upper() != '.SHP'):
-            msg = QtGui.QApplication.translate(u"EM31Dlg",'The output file must have the filename.shp format.')
-            QMessageBox.warning(self, 'AGT', msg)
+            msg = QCoreApplication.translate(u"EM31Dlg",'The output file must have the filename.shp format.')
+            QtWidgets.QMessageBox.warning(self, 'AGT', msg)
             return False        
         return True
     
@@ -156,12 +128,12 @@ class EM31Dialog(QDialog, Ui_AGTEM31Dialog):
                     
     def addShapeToCanvas(self):
     
-        message = QtGui.QApplication.translate(u"EM31Dlg",'Created output Shapfile:')
+        message = QCoreApplication.translate(u"EM31Dlg",'Created output Shapfile:')
         message = '\n'.join([message, unicode(self.outputFilename.text())])
-        message = '\n'.join([message, QtGui.QApplication.translate(u"EM31Dlg","Would you like to add the new layer to your project?")])            
-        addToTOC = QMessageBox.question(self, "AGT", message,
-            QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
-        if addToTOC == QMessageBox.Yes:
+        message = '\n'.join([message, QCoreApplication.translate(u"EM31Dlg","Would you like to add the new layer to your project?")])            
+        addToTOC = QtWidgets.QMessageBox.question(self, "AGT", message,
+            QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.NoButton)
+        if addToTOC == QtWidgets.QMessageBox.Yes:
             Utilities.addShapeToCanvas(unicode(self.outputFilename.text()))
                  
     def hideDialog(self):

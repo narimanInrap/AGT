@@ -26,72 +26,46 @@ from __future__ import unicode_literals
 
 import os
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5 import uic, QtWidgets
+from PyQt5.QtCore import QSettings, QTextCodec, QCoreApplication, Qt
 
 
 
 from ..core.AGTEngine import Engine, EngineGEM2
 
 from ..ui.ui_MultiFreqDialog import Ui_AGTMultiFreqDialog
-from CalibrationDialog import CalibrationDialog
+from .CalibrationDialog import CalibrationDialog
 from ..toolbox.AGTUtilities import Utilities, AGTEnconding
 from ..toolbox.AGTExceptions import *
 from ..toolbox.DefParamEnum import DefParamEnum
 from ..core.CoilEnum import CoilConfigEnum
 from ..core.FilterEnum import FilterEnum
 
-class GEM2Dialog(QDialog, Ui_AGTMultiFreqDialog):
+class GEM2Dialog(QtWidgets.QDialog, Ui_AGTMultiFreqDialog):
     
-    def __init__(self, iface, parent=None):
+    def __init__(self, parent=None):
         """Constructor."""
-        super(GEM2Dialog, self).__init__(parent)
-        # Set up the user interface from Designer.
-        # After setupUI you can access any designer object by doing
-        # self.<objectname>, and you can use autoconnect slots - see
-        # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
-        # #widgets-and-dialogs-with-auto-connect
+        super(GEM2Dialog, self).__init__(parent)    
         self.setupUi(self)
-        QObject.connect(self.ButtonBrowseData, SIGNAL('clicked()'), self.dataInFile)
-        QObject.connect(self.ButtonBrowseGnss, SIGNAL('clicked()'), self.gnssInFile)
-        QObject.connect(self.ButtonBrowseShape, SIGNAL('clicked()'), self.outFileBrowse)             
-        QObject.connect(self.calibButton, SIGNAL('clicked()'), self.openCalib)
-        QObject.connect(self.runButton, SIGNAL('clicked()'), self.gem2Process)  
-        QObject.connect(self.magSusceptChkBox, SIGNAL('stateChanged(int)'), self.magSusceptChecked) 
-        QObject.connect(self.decimChkBox, SIGNAL('stateChanged(int)'), self.decimChecked)
-        self.iface = iface
-        self.populateCRS(Utilities.getCRSList())     
+        self.ButtonBrowseData.clicked.connect(self.dataInFile)
+        self.ButtonBrowseGnss.clicked.connect(self.gnssInFile)
+        self.ButtonBrowseShape.clicked.connect(self.outFileBrowse)
+        self.calibButton.clicked.connect(self.openCalib)
+        self.runButton.clicked.connect(self.gem2Process)
+        self.magSusceptChkBox.stateChanged.connect(self.magSusceptChecked) 
+        self.decimChkBox.stateChanged.connect(self.decimChecked)
         self.encoding = ''
         self.calib = None
         self.calibInlineFile = None
      
-    def setDefaultCRSImport(self):    
+    def setDefaultCRSImport(self):
         
-        #index = self.comboCRS.findText(u'WGS 84 / UTM zone 31N, 32631')
-        self.defaultCrsImport = Utilities.loadDefaultParameters()[DefParamEnum.crsImport]        
-        index = self.comboCRSImport.findText(self.defaultCrsImport)      
-        if index == -1:        
-            index = 0  # Make sure some encoding is selected.            
-        self.comboCRSImport.setCurrentIndex(index)   
+        self.qgsProjectionSelectionImport.setCrs(Utilities.loadDefaultParameters()[DefParamEnum.crsImport])
     
-    def setDefaultCRSExport(self):    
+    def setDefaultCRSExport(self):   
         
-        #index = self.comboCRS.findText(u'WGS 84 / UTM zone 31N, 32631')
-        self.defaultCrs = Utilities.loadDefaultParameters()[DefParamEnum.crsExport]        
-        index = self.comboCRS.findText(self.defaultCrs)      
-        if index == -1:        
-            index = 0  # Make sure some encoding is selected.            
-        self.comboCRS.setCurrentIndex(index)
-   
-    def populateCRS(self, crsNames):
-        
-        self.comboCRSImport.clear()
-        self.comboCRSImport.addItems(crsNames)     
-        self.setDefaultCRSImport()
-        self.comboCRS.clear()
-        self.comboCRS.addItems(crsNames)     
-        self.setDefaultCRSExport()     
-  
+        self.qgsProjectionSelectionExport.setCrs(Utilities.loadDefaultParameters()[DefParamEnum.crsExport] )
+
     def magSusceptChecked(self):
         
         if self.magSusceptChkBox.isChecked():
@@ -109,7 +83,6 @@ class GEM2Dialog(QDialog, Ui_AGTMultiFreqDialog):
             
     def dataInFile(self):
         
-#        inFilePath = Utilities.openFileDialog(self, 'EMI file (*.csv)', "Open input geophysical data file")
         inFilePath = Utilities.openFileDialog(self, 'gem2 files (*.csv);;Emp400 files (*.EMI)', "Open input geophysical data file")
         if not inFilePath:
             return
@@ -132,7 +105,7 @@ class GEM2Dialog(QDialog, Ui_AGTMultiFreqDialog):
     
     def openCalib(self):
     
-        calibDlg = CalibrationDialog(self.iface)
+        calibDlg = CalibrationDialog()
         calibDlg.loadCalib()
         calibDlg.setDefault()
         calibDlg.show()
@@ -167,7 +140,7 @@ class GEM2Dialog(QDialog, Ui_AGTMultiFreqDialog):
         filterQ = FilterEnum.MEAN
         if self.windowSlideMedianQ.isChecked():
             filterQ = FilterEnum.MEDIAN
-        self.engine = EngineGEM2(rawDataFilename = self.dataInFileLine.text(), dataEncoding = self.encoding, crsRefImp = self.comboCRSImport.currentText(), crsRefExp = self.comboCRS.currentText(), 
+        self.engine = EngineGEM2(rawDataFilename = self.dataInFileLine.text(), dataEncoding = self.encoding, crsRefImp = self.qgsProjectionSelectionImport.csr(), crsRefExp = self.qgsProjectionSelectionExport.crs(), 
                                  sensorHeight = self.altSpin.value(), gnssHourShift = self.gnssHourShift.value(),gnssMinuteShift = self.gnssMinuteShift.value(), gnssSecondsShift = self.gnssSecondsShift.value(),
                                  gnssXShift = self.gnssXShift.value(), gnssYShift = self.gnssYShift.value(), calculConductivite = self.elecConductChkBox.isChecked(), calculSusceptibilite = self.magSusceptChkBox.isChecked(), 
                                  calibrationFilename = self.calibInlineFile, coilConfig = coil, paramConductCorr = self.conductCorrectChkBox.isChecked(), winfilterIp = self.SlidingWindowChkBoxIp.isChecked(), 
@@ -184,11 +157,11 @@ class GEM2Dialog(QDialog, Ui_AGTMultiFreqDialog):
         self.progressBar.setValue(20)        
         if self.gnssInFileLine.text():
             self.engine.gpsRawDataParser()
-            self.engine.gem2GPSFusion()        
-        if self.SlidingWindowChkBoxIp.isChecked() or self.SlidingWindowChkBoxQ.isChecked():
-            self.engine.slidingWindow()            
+            self.engine.gem2GPSFusion()   
         if self.decimChkBox.isChecked():
-            self.engine.gem2Decim()            
+            self.engine.gem2Decim()   
+        if self.SlidingWindowChkBoxIp.isChecked() or self.SlidingWindowChkBoxQ.isChecked():
+            self.engine.slidingWindow()   
         self.progressBar.setValue(30)            
         if self.CalibrationChkBox.isChecked():
             self.engine.rawDataParser(False) #calibration        
@@ -212,33 +185,33 @@ class GEM2Dialog(QDialog, Ui_AGTMultiFreqDialog):
         
     def addShapeToCanvas(self):
     
-        message = QtGui.QApplication.translate(u"Gem2Dlg",'Created output Shapfile:')
+        message = QCoreApplication.translate(u"Gem2Dlg",'Created output Shapfile:')
         message = '\n'.join([message, unicode(self.outputFilename.text())])
-        message = '\n'.join([message, QtGui.QApplication.translate(u"Gem2Dlg","Would you like to add the new layer to your project?")])            
-        addToTOC = QMessageBox.question(self, "AGT", message,
-            QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
-        if addToTOC == QMessageBox.Yes:
+        message = '\n'.join([message, QCoreApplication.translate(u"Gem2Dlg","Would you like to add the new layer to your project?")])            
+        addToTOC = QtWidgets.QMessageBox.question(self, "AGT", message,
+            QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.NoButton)
+        if addToTOC == QtWidgets.QMessageBox.Yes:
             Utilities.addShapeToCanvas(unicode(self.outputFilename.text()))
                 
     def inputCheck(self):
         """Verifies whether the input is valid."""
       
         if not self.dataInFileLine.text():
-            msg = QtGui.QApplication.translate(u"Gem2Dlg",'Please specify an input data file.')
-            QMessageBox.warning(self, 'AGT', msg)
+            msg = QCoreApplication.translate(u"Gem2Dlg",'Please specify an input data file.')
+            QtWidgets.QMessageBox.warning(self, 'AGT', msg)
             return False
         if not self.outputFilename.text():
-            msg = QtGui.QApplication.translate(u"Gem2Dlg",'Please specify an output shapefile.')
-            QMessageBox.warning(self, 'AGT', msg)
+            msg = QCoreApplication.translate(u"Gem2Dlg",'Please specify an output shapefile.')
+            QtWidgets.QMessageBox.warning(self, 'AGT', msg)
             return False
         root, ext = os.path.splitext(self.outputFilename.text())
         if (ext.upper() != '.SHP'):
-            msg = QtGui.QApplication.translate(u"Gem2Dlg",'The output file must have the filename.shp format.')
-            QMessageBox.warning(self, 'AGT', msg)
+            msg = QCoreApplication.translate(u"Gem2Dlg",'The output file must have the filename.shp format.')
+            QtWidgets.QMessageBox.warning(self, 'AGT', msg)
             return False
         if self.CalibrationChkBox.isChecked() and not self.calibInlineFile:
-            msg = QtGui.QApplication.translate(u"Gem2Dlg",'Please specify an calibration data file (calibration parameters), or unselect the calibration option.')
-            QMessageBox.warning(self, 'AGT', msg)
+            msg = QCoreApplication.translate(u"Gem2Dlg",'Please specify a calibration data file (calibration parameters), or unselect the calibration option.')
+            QtWidgets.QMessageBox.warning(self, 'AGT', msg)
             return False            
         return True
         

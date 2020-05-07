@@ -26,8 +26,9 @@ from __future__ import unicode_literals
 
 import os
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5 import uic, QtWidgets
+from PyQt5.QtCore import QSettings, QTextCodec, QCoreApplication, Qt
+
 
 from ..core.AGTEngine import Engine
 
@@ -40,25 +41,17 @@ from ..toolbox.DefParamEnum import DefParamEnum
 #   os.path.dirname(__file__), 'AGT_dialog_base.ui'))
 
 
-class MagDialog(QDialog, Ui_AGTMagDialog):
-    def __init__(self, iface, parent=None):
+class MagDialog(QtWidgets.QDialog, Ui_AGTMagDialog):
+    def __init__(self, parent=None):
         """Constructor."""
         super(MagDialog, self).__init__(parent)
-        # Set up the user interface from Designer.
-        # After setupUI you can access any designer object by doing
-        # self.<objectname>, and you can use autoconnect slots - see
-        # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
-        # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
-        QObject.connect(self.ButtonBrowse, SIGNAL('clicked()'), self.inFile)
-        QObject.connect(self.ButtonBrowseShape, SIGNAL('clicked()'), self.outFileBrowse)
-        QObject.connect(self.allProcess_button, SIGNAL('clicked()'), self.magProcesses)
-        QObject.connect(self.medchk, SIGNAL('stateChanged(int)'), self.medianChecked)
-        QObject.connect(self.trendchk, SIGNAL('stateChanged(int)'), self.TrendChecked)
-        self.iface = iface
-        self.defaultCrs = ''
-        self.encoding = ''
-        self.populateCRS(Utilities.getCRSList())        
+        self.ButtonBrowse.clicked.connect(self.inFile)
+        self.ButtonBrowseShape.clicked.connect(self.outFileBrowse)
+        self.allProcess_button.clicked.connect(self.magProcesses)
+        self.medchk.stateChanged.connect(self.medianChecked)
+        self.trendchk.stateChanged.connect(self.TrendChecked)
+        self.encoding = ''        
   
 
     def tr(self, message):
@@ -86,19 +79,9 @@ class MagDialog(QDialog, Ui_AGTMagDialog):
             self.medchk.setCheckState(Qt.Checked)
             self.trendPercentileChk.setDisabled(True)  
     
-    def populateCRS(self, crsNames):
-        
-        self.comboCRS.clear()
-        self.comboCRS.addItems(crsNames)
-        self.setDefaultCRS()
-    
-    def setDefaultCRS(self):    
-        
-        self.defaultCrs = Utilities.loadDefaultParameters()[DefParamEnum.crsExport]
-        index = self.comboCRS.findText(self.defaultCrs)      
-        if index == -1:        
-            index = 0  # Make sure some encoding is selected.            
-        self.comboCRS.setCurrentIndex(index)        
+    def setDefaultCRS(self):
+ 
+        self.qgsProjectionSelectionExport.setCrs(Utilities.loadDefaultParameters()[DefParamEnum.crsExport])      
         
     def inFile(self):
         """Opens an open file dialog"""  
@@ -121,7 +104,7 @@ class MagDialog(QDialog, Ui_AGTMagDialog):
         if not self.inputCheck():
             return
         self.encoding = Utilities.loadDefaultParameters()[DefParamEnum.encoding]
-        self.engine = Engine(rawDataFilename = self.inFileLine.text(), dataEncoding = self.encoding, crsRefExp = self.comboCRS.currentText(), 
+        self.engine = Engine(rawDataFilename = self.inFileLine.text(), dataEncoding = self.encoding, crsRefExp = self.qgsProjectionSelectionExport.crs(), 
                              datOutput = self.datFilechkbox.isChecked(), addCoordFields = self.coordFieldschk.isChecked(), decimValue = self.decimSpin.value(), 
                              medRemove =  self.medchk.isChecked(), percentile = self.percentilechk.isChecked(), percThreshold = self.percentSpin.value(), 
                              trendRemove = self.trendchk.isChecked(), trendPolyOrder = self.polyOrdSpin.value(), trendPercentile = self.trendPercentileChk.isChecked(), 
@@ -166,28 +149,28 @@ class MagDialog(QDialog, Ui_AGTMagDialog):
         """Verifies whether the input is valid."""
       
         if not self.inFileLine.text():
-            msg = QtGui.QApplication.translate(u"MagDlg",'Please specify an input data file.')
-            QMessageBox.warning(self, 'AGT', msg)
+            msg = QCoreApplication.translate(u"MagDlg",'Please specify an input data file.')
+            QtWidgets.QMessageBox.warning(self, 'AGT', msg)
             return False
         if not self.outputFilename.text():
-            msg = QtGui.QApplication.translate(u"MagDlg",'Please specify an output shapefile.')
-            QMessageBox.warning(self, 'AGT', msg)
+            msg = QCoreApplication.translate(u"MagDlg",'Please specify an output shapefile.')
+            QtWidgets.QMessageBox.warning(self, 'AGT', msg)
             return False
         root, ext = os.path.splitext(self.outputFilename.text())
         if (ext.upper() != '.SHP'):
-            msg = QtGui.QApplication.translate(u"MagDlg",'The output file must have the filename.shp format.')
-            QMessageBox.warning(self, 'AGT', msg)
+            msg = QCoreApplication.translate(u"MagDlg",'The output file must have the filename.shp format.')
+            QtWidgets.QMessageBox.warning(self, 'AGT', msg)
             return False        
         return True
         
     def addShapeToCanvas(self):
     
-        message = QtGui.QApplication.translate(u"MagDlg",'Created output Shapfile:')
+        message = QCoreApplication.translate(u"MagDlg",'Created output Shapfile:')
         message = '\n'.join([message, unicode(self.outputFilename.text())])
-        message = '\n'.join([message, QtGui.QApplication.translate(u"MagDlg","Would you like to add the new layer to your project?")])            
-        addToTOC = QMessageBox.question(self, "AGT", message,
-            QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
-        if addToTOC == QMessageBox.Yes:
+        message = '\n'.join([message, QCoreApplication.translate(u"MagDlg","Would you like to add the new layer to your project?")])            
+        addToTOC = QtWidgets.QMessageBox.question(self, "AGT", message,
+            QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.NoButton)
+        if addToTOC == QtWidgets.QMessageBox.Yes:
             Utilities.addShapeToCanvas(unicode(self.outputFilename.text()))
                  
     def hideDialog(self):

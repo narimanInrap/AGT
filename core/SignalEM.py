@@ -1,12 +1,29 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Sep 15 17:56:09 2016
+/***************************************************************************
+AGT - Archaeological Geophysics Toolbox
+                                 A QGIS plugin
+ This plugin does basic processes on geophysical data for Archaeology
+                             -------------------
+        begin                : 2016-04-14
+        git sha              : $Format:%H$
+        copyright            : (C) 2016 by François-Xavier SIMON / INRAP
+        email                : developpement-qgis@inrap.fr
+ ***************************************************************************/
 
-@author: François-Xavier SIMON
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 """
 
+
 import numpy, math
-from CoilEnum import CoilConfigEnum
+from .CoilEnum import CoilConfigEnum
 #from _pydev_bundle.pydev_console_utils import Null
  
  

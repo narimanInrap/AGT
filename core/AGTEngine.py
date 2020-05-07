@@ -28,8 +28,9 @@ import math
 from operator import itemgetter
 import numpy
 
-from PyQt4.QtCore import *
-from PyQt4 import QtGui
+from PyQt5 import uic, QtWidgets
+from PyQt5.QtCore import QSettings, QTextCodec, QCoreApplication, QFile, QVariant
+
 from qgis.core import *
 
 import os
@@ -37,11 +38,18 @@ from os.path import splitext
 from os.path import dirname
 from os.path import basename
 
-from CoilEnum import CoilConfigEnum
-from FilterEnum import FilterEnum
+from  osgeo import ogr,osr, gdal
+
+from .CoilEnum import CoilConfigEnum
+from .FilterEnum import FilterEnum
+from .InterpolatorEnum import InterpolatorEnum
 from ..toolbox.AGTUtilities import Utilities
 from ..toolbox.AGTExceptions import *
-from SignalEM import SignalEM
+from .SignalEM import SignalEM
+
+import processing
+
+
 
 class Engine(object):
     
@@ -59,16 +67,14 @@ class Engine(object):
         self.rawData = []
         self.basicOutputFilename = projectName
         if crsRefImp:
-            self.inputCrsCode = Utilities.crsRefDict[crsRefImp]
+            self.inputCrsCode = crsRefImp.postgisSrid()
         else:
             self.inputCrsCode = 2154 #RGF93 / Lambert-93        
         if crsRefExp:
-            self.outputCrsCode = Utilities.crsRefDict[crsRefExp]
+            self.crs = crsRefExp
         else:
-            self.outputCrsCode = 2154 #RGF93 / Lambert-93        
-        self.crs = QgsCoordinateReferenceSystem(self.outputCrsCode)            
-  
-        #self.crs.createFromProj4("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs") #4326
+            self.crs = QgsCoordinateReferenceSystem(2154) #RGF93 / Lambert-93
+        self.outputCrsCode = self.crs.postgisSrid()        
         self.medianPercent = medianPercent
 #         if kernelSize: 
 #             self.kernelRadius = kernelSize/100.00
@@ -132,49 +138,51 @@ class Engine(object):
         rawDataFile = QFile(self.rawDataFilename)
         if not(rawDataFile.exists()):
             return
+        fileEncoding = 'utf-8'
         if rawDataFile.open(QFile.ReadOnly|QFile.Text):
             # header (metadata)
             if not(rawDataFile.atEnd()):
-                self.resistivimeter = rawDataFile.readLine()
+                self.resistivimeter = str(rawDataFile.readLine().data(), encoding = fileEncoding)
             if not(rawDataFile.atEnd()):
-                self.gridNbr = int(rawDataFile.readLine())
+                self.gridNbr = int(str(rawDataFile.readLine().data(), encoding = fileEncoding))
             if not(rawDataFile.atEnd()):
-                self.gridLen = int(rawDataFile.readLine())
+                self.gridLen = int(str(rawDataFile.readLine().data(), encoding = fileEncoding))
             if not(rawDataFile.atEnd()):
-                self.gridWid = int(rawDataFile.readLine())
+                self.gridWid = int(str(rawDataFile.readLine().data(), encoding = fileEncoding))
             if not(rawDataFile.atEnd()):
-                self.ElectGap = float(rawDataFile.readLine())
+                self.ElectGap = float(str(rawDataFile.readLine().data(), encoding = fileEncoding))
             if not(rawDataFile.atEnd()):
-                self.channelNbr = int(rawDataFile.readLine())
+                self.channelNbr = int(str(rawDataFile.readLine().data(), encoding = fileEncoding))
             if not(rawDataFile.atEnd()):
-                self.ElectNbr = int(rawDataFile.readLine())
+                self.ElectNbr = int(str(rawDataFile.readLine().data(), encoding = fileEncoding))
             if not(rawDataFile.atEnd()):
-                self.PointDist = float(rawDataFile.readLine())
+                self.PointDist = float(str(rawDataFile.readLine().data(), encoding = fileEncoding))
             if not(rawDataFile.atEnd()):
-                self.measureType = rawDataFile.readLine()
+                self.measureType = str(rawDataFile.readLine().data(), encoding = fileEncoding)
             if not(rawDataFile.atEnd()):
-                self.CurrentInt = rawDataFile.readLine()              
+                self.CurrentInt = str(rawDataFile.readLine().data(), encoding = fileEncoding)          
             for i in range(0, self.gridNbr):
                 if rawDataFile.atEnd():
                     return
-                self.gridNames.append(int(rawDataFile.readLine()))
-                self.OriginX.append(float(rawDataFile.readLine()))
-                self.OriginY.append(float(rawDataFile.readLine()))                                 
+                self.gridNames.append(int(str(rawDataFile.readLine().data(), encoding = fileEncoding)))
+                self.OriginX.append(float(str(rawDataFile.readLine().data(), encoding = fileEncoding)))
+                self.OriginY.append(float(str(rawDataFile.readLine().data(), encoding = fileEncoding)))                                 
             # data            
             pointId = []
             fileNbr = self.gridNbr*self.channelNbr
             channelCount = 0
+            pointNbrPerVertLine = int(self.gridLen/self.PointDist)
             for i in range(0, fileNbr):                
-                self.rawData.append({})
-                pointId.append(0)
+                self.rawData.append({})                
+                pointId.append(0)                
                 if self.isFilter:
                     Engine.filteredPointNum.append(0)
                     self.rawDataMat.append([])
-                    measureNbr = self.channelNbr - channelCount                   
-                    width = measureNbr*self.gridWid                        
+                    measureNbr = self.ElectNbr - 1 - channelCount           
+                    width = measureNbr*self.gridWid
                     for j in range(0, width):
-                        l = []
-                        for k in range(0, self.gridLen):
+                        l = []                        
+                        for k in range(0, pointNbrPerVertLine):
                             l.append(999)                            
                         self.rawDataMat[i].append(l)      
                 channelCount += 1
@@ -185,22 +193,30 @@ class Engine(object):
             x = 0
             y = 0
             yStep = self.PointDist
-            jStep = 1
+            jStep = 1 # j is being used as an index in a list, it should be an integer. y can not be used instead
             barLen = (self.ElectNbr - 1)*self.ElectGap                 
             while not(rawDataFile.atEnd()):
+                if gridCount >= self.gridNbr:
+                    raise Exception(QCoreApplication.translate(u"Engine",'The number of measured points does not correspond to the metadata. There are too many points.'))
+                    #raise ParserError(self.rawDataFilename, QCoreApplication.translate(u"Engine",'The number of measured points does not correspond to the metadata.'))   
                 for channelCount in range(0, self.channelNbr):
-                    measureNbr = self.channelNbr - channelCount                    
-                    xShift = (channelCount + 1)*self.ElectGap/2 # the measured point is in the middle of the two measuring elecrodes
+                    measureNbr = self.ElectNbr - 1 - channelCount                    
+                    xShift = (channelCount + 1)*self.ElectGap/2 # the measured point is in the middle of the two measuring electrodes
                     if yStep < 0:
                         xShift = -xShift
                     filtI = 0 
                     for measureCount in range(0, measureNbr):
-                        res = float(rawDataFile.readLine())
+                        res = float(str(rawDataFile.readLine().data(), encoding = fileEncoding))
                         # real resistivity -> apparent resistivity
                         appRes = math.fabs(2*math.pi*res*(channelCount + 1)*self.ElectGap) if (res != 999) else res
-                        self.rawData[gridCount*self.channelNbr + channelCount][(QgsPoint(x + xShift + self.OriginX[gridCount], y + self.OriginY[gridCount]), measureCount)] = (pointId[gridCount*self.channelNbr + channelCount], appRes)
+                        
+                        ## à supprimer
+                        testVar = pointId[gridCount*self.channelNbr + channelCount] #TODO c'est pour trouver le bug
+                        ##
+                        
+                        self.rawData[gridCount*self.channelNbr + channelCount][(QgsPointXY(x + xShift + self.OriginX[gridCount], y + self.OriginY[gridCount]), measureCount)] = (pointId[gridCount*self.channelNbr + channelCount], appRes)
                         if self.isFilter:
-                            self.rawDataMat[gridCount*self.channelNbr + channelCount][(i*measureNbr) + filtI][j] = [QgsPoint(x + xShift + self.OriginX[gridCount], y + self.OriginY[gridCount]), appRes, 0, pointId[gridCount*self.channelNbr + channelCount]]                                                   
+                            self.rawDataMat[gridCount*self.channelNbr + channelCount][(i*measureNbr) + filtI][j] = [QgsPointXY(x + xShift + self.OriginX[gridCount], y + self.OriginY[gridCount]), appRes, 0, pointId[gridCount*self.channelNbr + channelCount]]                                                   
                             filtI += 1
                         if yStep > 0:                                                
                             xShift += self.ElectGap
@@ -209,7 +225,7 @@ class Engine(object):
                         pointId[gridCount*self.channelNbr + channelCount] += 1
                 y += yStep
                 j += jStep
-                if(j == self.gridLen or j == -1):
+                if(j == pointNbrPerVertLine or j == -1):
                     yStep *= -1
                     jStep *= -1
                     y += yStep 
@@ -221,10 +237,9 @@ class Engine(object):
                         i = 0
                         x = 0
                         gridCount += 1
-                if gridCount > self.gridNbr:
-                    raise ParserError(self.rawDataFilename, QtGui.QApplication.translate(u"Engine",'The number of measured points does not correspond to the metadata.'))                     
+                                                                                
         else:
-            raise ParserError(self.rawDataFilename, QtGui.QApplication.translate(u"Engine",'Can not open file.'))        
+            raise ParserError(self.rawDataFilename, QCoreApplication.translate(u"Engine",'Can not open file.'))        
 
     def magRawDataParser(self):
         
@@ -233,11 +248,11 @@ class Engine(object):
             return
         if rawDataFile.open(QFile.ReadOnly|QFile.Text):
             while not(rawDataFile.atEnd()):
-                line = str(rawDataFile.readLine())           
+                line = str(rawDataFile.readLine().data(), encoding = 'utf-8')         
                 data = line.rstrip('\n\r').split()
                 self.magPoints.append((float(data[0]), float(data[1]), float(data[2]), str(data[3]), int(data[4]))) # (x, y, value, trace, probe)
         else:
-            raise ParserError(self.rawDataFilename, QtGui.QApplication.translate(u"Engine",'Can not open file.'))       
+            raise ParserError(self.rawDataFilename, QCoreApplication.translate(u"Engine",'Can not open file.'))       
     
     def magGridRawDataParser(self):
         
@@ -249,7 +264,7 @@ class Engine(object):
             if not(rawDataFile.atEnd()):
                 headerLine = rawDataFile.readLine()            
                 rawDataFile.close()
-                if ('Time' in headerLine):
+                if ('Time' in str(headerLine.data())):
                     self.Grad601GridParser()
                 else:
                     self.MXPDAGridParser()                
@@ -261,15 +276,15 @@ class Engine(object):
             # header (metadata)
             for i in range(14): # there are 14 lines of metadata
                 if not(rawDataFile.atEnd()):
-                    headerLine = rawDataFile.readLine()
+                    headerLine = str(rawDataFile.readLine().data(), encoding = 'utf-8')
             # data
             while not(rawDataFile.atEnd()):
-                line = str(rawDataFile.readLine())           
+                line = str(rawDataFile.readLine().data(), encoding = 'utf-8')           
                 data = line.rstrip('\n\r').split()
                 # the data are already sorted
                 self.sortedMagPoints.append((float(data[0]), float(data[1]), float(data[2]))) # (x, y, value)
         else:
-            raise ParserError(self.rawDataFilename, QtGui.QApplication.translate(u"Engine",'Can not open file.'))
+            raise ParserError(self.rawDataFilename, QCoreApplication.translate(u"Engine",'Can not open file.'))
         self.Grad601 = True
     
     def MXPDAGridParser(self):
@@ -278,15 +293,15 @@ class Engine(object):
         if rawDataFile.open(QFile.ReadOnly|QFile.Text):
             # header (metadata)
             if not(rawDataFile.atEnd()):
-                headerLine = rawDataFile.readLine()
+                headerLine = str(rawDataFile.readLine().data(), encoding = 'utf-8')
             # data
             while not(rawDataFile.atEnd()):
-                line = str(rawDataFile.readLine())           
+                line = str(rawDataFile.readLine().data(), encoding = 'utf-8')           
                 data = line.rstrip('\n\r').split()
                 # the data are already sorted
                 self.sortedMagPoints.append((float(data[0]), float(data[1]), float(data[2]))) # (x, y, value)
         else:
-            raise ParserError(self.rawDataFilename, QtGui.QApplication.translate(u"Engine",'Can not open file.'))
+            raise ParserError(self.rawDataFilename, QCoreApplication.translate(u"Engine",'Can not open file.'))
                
     def filterRawData(self):    
     
@@ -295,7 +310,7 @@ class Engine(object):
         for channel in range(0, self.channelNbr):            
             for grid in range(0, self.gridNbr):
                 mat = self.rawDataMat[grid*self.channelNbr + channel]
-                measureNbr = self.channelNbr - channel
+                measureNbr = self.ElectNbr - 1 - channel
                 width = measureNbr*self.gridWid
                 for i in range(0, width):
                     for j in range(0, self.gridLen):
@@ -308,7 +323,7 @@ class Engine(object):
                                     if mat[i + k][j + l][1] != 999 and mat[i + k][j + l][1] >= 2:
                                         resList.append(mat[i + k][j + l][1])                                   
                         self.rawDataMat[grid*self.channelNbr + channel][i][j][2] = self.medianFilter(grid, channel, resList, mat[i][j][1])                  
-                returnMsg += QtGui.QApplication.translate(u"Engine",u"{} points were filtered for grid #{} channel #{}.\n").format(Engine.filteredPointNum[grid*self.channelNbr + channel], self.gridNames[grid], channel + 1)
+                returnMsg += QCoreApplication.translate(u"Engine",u"{} points were filtered for grid #{} channel #{}.\n").format(Engine.filteredPointNum[grid*self.channelNbr + channel], self.gridNames[grid], channel + 1)
                 Engine.filteredPointNum[grid*self.channelNbr + channel] = 0                
         self.createFilteredShapefile()        
         return returnMsg
@@ -334,14 +349,14 @@ class Engine(object):
             for grid in range(0, self.gridNbr):
                 fileName = channelPath + '/' + self.basicOutputFilename + '_channel' + str(channel + 1) + '_grid' + str(self.gridNames[grid]) + '.shp'
                 features = []
-                measureNbr = self.channelNbr - channel
+                measureNbr = self.ElectNbr - 1 - channel
                 width = measureNbr*self.gridWid       
                 for i in range(0, width):
                     for j in range(0, self.gridLen):
                         self.rawDataMat[grid*self.channelNbr+ channel][i][j][1]
                         if(self.rawDataMat[grid*self.channelNbr+ channel][i][j][1] != 999 and self.rawDataMat[grid*self.channelNbr+ channel][i][j][1] >= 2): # points with resistivity = 999 are not real measured points - res < 2 are not relevant 
                             feature = QgsFeature()
-                            feature.setGeometry(QgsGeometry.fromPoint(self.rawDataMat[grid*self.channelNbr+ channel][i][j][0]))
+                            feature.setGeometry(QgsGeometry.fromPointXY(self.rawDataMat[grid*self.channelNbr+ channel][i][j][0]))
                             feature.setAttributes([self.rawDataMat[grid*self.channelNbr+ channel][i][j][3], self.rawDataMat[grid*self.channelNbr+ channel][i][j][0].x(), 
                                                    self.rawDataMat[grid*self.channelNbr+ channel][i][j][0].y(), self.rawDataMat[grid*self.channelNbr+ channel][i][j][1], self.rawDataMat[grid*self.channelNbr+ channel][i][j][2]])
                             features.append(feature)                    
@@ -363,7 +378,7 @@ class Engine(object):
                 channelPath = basicPath + '/' + 'channel' + str(channel + 1)            
                 fileName = channelPath + '/' + self.basicOutputFilename + '_channel' + str(channel + 1) + '_grid' + str(self.gridNames[grid]) + '.shp'                
                 self.filterFile(fileName, grid, channel)       
-                returnMsg += QtGui.QApplication.translate(u"Engine",u"{} points were filtered for grid #{} channel #{}.\n").format(Engine.filteredPointNum[grid*self.channelNbr + channel], self.gridNames[grid], channel + 1)
+                returnMsg += QCoreApplication.translate(u"Engine",u"{} points were filtered for grid #{} channel #{}.\n").format(Engine.filteredPointNum[grid*self.channelNbr + channel], self.gridNames[grid], channel + 1)
                 Engine.filteredPointNum[grid*self.channelNbr + channel] = 0
         return returnMsg
         
@@ -400,7 +415,7 @@ class Engine(object):
         if len(resistivityList) == 0 or res == 999 or res < 2: 
             return res
         resistivityList.sort()
-        medianRes = resistivityList[(len(resistivityList) - 1)/2]        
+        medianRes = resistivityList[(len(resistivityList) - 1)//2] # modif qgis3 : division entière
         diff = (res - medianRes)/res if(res >= medianRes) else (medianRes - res)/medianRes
         if diff >= (self.medianPercent/100.00):
             Engine.filteredPointNum[grid*self.channelNbr + channel] += 1           
@@ -429,7 +444,7 @@ class Engine(object):
                 for key, attr in self.rawData[grid*self.channelNbr+ channel].items():
                     if(attr[1] != 999 and attr[1] >= 2): # points with resistivity = 999 are not real measured points - res < 2 are not relevant 
                         feature = QgsFeature()
-                        feature.setGeometry(QgsGeometry.fromPoint(key[0]))
+                        feature.setGeometry(QgsGeometry.fromPointXY(key[0]))
                         feature.setAttributes([attr[0], key[0].x(), key[0].y(), attr[1]])
                         features.append(feature)
                 Utilities.createShapefile(fileName, fields, features, self.dataEncoding, self.crs)
@@ -483,7 +498,7 @@ class Engine(object):
         features = []        
         for point in geoPoints:                 
             feature = QgsFeature()
-            feature.setGeometry(QgsGeometry.fromPoint(point[0]))
+            feature.setGeometry(QgsGeometry.fromPointXY(point[0]))
             attrList = point[1]
             attrList.extend([point[0].x(), point [0].y()]) 
             feature.setAttributes(attrList)           
@@ -493,7 +508,7 @@ class Engine(object):
             if self.basicOutputFilename is not None: #RM only
                 attInd = [fields.indexFromName('res')]
                 fieldList = fields.toList()                              
-                filterField = filter(lambda f: f.displayName().find('med') != -1, fieldList)            
+                filterField = list(filter(lambda f: f.displayName().find('med') != -1, fieldList))
                 if filterField:
                     attInd.append(fields.indexFromName(filterField[0].displayName()))
                     filterName = "med_" + str(self.medianPercent)
@@ -518,12 +533,13 @@ class Engine(object):
             fields.append(QgsField('Y', QVariant.Double))
         features = []                
         crsSrc = QgsCoordinateReferenceSystem(self.inputCrsCode)
-        xform = QgsCoordinateTransform(crsSrc, self.crs)                                             
+        xform = QgsCoordinateTransform(crsSrc, self.crs,QgsProject.instance())
+                                             
         for i in range(0, len(self.sortedMagPoints)):
             feature = QgsFeature()
-            qPoint = QgsPoint(self.correctedX[i], self.sortedMagPoints[i][1])
+            qPoint = QgsPointXY(self.correctedX[i], self.sortedMagPoints[i][1])
             xPoint = xform.transform(qPoint) #coordinate Transform
-            feature.setGeometry(QgsGeometry.fromPoint(xPoint))
+            feature.setGeometry(QgsGeometry.fromPointXY(xPoint))
             if self.isAddCoordFields:            
                 feature.setAttributes([self.sortedMagPoints[i][2], 
                                         self.medianRemValues[i], 
@@ -555,9 +571,9 @@ class Engine(object):
         self.y = [float("{0:.4f}".format(y)) for y in self.y]
         for i in range(0, len(self.sortedMagPoints)):
             feature = QgsFeature()
-            #qPoint = QgsPoint(self.sortedMagPoints[i][0], self.sortedMagPoints[i][1])
-            qPoint = QgsPoint(self.x[i], self.y[i])
-            feature.setGeometry(QgsGeometry.fromPoint(qPoint))
+            #qPoint = QgsPointXY(self.sortedMagPoints[i][0], self.sortedMagPoints[i][1])
+            qPoint = QgsPointXY(self.x[i], self.y[i])
+            feature.setGeometry(QgsGeometry.fromPointXY(qPoint))
             if self.isAddCoordFields:            
                 feature.setAttributes([self.sortedMagPoints[i][2], 
                                         self.medianRemValues[i],
@@ -623,7 +639,7 @@ class Engine(object):
         # translation 
         newX = xR + xg1
         newY = yR + yg1
-        return QgsPoint(newX, newY)
+        return QgsPointXY(newX, newY)
     
     
     def sortMagPoints(self):
@@ -631,7 +647,7 @@ class Engine(object):
     
     def magDecimation(self):
         
-        probeNb = max(list(zip(*self.magPoints)[4]))
+        probeNb = max(list(zip(*self.magPoints))[4])
         thresh = probeNb*self.decimationVal # self.decimantionVal = 1/frequency
         magDecimPoints = []
         for i in range(0, len(self.magPoints), thresh): 
@@ -643,7 +659,7 @@ class Engine(object):
     
         stamp = 0
         magDecimPoints = []
-        probNb = max(list(zip(*self.magPoints)[4]))              
+        probNb = max(list(zip(*self.magPoints))[4])
         medianList = []
         for i in range(0, probNb):
             medianList.append([])      
@@ -655,8 +671,8 @@ class Engine(object):
             else:
                 medianVals = list(map(lambda x : numpy.median(x), medianList)) # Median calculation               
                 for j in range(0, probNb):
-                    magDecimPoints.append((self.magPoints[i + j - (self.decimationVal/2)][0], self.magPoints[i + j - (self.decimationVal/2)][1], float(medianVals[j]), 
-                                           self.magPoints[i + j - (self.decimationVal/2)][3], self.magPoints[i + j - (self.decimationVal/2)][4]))             
+                    magDecimPoints.append((self.magPoints[i + j - (self.decimationVal//2)][0], self.magPoints[i + j - (self.decimationVal//2)][1], float(medianVals[j]), 
+                                           self.magPoints[i + j - (self.decimationVal//2)][3], self.magPoints[i + j - (self.decimationVal//2)][4]))             
                 medianList = []
                 stamp = 1
                 for j in range(0, probNb):
@@ -666,30 +682,30 @@ class Engine(object):
             
     def distanceFilter(self):
         
-        probeNb = max(list(zip(*self.magPoints)[4]))
+        probeNb = max(list(zip(*self.magPoints))[4])
         magStatPoints = []
         for i in range(0, len(self.magPoints)):
             if self.gpsProbe == self.magPoints[i][4]:
                 dist1 = math.sqrt((self.magPoints[i][0] - self.magPoints[i - probeNb][0])**2 + (self.magPoints[i][1] - self.magPoints[i - probeNb][1])**2)
                 dist2 = math.sqrt((self.magPoints[i + (self.gpsProbe//2)][0] - self.magPoints[i - probeNb + (self.gpsProbe//2)][0])**2 + 
-                                (self.magPoints[i + (self.gpsProbe//2)][1] - self.magPoints[i - probeNb + (self.gpsProbe//2)][1])**2)  
+                                  (self.magPoints[i + (self.gpsProbe//2)][1] - self.magPoints[i - probeNb + (self.gpsProbe//2)][1])**2)  
                 if dist2 < (self.stationPtThreshold*dist1):
                     for j in range(probeNb):
                         loc = i - j + (self.gpsProbe//2)
                         magStatPoints.append(self.magPoints[loc])
         self.magPoints = magStatPoints
-                
-    
+        
+       
     # UTM value correction of X coordinates, and the creation of a profile column
     def createProfileList(self):
         
         utmVal = int(self.sortedMagPoints[0][0]/1000000) # determination of the UTM value (the 2 first digits of x)
         self.inputCrsCode = 32600 + utmVal
-        for i in zip(*self.sortedMagPoints)[0]: # x values
+        for i in list(zip(*self.sortedMagPoints))[0]: # x values
             self.correctedX.append(i - (utmVal*1000000)) # x values' correction            
         n = 1
         newProfile = 1
-        for i in zip(*self.sortedMagPoints)[4]: # profile correction
+        for i in list(zip(*self.sortedMagPoints))[4]: # profile correction
             if i == n:
                 self.profile.append(newProfile)
             else :
@@ -703,7 +719,7 @@ class Engine(object):
         n = self.sortedMagPoints[0][0]
         newProfile = 1
         a = 1 if self.Grad601 else 0
-        for x in zip(*self.sortedMagPoints)[a]: # profile correction
+        for x in list(zip(*self.sortedMagPoints))[a]: # profile correction
             if x == n:
                 self.profile.append(newProfile)
             else :
@@ -832,13 +848,13 @@ class Engine(object):
         if not(rawDataFile.exists()):
             return
         if rawDataFile.open(QFile.ReadOnly|QFile.Text):
-            firstline = str(rawDataFile.readLine())
+            firstline = str(rawDataFile.readLine().data(), encoding = 'utf-8')
             while not(rawDataFile.atEnd()):
-                line = str(rawDataFile.readLine())     
+                line = str(rawDataFile.readLine().data(), encoding = 'utf-8')     
                 data = line.rstrip('\n\r').split()
                 self.EM31Points.append((float(data[0]), float(data[1]), float(data[2]), float(data[3]), str(data[4]))) # (x, y, cond, i, time)
         else:
-            raise ParserError(self.rawDataFilename, QtGui.QApplication.translate(u"Engine",'Can not open file.'))      
+            raise ParserError(self.rawDataFilename, QCoreApplication.translate(u"Engine",'Can not open file.'))      
        
   
     def ConductivityTransformation(self):
@@ -846,8 +862,8 @@ class Engine(object):
         frequency = 9800.0
         spacing = 3.66       
         EM31 = SignalEM(frequency, spacing, self.sensorHeight, self.coilConfig)            
-        self.Qppm = [EM31.McNeillToPpm(a) for a in zip(*self.EM31Points)[2]]
-        self.I = [a*1000 for a in zip(*self.EM31Points)[3]]
+        self.Qppm = [EM31.McNeillToPpm(a) for a in list(zip(*self.EM31Points))[2]]
+        self.I = [a*1000 for a in list(zip(*self.EM31Points))[3]]
         self.cond = EM31.ppmToCondList(self.Qppm)
             
   
@@ -870,9 +886,9 @@ class Engine(object):
         xform = QgsCoordinateTransform(crsSrc, self.crs)                                              
         for i in range(0, len(self.EM31Points)):
             feature = QgsFeature()
-            qPoint = QgsPoint(self.EM31Points[i][0], self.EM31Points[i][1])
+            qPoint = QgsPointXY(self.EM31Points[i][0], self.EM31Points[i][1])
             xPoint = xform.transform(qPoint) #coordinate Transform
-            feature.setGeometry(QgsGeometry.fromPoint(xPoint))
+            feature.setGeometry(QgsGeometry.fromPointXY(xPoint))
             if self.isAddCoordFields:            
                 feature.setAttributes([self.EM31Points[i][2], 
                                        self.cond[i],
@@ -898,7 +914,7 @@ class Engine(object):
         xform = QgsCoordinateTransform(QgsCoordinateReferenceSystem(self.inputCrsCode), self.crs) # TODO clean up
                     
         for i in range(0, len(self.EM31Points)):
-            qPoint = QgsPoint(self.EM31Points[i][0], self.EM31Points[i][1])
+            qPoint = QgsPointXY(self.EM31Points[i][0], self.EM31Points[i][1])
             xPoint = xform.transform(qPoint)
             fileObj.write(str(xPoint[0]) + ', ' + str(xPoint[1]) + ', ' + str (self.EM31Points[i][2]) + ', ' + str(self.cond[i]) + ', ' +
                           str(self.Qppm[i]) + ', ' + str(self.I[i])+ ', ' + str(self.EM31Points[i][4]) + '\n')
@@ -924,14 +940,14 @@ class EngineGEM2(object):
         self.gnssDataFilename = gnssDataFilename
         self.dataEncoding = dataEncoding
         if crsRefImp:
-            self.inputCrsCode = Utilities.crsRefDict[crsRefImp]
+            self.inputCrsCode = crsRefImp.postgisSrid()
         else:
-            self.inputCrsCode = 32631 #UTM31 WGS84
+            self.inputCrsCode = 32631 #UTM31 WGS84       
         if crsRefExp:
-            self.outputCrsCode = Utilities.crsRefDict[crsRefExp]
+            self.crs = crsRefExp
         else:
-            self.outputCrsCode = 2154 #RGF93 / Lambert-93
-        self.crs = QgsCoordinateReferenceSystem(self.outputCrsCode)
+            self.crs = QgsCoordinateReferenceSystem(2154) #RGF93 / Lambert-93            
+        self.outputCrsCode = self.crs.postgisSrid()
         self.deviceHeight = sensorHeight
         self.coilConfig = coilConfig
         self.gnssHourShift = gnssHourShift
@@ -997,7 +1013,7 @@ class EngineGEM2(object):
         if rawDataFile.open(QFile.ReadOnly|QFile.Text):
             # header (metadata)
             if not(rawDataFile.atEnd()):
-                headerLine = rawDataFile.readLine()            
+                headerLine = str(rawDataFile.readLine().data(), encoding = 'utf-8')            
                 rawDataFile.close()
                 if ('GSSI' in headerLine):
                     self.Emp400DataParser()
@@ -1013,11 +1029,11 @@ class EngineGEM2(object):
         if not(rawDataFile.exists()):
             return
         if not rawDataFile.open(QFile.ReadOnly|QFile.Text):
-            raise ParserError(self.rawDataFilename, QtGui.QApplication.translate(u"Engine",'Can not open file.'))  
+            raise ParserError(self.rawDataFilename, QCoreApplication.translate(u"Engine",'Can not open file.'))  
         self.frequencyNumber = 3            
         for i in range(36): #36 header's length
             if not(rawDataFile.atEnd()):
-                headerLine = rawDataFile.readLine()
+                headerLine = str(rawDataFile.readLine().data(), encoding = 'utf-8')
                 if ('Ymax' in headerLine):
                     info = str(headerLine).strip().split(',')
                     self.yLengthEmp400 = float(info[1])
@@ -1026,7 +1042,7 @@ class EngineGEM2(object):
                     self.frequencyList = (float(info[1]), float(info[2]), float(info[3]))
 #               headerLine = []            
         while not(rawDataFile.atEnd()):
-            data = str((rawDataFile.readLine())).strip().split(',')
+            data = str(rawDataFile.readLine().data(), encoding = 'utf-8').strip().split(',')
             line = []
             if not data:
                 break
@@ -1102,7 +1118,7 @@ class EngineGEM2(object):
         self.updateOffsetCoeff()
         
     def Gem2DataParser(self, datafile = True):
-            
+        
         if datafile:
             startCol = self.startColonne
             rawFile = QFile(self.rawDataFilename)
@@ -1112,16 +1128,16 @@ class EngineGEM2(object):
         if not(rawFile.exists()):
             return
         if not rawFile.open(QFile.ReadOnly|QFile.Text):
-            raise ParserError(self.rawFilename, QtGui.QApplication.translate(u"Engine",'Can not open file.'))     
+            raise ParserError(self.rawFilename, QCoreApplication.translate(u"Engine",'Can not open file.'))     
         else:
             if not rawFile.atEnd():
-                data = str((rawFile.readLine())).strip().split(',')
-                self.frequencyNumber = (len(data) - startCol - 1)/2 # detection du nombre de frequence utilise
+                data = str(rawFile.readLine().data(), encoding = 'utf-8').strip().split(',')
+                self.frequencyNumber = (len(data) - startCol - 1)//2 # detection du nombre de frequence utilise
                 for i in range(self.frequencyNumber): # lecture des frequences et des enregistrements
                     frequencyValue = float(data[startCol + 1 + (i*2)][2:-2]) 
                     self.frequencyList.append(frequencyValue)
             while not(rawFile.atEnd()):
-                data = str((rawFile.readLine())).strip().split(',')
+                data = str(rawFile.readLine().data(), encoding = 'utf-8').strip().split(',')
                 line = []
                 if not data:
                     break
@@ -1139,10 +1155,10 @@ class EngineGEM2(object):
         if not(gnssDataFile.exists()):
             return
         if not gnssDataFile.open(QFile.ReadOnly|QFile.Text):
-            raise ParserError(self.gnssDataFilename, QtGui.QApplication.translate(u"Engine",'Can not open file.'))
+            raise ParserError(self.gnssDataFilename, QCoreApplication.translate(u"Engine",'Can not open file.'))
         else:
             while not(gnssDataFile.atEnd()):
-                data = str((gnssDataFile.readLine())).strip().split(',')            
+                data = str(gnssDataFile.readLine().data(), encoding = 'utf-8').strip().split(',')            
                 if not data:
                     break
                 line = []        
@@ -1233,7 +1249,7 @@ class EngineGEM2(object):
         
         gem2PointsCor = []
         winSizemax = max(self.winSizeIp,self.winSizeQ)        
-        for i in range(winSizemax/2, len(self.gem2Points)-winSizemax/2):
+        for i in range(winSizemax//2, len(self.gem2Points)-winSizemax//2):
             liste = []
             for j in range(self.startColonne):
                 val = self.gem2Points[i][j]
@@ -1241,7 +1257,7 @@ class EngineGEM2(object):
             for j in range(self.startColonne, (self.startColonne + (self.frequencyNumber*2)),2):
                 data = []
                 if self.winfilterIp:
-                    for k in range(i - (self.winSizeIp/2), i + (self.winSizeIp/2)):
+                    for k in range(i - (self.winSizeIp//2), i + (self.winSizeIp//2)):
                         data.append(self.gem2Points[k][j])
                         if self.methodIp == FilterEnum.MEDIAN:
                                 val = numpy.median(data)
@@ -1252,7 +1268,7 @@ class EngineGEM2(object):
                 liste.append(val)
                 data = []
                 if self.winfilterQ:
-                    for k in range(i - (self.winSizeQ/2), i + (self.winSizeQ/2)):
+                    for k in range(i - (self.winSizeQ//2), i + (self.winSizeQ//2)):
                         data.append(self.gem2Points[k][j+1])
                         if self.methodQ == FilterEnum.MEDIAN:
                                 val = numpy.median(data)
@@ -1267,14 +1283,14 @@ class EngineGEM2(object):
     def gem2Decim(self):
         
         gem2PointsCor = []
-        for i in range(self.decimValue/2, len(self.gem2Points)-self.decimValue/2, self.decimValue):
+        for i in range(self.decimValue//2, len(self.gem2Points)-self.decimValue//2, self.decimValue):
             liste = []
             for j in range(self.startColonne):
                 val = self.gem2Points[i][j]
                 liste.append(val)       
             for j in range(self.startColonne, (self.startColonne + (self.frequencyNumber*2) + 1)):
                 data = []
-                for k in range(i - (self.decimValue/2), i + (self.decimValue/2)):
+                for k in range(i - (self.decimValue//2), i + (self.decimValue//2)):
                     data.append(self.gem2Points[k][j])
                 val = numpy.median(data)
                 liste.append(val)
@@ -1327,7 +1343,7 @@ class EngineGEM2(object):
         for j in range(self.frequencyNumber):
             conductivity = []
             gem2.frequency = self.frequencyList[j]
-            qppmFreq = [(self.coeffQu[j]*a) - self.qOffset[j] for a in zip(*qResponse)[j]]
+            qppmFreq = [(self.coeffQu[j]*a) - self.qOffset[j] for a in list(zip(*qResponse))[j]]
             if self.Emp400:
                 conductivity = gem2.ppmToCondList(qppmFreq)
             else:
@@ -1350,7 +1366,7 @@ class EngineGEM2(object):
         for j in range(self.frequencyNumber):
             susceptibility = []
             gem2.frequency=self.frequencyList[j]                                
-            ippmFreq = [(self.coeffPh[j]*a) - self.iOffset[j] for a in zip(*iResponse)[j]]
+            ippmFreq = [(self.coeffPh[j]*a) - self.iOffset[j] for a in list(zip(*iResponse))[j]]
 #           ippmFreq = [(self.coeffPh[j]*a) - 200 for a in zip(*iResponse)[j]]
             if self.conductivityCorrection:
                 for i in range(len(ippmFreq)):
@@ -1428,12 +1444,12 @@ class EngineGEM2(object):
             liste = []
         features = []
         crsSrc = QgsCoordinateReferenceSystem(self.inputCrsCode)
-        xform = QgsCoordinateTransform(crsSrc, self.crs)    
+        xform = QgsCoordinateTransform(crsSrc, self.crs,QgsProject.instance())    
         for i in range(len(self.gem2Points)):
             fet = QgsFeature()
-            qPoint = QgsPoint(self.x[i], self.y[i])
+            qPoint = QgsPointXY(self.x[i], self.y[i])
             xPoint = xform.transform(qPoint) #coordinate Transform
-            fet.setGeometry(QgsGeometry.fromPoint(xPoint))
+            fet.setGeometry(QgsGeometry.fromPointXY(xPoint))
             fet.setAttributes(shape[i])
             features.append(fet)        
         Utilities.createShapefile(self.outputShapefile, fields, features, self.dataEncoding, self.crs)
@@ -1515,7 +1531,7 @@ class EngineGEM2(object):
                 gpsTime.append(newTime)
         #Arrondi des marqueurs en temps pour realiser la correspondance
         gpsTime = [round(x/10.0) for x in gpsTime]
-        tempsEM = [round(x/10.0)for x in zip(*self.gem2Points)[6]]
+        tempsEM = [round(x/10.0)for x in list(zip(*self.gem2Points))[6]]
         #creation de deux tableaux avec une colonne commune pour le marqueur
         gpsData = []
         for i in range(len(gpsTime)):
@@ -1543,4 +1559,246 @@ class EngineGEM2(object):
                 except: 
                     continue
         self.gem2Points = newFile
+
+
         
+class EngineRaster(object):
+    
+    def __init__(self, rawDataFilename = '', outputRasterfile = '', shapefile = None, field = '', kernel = 3, threshold = 15, pixelSize = 0.5, searchWindow = 1.5, methodInterp = InterpolatorEnum.ELECTROMAGNETIC):
+        
+        self.rawDataFilename =  rawDataFilename
+        self.outputRasterfile = outputRasterfile
+        self.data = []
+        self.kernel = kernel
+        self.threshold = threshold
+        if rawDataFilename:
+            self.raster = gdal.Open(self.rawDataFilename)
+            self.rasterBand = self.raster.GetRasterBand(1)
+        self.shapefile = shapefile
+        self.field = field
+        self.pixelSize = pixelSize
+        self.searchWindow = searchWindow
+        self.methodInterp = methodInterp
+        
+    def openRaster(self):
+        
+        raster = gdal.Open(self.rawDataFilename) 
+        rasterBand = raster.GetRasterBand(1)
+        self.data = rasterBand.ReadAsArray(0, 0, raster.RasterXSize, raster.RasterYSize)
+        
+    def saveRaster(self):
+        
+        raster = gdal.Open(self.rawDataFilename) 
+#        raster=self.rawDataFilename
+        rasterBand = raster.GetRasterBand(1)        
+        driver = gdal.GetDriverByName(str('GTiff'))
+        dst_ds = driver.Create(self.outputRasterfile, 
+                               raster.RasterXSize, 
+                               raster.RasterYSize, 
+                               1, 
+                               gdal.GDT_Float32)        
+        #writting output raster
+        dst_ds.GetRasterBand(1).WriteArray(self.data)
+        dst_ds.GetRasterBand(1).SetNoDataValue(rasterBand.GetNoDataValue())
+                #setting extension of output raster
+        # top left x, w-e pixel resolution, rotation, top left y, rotation, n-s pixel resolution
+        dst_ds.SetGeoTransform(raster.GetGeoTransform())
+        # setting spatial reference of output raster 
+        srs = osr.SpatialReference(wkt = raster.GetProjection())
+        dst_ds.SetProjection(srs.ExportToWkt())
+    
+    def medianRaster(self):
+        
+        for i in range(self.raster.RasterYSize):
+            for j in range(self.raster.RasterXSize):
+                if self.data[i, j] == self.rasterBand.GetNoDataValue():
+                    continue
+                else:
+                    correction = []
+                    for n in range(self.kernel):
+                        for m in range(self.kernel):
+                            if i + (self.kernel//2) - n <= 0:
+                                continue
+                            elif i + (self.kernel//2) - n >= self.raster.RasterYSize:
+                                continue
+                            elif j + (self.kernel//2) - m <= 0:
+                                continue
+                            elif j + (self.kernel//2) - m >= self.raster.RasterXSize:
+                                continue
+                            elif self.data[i + (self.kernel//2) - n, j + (self.kernel//2) - m] == self.rasterBand.GetNoDataValue():
+                                continue
+                            else:
+                                correction.append(self.data[i + (self.kernel//2) - n, j + (self.kernel//2) - m])
+                    mediane = numpy.median(correction)
+                    if abs(self.data[i, j] - mediane) > abs(self.threshold*0.01*mediane):
+                        self.data[i, j] = mediane 
+
+    def InterpolRaster(self):
+        
+        Taille_de_pixel = self.pixelSize
+        Fenetre_de_recherche = self.searchWindow
+        extent = self.shapefile.extent()
+        xmin = extent.xMinimum()
+        xmax = extent.xMaximum()
+        ymin = extent.yMinimum()
+        ymax = extent.yMaximum()        
+        coords = "%f,%f,%f,%f" %(xmin, xmax, ymin, ymax)
+        
+        if self.methodInterp == InterpolatorEnum.MAGNETIC:
+            alg_params = {
+            'DW_BANDWIDTH': 1,
+            'DW_IDW_OFFSET': False,
+            'DW_IDW_POWER': 2,
+            'DW_WEIGHTING': 1,
+            'FIELD': self.field,
+            'SEARCH_DIRECTION': 0,
+            'SEARCH_POINTS_ALL': 0,
+            'SEARCH_POINTS_MAX': 20,
+            'SEARCH_POINTS_MIN': -1,
+            'SEARCH_RADIUS': self.searchWindow,
+            'SEARCH_RANGE': 0,
+            'SHAPES': self.shapefile,
+            'TARGET_DEFINITION': 0,
+            'TARGET_TEMPLATE': None,
+            'TARGET_USER_FITS': 0,
+            'TARGET_USER_SIZE': self.pixelSize,
+            'TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX': coords,
+            'TARGET_OUT_GRID': QgsProcessing.TEMPORARY_OUTPUT
+            }
+            raster1 = processing.run('saga:inversedistanceweightedinterpolation', alg_params)
+            
+            alg_params2 = {
+            'COPY_SUBDATASETS': False,
+            'DATA_TYPE': 0,
+            'EXTRA': '',
+            'INPUT': raster1['TARGET_OUT_GRID'],
+            'NODATA': None,
+            'OPTIONS': '',
+            'TARGET_CRS': 'ProjectCrs',
+            'OUTPUT': self.outputRasterfile
+            }
+            processing.run('gdal:translate', alg_params2)
+            
+        if self.methodInterp == InterpolatorEnum.ELECTRICAL:
+            alg_params1 = {
+            'DW_BANDWIDTH': 1,
+            'DW_IDW_OFFSET': False,
+            'DW_IDW_POWER': 2,
+            'DW_WEIGHTING': 1,
+            'FIELD': self.field,
+            'SEARCH_DIRECTION': 0,
+            'SEARCH_POINTS_ALL': 0,
+            'SEARCH_POINTS_MAX': 20,
+            'SEARCH_POINTS_MIN': -1,
+            'SEARCH_RADIUS': self.searchWindow,
+            'SEARCH_RANGE': 0,
+            'SHAPES': self.shapefile,
+            'TARGET_DEFINITION': 0,
+            'TARGET_TEMPLATE': None,
+            'TARGET_USER_FITS': 0,
+            'TARGET_USER_SIZE': self.pixelSize,
+            'TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX': coords,
+            'TARGET_OUT_GRID': QgsProcessing.TEMPORARY_OUTPUT
+            }
+            raster1 = processing.run('saga:inversedistanceweightedinterpolation', alg_params1)
+            
+            alg_params2 = {
+            'EPSILON': 0.0001,
+            'FIELD': self.field,
+            'LEVEL_MAX': 11,
+            'METHOD': 1,
+            'SHAPES': self.shapefile,
+            'TARGET_USER_FITS': 0,
+            'TARGET_USER_SIZE': self.pixelSize,
+            'TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX': coords,
+            'TARGET_OUT_GRID': QgsProcessing.TEMPORARY_OUTPUT
+            }
+            raster2 = processing.run('saga:multilevelbsplineinterpolation', alg_params2)
+            
+            # Calculatrice Raster
+            alg_params3 = {
+                'BAND_A': 1,
+                'BAND_B': None,
+                'BAND_C': None,
+                'BAND_D': None,
+                'BAND_E': None,
+                'BAND_F': None,
+                'EXTRA': '',
+                'FORMULA': '1*(A>0)',
+                'INPUT_A': raster1['TARGET_OUT_GRID'],
+                'INPUT_B': None,
+                'INPUT_C': None,
+                'INPUT_D': None,
+                'INPUT_E': None,
+                'INPUT_F': None,
+                'NO_DATA': None,
+                'OPTIONS': 'Not selected',
+                'RTYPE': 5,
+                'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT
+            }
+            raster3 = processing.run('gdal:rastercalculator', alg_params3)
+        
+            # Calculatrice Raster
+            alg_params4 = {
+                'BAND_A': 1,
+                'BAND_B': 1,
+                'BAND_C': None,
+                'BAND_D': None,
+                'BAND_E': None,
+                'BAND_F': None,
+                'EXTRA': None,
+                'FORMULA': 'A*B',
+                'INPUT_A': raster3['OUTPUT'],
+                'INPUT_B': raster2['TARGET_OUT_GRID'],
+                'INPUT_C': None,
+                'INPUT_D': None,
+                'INPUT_E': None,
+                'INPUT_F': None,
+                'NO_DATA': None,
+                'OPTIONS': 'Not selected',
+                'RTYPE': 5,
+                'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT
+            }
+            raster4 = processing.run('gdal:rastercalculator', alg_params4)
+            
+            alg_params5 = {
+            'COPY_SUBDATASETS': False,
+            'DATA_TYPE': 0,
+            'EXTRA': '',
+            'INPUT': raster4['OUTPUT'],
+            'NODATA': None,
+            'OPTIONS': '',
+            'TARGET_CRS': 'ProjectCrs',
+            'OUTPUT': self.outputRasterfile
+            }
+            processing.run('gdal:translate', alg_params5)
+                             
+        
+        if self.methodInterp == InterpolatorEnum.ELECTROMAGNETIC:
+            
+            alg_params = {
+            'FIELD': self.field,
+            'K': 10,
+            'NPMAX': 11,
+            'NPMIN': 1,
+            'NPPC': 3,
+            'SHAPES': self.shapefile,
+            'TARGET_USER_FITS': 0,
+            'TARGET_USER_SIZE': self.pixelSize,
+            'TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX': coords,
+            'TARGET_OUT_GRID': QgsProcessing.TEMPORARY_OUTPUT
+            }
+            
+            raster1 = processing.run('saga:interpolatecubicspline', alg_params)
+            
+            alg_params2 = {
+            'COPY_SUBDATASETS': False,
+            'DATA_TYPE': 0,
+            'EXTRA': '',
+            'INPUT': raster1['TARGET_OUT_GRID'],
+            'NODATA': None,
+            'OPTIONS': '',
+            'TARGET_CRS': 'ProjectCrs',
+            'OUTPUT': self.outputRasterfile
+            }
+            processing.run('gdal:translate', alg_params2)

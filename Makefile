@@ -30,28 +30,31 @@ LOCALES = Agt_fr.ts
 SOURCES = \
 	__init__.py \
 	agt.py \
-	Dialog/electDialog.py \
-	Dialog/georefDialog.py\
-	Dialog/magDialog.py \
-	Dialog/rasterDialog.py\
+	Dialog/ElectDialog.py \
+	Dialog/GeorefDialog.py\
+	Dialog/MagDialog.py \
 	Dialog/ElecDownDialog.py\
 	Dialog/GridDialog.py\
 	Dialog/MagGridDialog.py\
 	Dialog/ParametersDialog.py\
 	Dialog/EM31Dialog.py\
+	Dialog/CalibrationDialog.py\
+	Dialog/GEM2Dialog.py\
+	Dialog/InterpolateurDialog.py\
+	Dialog/RasterMedDialog.py\
 	ui/ui_electDialog.py\
 	ui/ui_georefDialog.py\
 	ui/ui_magDialog.py\
-	ui/ui_rasterDialog.py\
 	ui/ui_ElecDownDialog.py\
 	ui/ui_GridDialog.py\
 	ui/ui_EM31Dialog.py\
 	ui/ui_MagGridDialog.py\
 	ui/ui_ParametersDialog.py\
+	ui/ui_RasterMedDialog.py\
+	ui/ui_InterpolateurDialog.py\
 	ui/ui_electDialog.ui\
 	ui/ui_georefDialog.ui\
 	ui/ui_magDialog.ui\
-	ui/ui_rasterDialog.ui\
 	ui/ui_ElecDownDialog.ui\
 	ui/ui_GridDialog.ui\
 	ui/ui_EM31Dialog.ui\
@@ -59,8 +62,11 @@ SOURCES = \
 	ui/ui_ParametersDialog.ui\
 	ui/ui_CalibrationDialog.ui\
 	ui/ui_MultiFreqDialog.ui\
+	ui/ui_RasterMedDialog.ui\
+	ui/ui_InterpolateurDialog.ui\
 	toolbox/AGTUtilities.py\
 	toolbox/AGTExceptions.py
+	
 	
 PLUGINNAME = AGT
 
@@ -69,7 +75,6 @@ PY_FILES = \
 	Dialog/electDialog.py \
 	Dialog/georefDialog.py\
 	Dialog/magDialog.py \
-	Dialog/rasterDialog.py\
 	Dialog/ElecDownDialog.py\
 	Dialog/GridDialog.py\
 	Dialog/MagGridDialog.py\
@@ -78,7 +83,6 @@ PY_FILES = \
 	ui/ui_electDialog.py\
 	ui/ui_georefDialog.py\
 	ui/ui_magDialog.py\
-	ui/ui_rasterDialog.py\
 	ui/ui_ElecDownDialog.py\
 	ui/ui_GridDialog.py\
 	ui/ui_EM31Dialog.py\
@@ -95,10 +99,6 @@ EXTRAS = icons/elec_icon.png icons/mag_icon.png icons/help.svg icons/download_ic
 COMPILED_UI_FILES = ui/ui_electDialog.py \
 	ui/ui_electDialog.py\
 	ui/ui_georefDialog.py\
-	ui/ui_magDialog.py\
-	ui/ui_rasterDialog.py\
-	ui/ui_ElecDownDialog.py\
-	ui/ui_GridDialog.py\
 	ui/ui_EM31Dialog.py\
 	ui/ui_MagGridDialog.py\
 	ui/ui_ParametersDialog.py\
@@ -221,7 +221,7 @@ transup:
 	@echo "Updating translation files with any new strings."
 	@echo "------------------------------------------------"
 	
-	pylupdate4 -noobsolete $(SOURCES) -ts i18n/$(LOCALES)
+	pylupdate5 -noobsolete $(SOURCES) -ts i18n/$(LOCALES)
 	
 #	@chmod +x scripts/update-strings.sh
 #	@scripts/update-strings.sh $(LOCALES)

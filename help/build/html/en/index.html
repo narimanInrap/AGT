@@ -1,18 +1,19 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Welcome to AGT’s documentation! &#8212; AGT 0.1 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" /> 
   </head><body>
@@ -38,7 +39,7 @@
 </div>
 <div class="section" id="introduction">
 <span id="index-0"></span><h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
-<p>This plugin is a toolbox for processing electrical resistivity (Geoscan Research RM15/RM85), magnetic (Sensys MXPDA / Bartington Grad601) and electromagnetic induction (Geonics EM31) data with shapefiles creation.</p>
+<p>This plugin is a toolbox for processing electrical resistivity (Geoscan Research RM15/RM85), magnetic (Sensys MXPDA / Bartington Grad601) and electromagnetic induction (Geonics EM31, GEM2 de Geophex, EMP400 de GSSI) data with shapefiles creation.</p>
 </div>
 <div class="section" id="electrical-data-processing-module-geoscan-research-rm15-rm85-grid-survey">
 <span id="index-1"></span><h1>Electrical data processing module (Geoscan Research RM15/RM85) - grid survey<a class="headerlink" href="#electrical-data-processing-module-geoscan-research-rm15-rm85-grid-survey" title="Permalink to this headline">¶</a></h1>
@@ -48,38 +49,38 @@
 <blockquote>
 <div><p><strong>Column file containing the data</strong></p>
 <ul class="simple">
-<li>RM85                 <em>Name of the resistance meter</em></li>
-<li>2                    <em>Number of grids</em></li>
-<li>30           <em>Grid length  (m)</em></li>
-<li>30           <em>Grid width  (m)</em></li>
-<li>0.5          <em>Probe spacing (m)</em></li>
-<li>3                    <em>Number of channels</em></li>
-<li>4                    <em>Number of probes</em></li>
-<li>1                    <em>Line step (m)</em></li>
-<li>Pole-Pole       <em>Probe configuration</em></li>
-<li>10           <em>Current intensity</em></li>
-<li>1                    <em>Number of the first grid</em></li>
-<li>0                    <em>Coordinates of grid’s first point (bottom-left point)</em></li>
-<li>0</li>
-<li>2            <em>Number of the second grid</em></li>
-<li>0                    <em>coordinates of grid’s first point (bottom-left point)</em></li>
-<li>30</li>
-<li>20.95        <em>Resistivity measurement</em></li>
-<li>25</li>
-<li>20.5</li>
-<li>8.55</li>
-<li>8.9</li>
-<li>5.26</li>
-<li>.</li>
-<li>.</li>
-<li>.</li>
+<li><p>RM85                 <em>Name of the resistance meter</em></p></li>
+<li><p>2                    <em>Number of grids</em></p></li>
+<li><p>30           <em>Grid length  (m)</em></p></li>
+<li><p>30           <em>Grid width  (m)</em></p></li>
+<li><p>0.5          <em>Probe spacing (m)</em></p></li>
+<li><p>3                    <em>Number of channels</em></p></li>
+<li><p>4                    <em>Number of probes</em></p></li>
+<li><p>1                    <em>Line step (m)</em></p></li>
+<li><p>Pole-Pole       <em>Probe configuration</em></p></li>
+<li><p>10           <em>Current intensity</em></p></li>
+<li><p>1                    <em>Number of the first grid</em></p></li>
+<li><p>0                    <em>Coordinates of grid’s first point (bottom-left point)</em></p></li>
+<li><p>0</p></li>
+<li><p>2            <em>Number of the second grid</em></p></li>
+<li><p>0                    <em>coordinates of grid’s first point (bottom-left point)</em></p></li>
+<li><p>30</p></li>
+<li><p>20.95        <em>Resistivity measurement</em></p></li>
+<li><p>25</p></li>
+<li><p>20.5</p></li>
+<li><p>8.55</p></li>
+<li><p>8.9</p></li>
+<li><p>5.26</p></li>
+<li><p>.</p></li>
+<li><p>.</p></li>
+<li><p>.</p></li>
 </ul>
 </div></blockquote>
 <p>The value of dummy log is 999.</p>
 <p>Header has two different roles, so must be accurately completed because it is used:</p>
 <ol class="arabic simple">
-<li>for data processing (automatically read by the software)</li>
-<li>for storing metadata of the survey</li>
+<li><p>for data processing (automatically read by the software)</p></li>
+<li><p>for storing metadata of the survey</p></li>
 </ol>
 <p><strong>Processing</strong></p>
 <p>The basic processing consists of reorganizing the raw data in order to separate each channel and assign the right
@@ -100,40 +101,40 @@ Data can be exported in shapefiles (.shp) or ascii files (.dat). Two sub-modules
 <blockquote>
 <div><p><strong>Sensys MXPDA</strong></p>
 <ul class="simple">
-<li>X   Y    Value</li>
-<li>0   0     2.8</li>
-<li>0  0.1    2.87</li>
-<li>0  0.2    3.08</li>
-<li>0  0.3    2.59</li>
-<li>0  0.4    1.89</li>
-<li>.</li>
-<li>.</li>
-<li>.</li>
+<li><p>X   Y    Value</p></li>
+<li><p>0   0     2.8</p></li>
+<li><p>0  0.1    2.87</p></li>
+<li><p>0  0.2    3.08</p></li>
+<li><p>0  0.3    2.59</p></li>
+<li><p>0  0.4    1.89</p></li>
+<li><p>.</p></li>
+<li><p>.</p></li>
+<li><p>.</p></li>
 </ul>
 <p><strong>Bartington Grad601</strong></p>
 <ul class="simple">
-<li>Time = 09:16:55</li>
-<li>Date = 06/10/2017</li>
-<li>Grid Number = 1</li>
-<li>Number of Sensors = 2</li>
-<li>Grid Size = 40 x 40</li>
-<li>Method of collection = ZigZag</li>
-<li>Starting Direction = West</li>
-<li>Data Range = 100 nT</li>
-<li>Line Spacing = 1.00 m</li>
-<li>Sampling = 4 samples / m</li>
-<li>Sensor Spacing = 1.0 m</li>
-<li>Mean = 0.50</li>
-<li>Max = 21.40</li>
-<li>Min = -4.01</li>
-<li>0.125 0.5 0.87                       <em>Y, X, value</em></li>
-<li>0.375 0.5 0.86</li>
-<li>0.625 0.5 1.21</li>
-<li>0.875 0.5 1.78</li>
-<li>2.875 0.5 1.16</li>
-<li>.</li>
-<li>.</li>
-<li>.</li>
+<li><p>Time = 09:16:55</p></li>
+<li><p>Date = 06/10/2017</p></li>
+<li><p>Grid Number = 1</p></li>
+<li><p>Number of Sensors = 2</p></li>
+<li><p>Grid Size = 40 x 40</p></li>
+<li><p>Method of collection = ZigZag</p></li>
+<li><p>Starting Direction = West</p></li>
+<li><p>Data Range = 100 nT</p></li>
+<li><p>Line Spacing = 1.00 m</p></li>
+<li><p>Sampling = 4 samples / m</p></li>
+<li><p>Sensor Spacing = 1.0 m</p></li>
+<li><p>Mean = 0.50</p></li>
+<li><p>Max = 21.40</p></li>
+<li><p>Min = -4.01</p></li>
+<li><p>0.125 0.5 0.87                       <em>Y, X, value</em></p></li>
+<li><p>0.375 0.5 0.86</p></li>
+<li><p>0.625 0.5 1.21</p></li>
+<li><p>0.875 0.5 1.78</p></li>
+<li><p>2.875 0.5 1.16</p></li>
+<li><p>.</p></li>
+<li><p>.</p></li>
+<li><p>.</p></li>
 </ul>
 </div></blockquote>
 <p><strong>Processing</strong></p>
@@ -155,12 +156,12 @@ Data can be exported in shapefiles (.shp) or ascii files (.dat). Two sub-modules
 <p>The input file is an .asc file, generated by Sensys Magneto-Arch software. Its configuration is as follows:</p>
 <p><em>X, Y, difference of the vertical component of the magnetic field, profile name, the number of the probe.</em></p>
 <ul class="simple">
-<li>30694328.591 5432511.556 5.5 “20161010-110332_GZP.prm” 1</li>
-<li>30694328.717 5432511.772 31.2 “20161010-110332_GZP.prm” 2</li>
-<li>30694328.844 5432511.987 -21.6 “20161010-110332_GZP.prm” 3</li>
-<li>30694328.971 5432512.203 -8.3 “20161010-110332_GZP.prm” 4</li>
-<li>30694329.098 5432512.418 -12.3 “20161010-110332_GZP.prm” 5</li>
-<li>…</li>
+<li><p>30694328.591 5432511.556 5.5 “20161010-110332_GZP.prm” 1</p></li>
+<li><p>30694328.717 5432511.772 31.2 “20161010-110332_GZP.prm” 2</p></li>
+<li><p>30694328.844 5432511.987 -21.6 “20161010-110332_GZP.prm” 3</p></li>
+<li><p>30694328.971 5432512.203 -8.3 “20161010-110332_GZP.prm” 4</p></li>
+<li><p>30694329.098 5432512.418 -12.3 “20161010-110332_GZP.prm” 5</p></li>
+<li><p>…</p></li>
 </ul>
 <p>Collected data are georeferenced in UTM coordinates. The two first digits of the X coordinate correspond to the UTM zone (UTM-30 in this example).</p>
 <p><strong>Processing</strong></p>
@@ -183,15 +184,15 @@ Data can be exported in shapefiles (.shp) or ascii files (.dat). Two sub-modules
 <p><strong>Input file</strong> </p>
 <p>Input file is an ascii file format (.dat) as delivered by DAT31W (Geoncis software). It contains the X, and Y position of each measurement, as well as the quadrature (QV1 in mS / m), in-phase part of the electromagnetic signal (IV1 in ppt)  and a time stamp:</p>
 <ul class="simple">
-<li>/ EAST, NORTH, QV1, IV1, TIME /</li>
-<li>642039.43420000 7097622.22880000 30.10 1.03 15: 32: 39.555</li>
-<li>642039.43560000 7097622.22740000 30.25 1.03 15: 32: 39.904</li>
-<li>642039.43548000 7097622.22934000 30.18 1.03 15: 32: 40.262</li>
-<li>642039.43478000 7097622.23249000 30.13 1.01 15: 32: 40.614</li>
-<li>642039.43402000 7097622.23591000 30.02 1.00 15: 32: 40.991</li>
-<li>642039.50925000 7097622.14500000 29.95 1.00 15: 32: 41.353</li>
-<li>642039.58235000 7097622.05660000 29.98 1.00 15: 32: 41.699</li>
-<li>642039.67784000 7097621.93750000 30.18 1.02 15: 32: 42.071</li>
+<li><p>/ EAST, NORTH, QV1, IV1, TIME /</p></li>
+<li><p>642039.43420000 7097622.22880000 30.10 1.03 15: 32: 39.555</p></li>
+<li><p>642039.43560000 7097622.22740000 30.25 1.03 15: 32: 39.904</p></li>
+<li><p>642039.43548000 7097622.22934000 30.18 1.03 15: 32: 40.262</p></li>
+<li><p>642039.43478000 7097622.23249000 30.13 1.01 15: 32: 40.614</p></li>
+<li><p>642039.43402000 7097622.23591000 30.02 1.00 15: 32: 40.991</p></li>
+<li><p>642039.50925000 7097622.14500000 29.95 1.00 15: 32: 41.353</p></li>
+<li><p>642039.58235000 7097622.05660000 29.98 1.00 15: 32: 41.699</p></li>
+<li><p>642039.67784000 7097621.93750000 30.18 1.02 15: 32: 42.071</p></li>
 </ul>
 <p>The user has to specify the coordinate system used during the survey.</p>
 <p><strong>Processing</strong> </p>
@@ -199,24 +200,138 @@ Data can be exported in shapefiles (.shp) or ascii files (.dat). Two sub-modules
 <p>McNeill J.D., 1980 - Electromagnetic terrain conductivity measurement at low induction number, technical note TN6, Geonics Ltd, Toronto, 15p.</p>
 <p>Thiesson J., Kessouri P., Schamper C., Tabbagh A., 2014 - Calibration of frequency-domain electromagnetic devices used in near-surface surveying. Near Surface Geophysics, 12, 481-491.</p>
 </div>
-<div class="section" id="code-source">
-<span id="index-5"></span><h1>Code source<a class="headerlink" href="#code-source" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="emi-multi-frequency-data-processing-module-gem2-from-geophex-emp400-from-gssi">
+<span id="index-5"></span><h1>EMI multi-frequency data processing module (GEM2 from Geophex, EMP400 from GSSI)<a class="headerlink" href="#emi-multi-frequency-data-processing-module-gem2-from-geophex-emp400-from-gssi" title="Permalink to this headline">¶</a></h1>
+<p>This module enables different processing methods to be performed on the data collected with the GEM2 (Geophex) or the EMP400 (GSSI).</p>
+<ul class="simple">
+<li><p>Merging of GNSS and GEM2/EMP400 datasets (with clock offset correction)</p></li>
+<li><p>Positionning shift correction between the GNSS antenna and the GEM2/EMP400 device</p></li>
+<li><p>Data decimation</p></li>
+<li><p>Median filtering by profile</p></li>
+<li><p>1D moving window filter (median or average method)</p></li>
+<li><p>Electrical conductivity computation</p></li>
+<li><p>Magnetic susceptibility computation with correction of the induction effect</p></li>
+<li><p>Device calibration based on vertical resistivity sounding or mean resistivity</p></li>
+</ul>
+<p><strong>GEM2 file input</strong> </p>
+<p>The input file is an ascii file (.csv) in export format proposed by the software EMExport of the Geophex series. The module allows three different acquisition protocols (without GNSS, with a GNSS connected to the GEM2 and with a GNSS not connected to the GEM2) and it contains a variable data series based on an acquisition with GNSS or acquisition without GNSS.</p>
+<p><strong>GEM2 survey with GNSS</strong> </p>
+<p>Line,Sample,X,Y,Mark,Status,GPSStat,GPSalt,Time[ms],Time[hhmmss.sss],PowerLn,I_5025Hz,Q_5025Hz,
+I_10325Hz,Q_10325Hz,I_21275Hz,Q_21275Hz,I_43725Hz,Q_43725Hz,I_89925Hz,Q_89925Hz,QSum</p>
+<p>0, 21,   509779.22,  5061220.33,   0,0,4,  575.22, 35967000.100,095927.0001,    0.3,-1.22403e+003, 6.32362e+000,-1.55238e+003,-1.78986e+002,-1.99524e+003, 1.17386e+003,-2.12842e+003, 4.58693e+003, 3.66881e+003, 3.00984e+003, 8.59797e+003</p>
+<p><strong>GEM2 survey without GNSS</strong> </p>
+<p>Line,Sample,X,Y,Mark,Status,Time[ms],Time[hhmmss.sss],PowerLn,I_5025Hz,Q_5025Hz,I_10325Hz,
+Q_10325Hz,I_21275Hz,Q_21275Hz,I_43725Hz,Q_43725Hz,I_89925Hz,Q_89925Hz,QSum</p>
+<p>0,0, 0.00, 0.00, 0, 0, 52275802.200, 143115.8022, 0.2, 1.47162e+003,
+-3.85928e+002,9.69091e+002,1.29074e+001,4.03300e+002,1.14524e+003,6.69531e+001,5.15901e+003, 6.22617e+003, 5.16867e+003, 1.10741e+004,0,1, 0.00,1.06,0,0, 52275842.200,143115.8422, 0.1, 1.67830e+003, 1.36072e+001, 1.14406e+003,-1.37615e+002, 5.27930e+002, 1.16965e+003,-2.98461e+001, 5.38998e+003, 5.90062e+003, 5.46728e+003, 1.19029e+004</p>
+<p><strong>EMP400 file input</strong> The input file is an ascii file (.EMI) in export format proposed by the EMP400. The module allows two survey modes (without GNSS and with separate GNSS) and it contains a variable data series based on the survey procedure. Note that the EMP400 has a GNSS but, due to the low precision, the plugin doesn’t consider these data.</p>
+<p><strong>EMP400 survey</strong> </p>
+<p>Header of 36 lines</p>
+<dl class="simple">
+<dt>Record#, XCoord, YCoord, Time, InPhase[15000], Quad[15000], Conductivity[15000], InPhase[8000], Quad[8000], Conductivity[8000], InPhase[5000], Quad[5000], Conductivity[5000], Remark, Mark, Lat, Long, Alt, Tilt, Errors</dt><dd><p>31,    0.500,   18.000,07:19:22.385,-21373 ,1129 ,25.706 ,-6046 ,684 ,29.208 ,-2588 ,438 ,29.882 ,,, 45.6537417,  3.1515333,376.0000000,,NO ERRORS</p>
+</dd>
+</dl>
+<p>The plugin automatically detects the number of frequencies employed for the data collection and the value of each frequency. Then, it detects whether the acquisition was performed with a GNSS or not. These specifications are then used in the different processing methods applied to the dataset.</p>
+<p>The user has to specify the reference coordinate system (RCS) used during the survey. By default it is the WGS84 UTM31 North system. This RCS can be changed in the tab Parameters and saved as the new reference system default.</p>
+<p>The input GNSS file is an ascii file (.dat). It must contain basic information, X and Y position, altitude and time of acquisition (hh:mm:ss.ss). Care must be taken to specify the RCS used for the GNSS data acquisition.</p>
+<p><strong>Input GNSS file format</strong> </p>
+<ul class="simple">
+<li><p>/X, Y, Z, Time/</p></li>
+<li><p>1709059.979, 6946271.346, 232.25,12:11:05</p></li>
+<li><p>1709059.975, 6946271.352, 232.22,12:11:06</p></li>
+<li><p>1709009.729, 6946415.921, 232.15,12:42:52</p></li>
+</ul>
+<p><strong>Processing</strong> </p>
+<blockquote>
+<div><p><em>Merging GNSS and GEM2/EMP400 data</em> This function is dedicated to merging the GEM2/EMP400 input file and the GNSS input file based on the time of acquisition of each data. By default the GEM2/EMP400 input file is a file without GNSS data. Timing is based on the time stamp of both devices. We can specify the offset existing between the two clocks in order to optimize the data positioning.
+<em>Data decimation</em> </p>
+<p>This function reduces the number of data by keeping a fraction of them (1/n, n is chosen by the user). Final data is based on the result of a median calculated with a moving window on the n decimated points.</p>
+<p><em>Spatial GNSS/GEM2/EMP400 shift</em> </p>
+<p>In the case of a GEM2/EMP400-GNSS acquisition, for practical reasons, it is possible to have a spatial shift between the GNSS antenna and the center of the GEM2/EMP400. Shift correction is calculated in accordance with the direction of the surveyor and the device.</p>
+<p><em>Median filtering by profile (In-phase/Out-of-phase)</em> </p>
+<p>This function allows the removal of the median value for each profile in order to reduce the effects due to the difference in ground clearance, or an inaccurate horizontal orientation. Median calculation by profile can be applied on in-phase and/or out-of-phase datasets.</p>
+<p><em>Moving window filter</em> </p>
+<p>This function applies a 1D moving window filter along each profile. The user can select the method (median or average method), the in-phase or out-of-phase component and the window size.</p>
+<p><em>Geophysical parameter calculation</em> </p>
+<blockquote>
+<div><p><em>Calibration</em> </p>
+<p>This processing enables a device calibration based on the up and down measurements collected at the location of a vertical electrical sounding or a known mean electrical resistivity value. In order to do the calibration, click on the button Calibration parameter. You will then have to fill in the EMI calibration file path. This file contains the up and down measurements (Thiesson et al. 2014) needed for the calibration. It must contain 6 measurement points, alternating between the up and down measurement, starting with a down measurement. As the GEM2/EMP400 is unable to acquire discrete points, each measurement corresponds to a static continuous profile to determine the value of each point (with an average calculation). The user has to specify the height of the device from the ground for both up and down measurements (when the GEM2/EMP400 is lying on the ground the respective height value is 0.02 m due to the frame of the GEM2/EMP400). It is then possible to choose for the reference value, an average resistivity value or a 5 layers model. If you only have a 3 or 4 layers, fill the last one(s) with the same value (Example: for a 3 layers model, rau3=rau4=rau5).</p>
+<p><em>Electrical conductivity and magnetic susceptibility computation</em> </p>
+<p>The processing module estimates the apparent electrical conductivity values and the apparent magnetic susceptibility values based on the solution of the integrals and the Hankel transform (Thiesson et al. 2014). This solution takes into account the device’s height and the coils’ configuration. It can therefore be applied regardless of the type of soil and is even valid in high conductivity soil medium.</p>
+<p>For the apparent magnetic susceptibility computation, the process enables the removal of the conductivity effect on the in-phase signal. Warning: This option implies a relatively long processing time. It is also necessary to firstly check that the validity of the previously calculated conductivity (necessary for this calculation) is not negative in which case the estimation of the susceptibility will be incorrect.</p>
+</div></blockquote>
+</div></blockquote>
+<p>The processed points are saved in a shapefile with the user-defined RCS. It contains X and Y positions, in-phase and out-of-phase processed values and the computed conductivity and susceptibility values for each frequency. In addition, the shapefile contains the profile number, the time stamp, the GNSS quality and the altitude.</p>
+<p>Thiesson J., Kessouri P., Schamper C., Tabbagh A. 2014 - Calibration of frequency-domain electromagnetic devices used in near-surface surveying. Near Surface Geophysics, 12, 481-491.</p>
+</div>
+<div class="section" id="interpolator-module">
+<span id="index-6"></span><h1>Interpolator Module<a class="headerlink" href="#interpolator-module" title="Permalink to this headline">¶</a></h1>
+<p>This module allows the interpolation of geophysical data loaded as a shapefile point format. It uses SAGA interpolators (<a class="reference external" href="http://www.saga-gis.org/">http://www.saga-gis.org/</a>). It is suitable for Electrical, Magnetic and Electromagnetic (EMI) data, each using a different interpolation method for which most of the interpolating parameters have already been prefilled for ease of use:</p>
+<p><strong>Interpolator for magnetic data: Inverse Weighted Distance function</strong> </p>
+<blockquote>
+<div><p><em>Defaults parameters :</em> </p>
+</div></blockquote>
+<ul class="simple">
+<li><p>‘DW_BANDWIDTH’: 1</p></li>
+<li><p>‘DW_IDW_OFFSET’: False</p></li>
+<li><p>‘DW_IDW_POWER’: 2</p></li>
+<li><p>‘DW_WEIGHTING’: 1</p></li>
+<li><p>‘SEARCH_DIRECTION’: 0</p></li>
+<li><p>‘SEARCH_POINTS_ALL’: 0</p></li>
+<li><p>‘SEARCH_POINTS_MAX’: 20</p></li>
+<li><p>‘SEARCH_POINTS_MIN’: -1</p></li>
+<li><p>‘SEARCH_RANGE’: 0</p></li>
+<li><p>‘TARGET_DEFINITION’: 0</p></li>
+<li><p>‘TARGET_TEMPLATE’: None</p></li>
+<li><p>‘TARGET_USER_FITS’: 0</p></li>
+</ul>
+<p><strong>Interpolator for electrical resistivity data: Multi-level B Spline function</strong> </p>
+<blockquote>
+<div><p><em>Defaults parameters :</em> </p>
+</div></blockquote>
+<ul class="simple">
+<li><p>‘EPSILON’: 0.0001</p></li>
+<li><p>‘LEVEL_MAX’: 11</p></li>
+<li><p>‘METHOD’: 1</p></li>
+<li><p>‘TARGET_USER_FITS’: 0</p></li>
+</ul>
+<p><strong>Interpolator for electromagnetic data: Cubic Spline Interpolation function</strong> </p>
+<blockquote>
+<div><p><em>Defaults parameters :</em> </p>
+</div></blockquote>
+<ul class="simple">
+<li><p>‘K’: 10</p></li>
+<li><p>‘NPMAX’: 11</p></li>
+<li><p>‘NPMIN’: 1</p></li>
+<li><p>‘NPPC’: 3</p></li>
+<li><p>‘TARGET_USER_FITS’: 0</p></li>
+</ul>
+<p>These parameters have been defined as optimal for these three geophysical methods. However, if the user wishes to modify them, we invite him to use directly the interpolation functions provided by SAGA Processing Toolbox.</p>
+<p>The user-defined parameters for the interpolation are the selected shapefile and the field to interpolate. The user has to enter the output raster pixel size and the search radius (in meters). Please note that the paths must not contain any special characters, as these may cause errors when running SAGA tools.</p>
+<p><strong>Minimum configuration:</strong> QGIS versions greater than or equal to 3.10.5 and SAGA tools must be previously activated in QGIS</p>
+</div>
+<div class="section" id="median-filtering-module">
+<span id="index-7"></span><h1>Median Filtering Module<a class="headerlink" href="#median-filtering-module" title="Permalink to this headline">¶</a></h1>
+<p>This module allows performing a median filtering on a raster file. Its specificity, compared to a classical median filtering is the possibility to define a filtering threshold corresponding to the maximum value that the tested pixel must not exceed in relation to the kernel median value (window on which the median is evaluated). The resulting processing file must be saved in raster .tif format.</p>
+<p>The user has to define the size of the window on which the median is evaluated (5 corresponds to a 5x5 pixels window) and the threshold corresponds to the deviation in per cent between the value and the median.</p>
+<p>This tool is inspired by the functions from the Geophpy library (<a class="reference external" href="https://pypi.org/project/GeophPy/">https://pypi.org/project/GeophPy/</a>) and more generally by Wumap (Laboratoire UMR 7619 Metis formerly Sisyphe).</p>
+</div>
+<div class="section" id="source-code">
+<span id="index-8"></span><h1>Source code<a class="headerlink" href="#source-code" title="Permalink to this headline">¶</a></h1>
 <p>The source code is available at:</p>
 <p><a class="reference external" href="https://github.com/narimanInrap/AGT.git">https://github.com/narimanInrap/AGT.git</a></p>
 </div>
 <div class="section" id="future-developments">
 <h1>Future developments<a class="headerlink" href="#future-developments" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
-<li>Electromagnetic processing module (GeoPhex gem-2, dualEM)</li>
-<li>RM15/RM85 Download module</li>
-<li>Advanced processing module</li>
+<li><p>RM15/RM85 Download module</p></li>
 </ul>
 </div>
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
-<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
-<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
 </div>
 
@@ -226,7 +341,7 @@ Data can be exported in shapefiles (.shp) or ascii files (.dat). Two sub-modules
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="#">Table Of Contents</a></h3>
+  <h3><a href="#">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Welcome to AGT’s documentation!</a></li>
 <li><a class="reference internal" href="#introduction">Introduction</a></li>
@@ -234,7 +349,10 @@ Data can be exported in shapefiles (.shp) or ascii files (.dat). Two sub-modules
 <li><a class="reference internal" href="#magnetic-data-processing-module-sensys-mxpda-bartington-grad601-grid-survey">Magnetic data processing module (Sensys MXPDA / Bartington Grad601) - grid survey</a></li>
 <li><a class="reference internal" href="#magnetic-data-processing-module-sensys-mxpda-gnss-survey">Magnetic data processing module (Sensys MXPDA) - GNSS survey</a></li>
 <li><a class="reference internal" href="#emi-data-processing-module-em31-from-geonics">EMI data processing module (EM31 from Geonics)</a></li>
-<li><a class="reference internal" href="#code-source">Code source</a></li>
+<li><a class="reference internal" href="#emi-multi-frequency-data-processing-module-gem2-from-geophex-emp400-from-gssi">EMI multi-frequency data processing module (GEM2 from Geophex, EMP400 from GSSI)</a></li>
+<li><a class="reference internal" href="#interpolator-module">Interpolator Module</a></li>
+<li><a class="reference internal" href="#median-filtering-module">Median Filtering Module</a></li>
+<li><a class="reference internal" href="#source-code">Source code</a></li>
 <li><a class="reference internal" href="#future-developments">Future developments</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
@@ -247,17 +365,15 @@ Data can be exported in shapefiles (.shp) or ascii files (.dat). Two sub-modules
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -273,7 +389,7 @@ Data can be exported in shapefiles (.shp) or ascii files (.dat). Two sub-modules
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2013, Nariman HATAMI / INRAP.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.0.
     </div>
   </body>
 </html>

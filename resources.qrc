@@ -2,7 +2,8 @@
     <qresource prefix="/plugins/AGT" >
         <file>icons/elec_icon.png</file>
         <file>icons/mag_icon.png</file>
-		<file>icons/raster_icon.png</file>
+		<file>icons/rasterMed_icon.png</file>
+		<file>icons/interpolator_icon.png</file>
 		<file>icons/em31_icon.png</file>
         <file>icons/help.svg</file>     
         <file>icons/magGrid_icon.png</file>

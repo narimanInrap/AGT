@@ -24,17 +24,17 @@ AGT - Archaeological Geophysics Toolbox
 #using Unicode for all strings
 from __future__ import unicode_literals
 
-from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import QSettings, QTextCodec
-from qgis.core import *
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import QSettings, QTextCodec, QCoreApplication
 
+from qgis.core import *
 
 from os.path import splitext
 from os.path import dirname
 from os.path import basename
 import os, sqlite3
 
-from AGTExceptions import *
+from .AGTExceptions import *
 #from ..lib.serial.tools import list_ports
 #import serial.tools.list_ports
 
@@ -43,7 +43,7 @@ from AGTExceptions import *
 # Copyright (C) 2010, 2013 Goyo
 class Utilities(object):
     
-    crsRefDict = {}
+#     crsRefDict = {}
     interpolProcDict = {}
     
     @staticmethod
@@ -54,7 +54,7 @@ class Utilities(object):
             if not QgsVectorFileWriter.deleteShapeFile(fileName):
                 raise FileDeletionError(fileName)  
         writer = QgsVectorFileWriter(fileName, encoding,
-                                     fields, QGis.WKBPoint, crs)
+                                     fields, QgsWkbTypes.Point, crs, driverName = 'ESRI Shapefile')
         #if writer.hasError() != QgsVectorFileWriter.NoError:
         #   print "Error when creating shapefile: ",  w.errorMessage() lever une exception        
         featCounter = 0       
@@ -64,7 +64,7 @@ class Utilities(object):
         if featCounter == 0:
             del writer    
             if not QgsVectorFileWriter.deleteShapeFile(fileName):
-                msg = QtGui.QApplication.translate(u"Engine",u'No feature was created. The {} shapefile was deleted.\n').format(fileName)
+                msg = QCoreApplication.translate(u"Engine",u'No feature was created. The {} shapefile was deleted.\n').format(fileName)
                 raise FileDeletionError(msg + fileName)
             raise NoFeatureCreatedError(fileName)          
         del writer
@@ -75,21 +75,21 @@ class Utilities(object):
     @staticmethod
     def loadDefaultParameters():
         
-        defaultCrsImport = unicode('RGF93 / Lambert-93, 2154')        
-        defaultCrsExport = unicode('RGF93 / Lambert-93, 2154')
+        defaultCrsImport = QgsCoordinateReferenceSystem('EPSG:32631')
+        defaultCrsExport = QgsCoordinateReferenceSystem('EPSG:4326')   
         defaultEncoding = unicode('UTF-8')
         try:
             paramFilename = '{}/../param.txt'.format(os.path.dirname(__file__))
             paramFile = open(paramFilename, 'r')
-            defaultCrsImport = unicode(paramFile.readline().strip())
-            defaultCrsExport = unicode(paramFile.readline().strip())
+            defaultCrsImport = QgsCoordinateReferenceSystem(unicode(paramFile.readline().strip()))
+            if not(defaultCrsImport.isValid()):
+                defaultCrsImport = QgsCoordinateReferenceSystem('EPSG:32631')
+            defaultCrsExport = QgsCoordinateReferenceSystem(unicode(paramFile.readline().strip()))
+            if not(defaultCrsExport.isValid()):
+                defaultCrsExport = QgsCoordinateReferenceSystem('EPSG:4326')
             defaultEncoding = unicode(paramFile.readline().strip())
             if (defaultEncoding not in AGTEnconding.getEncodings()):
-                defaultEncoding = unicode('UTF-8')
-            if (defaultCrsImport not in Utilities.getCRSList()):
-                defaultCrsImport = unicode('RGF93 / Lambert-93, 2154')
-            if (defaultCrsExport not in Utilities.getCRSList()):
-                defaultCrsExport = unicode('RGF93 / Lambert-93, 2154')
+                defaultEncoding = unicode('UTF-8')           
         except IOError as e:
             #msg = 'Error({0}): {1}.\n'.format(e.errno, e.strerror)
             #msg += 'Default parameters not found.'            
@@ -147,24 +147,24 @@ class Utilities(object):
         
         
     # Returns the list of all CRSes and fills the CRS dictionary
-    @staticmethod
-    def getCRSList():
-        
-        conn = sqlite3.connect(QgsApplication.srsDbFilePath())
-        cur = conn.cursor()
-        cur.execute('select * from vw_srs')
-        rows = cur.fetchall()
-        crsList = []      
-        for crs in rows:
-            crsList.append(crs[0][:25] + ', ' + crs[6])
-            try:
-                code = long(crs[6])
-            except ValueError:
-                code = crs[6]
-            Utilities.crsRefDict[crs[0][:25] + ', ' + crs[6]] = code        
-        cur.close()
-        conn.close()        
-        return crsList
+#     @staticmethod
+#     def getCRSList():
+#         
+#         conn = sqlite3.connect(QgsApplication.srsDatabaseFilePath())
+#         cur = conn.cursor()
+#         cur.execute('select * from vw_srs')
+#         rows = cur.fetchall()
+#         crsList = []      
+#         for crs in rows:
+#             crsList.append(crs[0][:25] + ', ' + crs[6])
+#             try:
+#                 code = long(crs[6])
+#             except ValueError:
+#                 code = crs[6]
+#             Utilities.crsRefDict[crs[0][:25] + ', ' + crs[6]] = code        
+#         cur.close()
+#         conn.close()        
+#         return crsList
   
     # Fills the dictionary of interpolation processes and returns the list the its keys  
     @staticmethod
@@ -201,14 +201,14 @@ class Utilities(object):
     def getProbeConfigList():
         
         probeConfigs = []
-        probeConfigs.append(QtGui.QApplication.translate("Utility", 'pole-pole', None, QtGui.QApplication.UnicodeUTF8))
+        probeConfigs.append(QCoreApplication.translate("Utility", 'pole-pole', None, QtGui.QApplication.UnicodeUTF8))
         return probeConfigs
     
-    # Returns a list of names of all layers in QgsMapLayerRegistry
+    # Returns a list of names of all layers in QgsProject
     @staticmethod
     def getLayerNames(geoTypes):
         
-        mapLayers = QgsMapLayerRegistry.instance().mapLayers()    
+        mapLayers = QgsProject.instance().mapLayers()    
         layers = []  
         for name, layer in mapLayers.iteritems():
             if (layer.type() == QgsMapLayer.VectorLayer) and (layer.geometryType() in geoTypes):
@@ -222,7 +222,7 @@ class Utilities(object):
     def getVectorLayerByName(layerName):
 #         if layerName is None:
 #             return None
-        mapLayers = QgsMapLayerRegistry.instance().mapLayers()
+        mapLayers = QgsProject.instance().mapLayers()
         for name, layer in mapLayers.iteritems():
             if layer.type() == QgsMapLayer.VectorLayer and layer.name() == layerName:
                 if layer.isValid():
@@ -244,8 +244,8 @@ class Utilities(object):
         else:
             filter = '*' + filExt
             
-        SaveOutPutShapeMsg = QtGui.QApplication.translate("Utility","Save output file", None, QtGui.QApplication.UnicodeUTF8) 
-        outFilePath = QtGui.QFileDialog.getSaveFileName(parent, SaveOutPutShapeMsg, outDir, filter)
+        SaveOutPutShapeMsg = QCoreApplication.translate("Utility","Save output file") 
+        outFilePath, _filter = QtWidgets.QFileDialog.getSaveFileName(parent, SaveOutPutShapeMsg, outDir, filter)
         outFilePath = unicode(outFilePath)
         if outFilePath:
             root, ext = splitext(outFilePath)
@@ -263,8 +263,8 @@ class Utilities(object):
         key = '/UI/lastShapefileDir'
         workDir = settings.value(key)
         filter = fileFilter
-        OpenInputShapeMsg = QtGui.QApplication.translate("Utility", message, None, QtGui.QApplication.UnicodeUTF8) 
-        inFilePath = QtGui.QFileDialog.getOpenFileName(parent, OpenInputShapeMsg, workDir, filter)
+        OpenInputShapeMsg = QCoreApplication.translate("Utility", message)
+        inFilePath, _filter = QtWidgets.QFileDialog.getOpenFileName(parent, OpenInputShapeMsg, workDir, filter)
         inFilePath = unicode(inFilePath)
         if inFilePath:
             #  root, ext = splitext(inFilePath)
@@ -283,9 +283,13 @@ class Utilities(object):
         root, ext = splitext(layerName)
         if ext == '.shp':
             layerName = root
-        newLayer = QgsVectorLayer(shapeFilePath, layerName, "ogr")
-        ret = QgsMapLayerRegistry.instance().addMapLayer(newLayer)
-        return ret 
+            newLayer = QgsVectorLayer(shapeFilePath, layerName, "ogr")
+        if ext == '.tif' or ext =='.tiff':
+            layerName = root
+            newLayer = QgsRasterLayer(shapeFilePath, layerName)
+            
+        ret = QgsProject.instance().addMapLayer(newLayer)
+        return ret
 
     @staticmethod
     def shapefileToDAT(shapefile, attInd, filterFieldName = None):
@@ -328,7 +332,7 @@ class AGTEnconding(object):
     def getEncodings():
         """Returns a list of available encodings static."""
         
-        return [unicode(QTextCodec.codecForMib(mib).name())
+        return [str(unicode(QTextCodec.codecForMib(mib).name().data(), encoding = 'utf-8'))
                  for mib in QTextCodec.availableMibs()]
     
     @staticmethod    

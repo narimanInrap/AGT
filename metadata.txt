@@ -8,7 +8,7 @@
 
 [general]
 name=AGT - Archaeological Geophysics Toolbox
-qgisMinimumVersion=2.0
+qgisMinimumVersion=3.0
 description=This plugin provides basic tools for processing archaeo-geophysical data: Geoscan Research RM15/RM85, Sensys MXPDA, Bartington Grad601, Geonics EM31, Geophex GEM2, GSSI EMP400
 about = Electrical resistivity processing module (Geoscan Research RM15/RM85) contains:
 		1. Importing
@@ -41,11 +41,15 @@ about = Electrical resistivity processing module (Geoscan Research RM15/RM85) co
 			d. Geophysical parameter calculation:
 				i. Calibration
 				ii. Electrical conductivity and magnetic susceptibility computation
+		Interpolator module contains: SAGA Inverse Weighted Distance, Multi-level B Spline and Cubic Spline Interpolation functions
+		
+		Median Filtering Module (raster)
+		
 Coming soon:	
 	RM15/RM85 Download module
 	Advanced processing module 
 
-version=2.0
+version=3.0
 author=INRAP - Guillaume Hulin, Francois-Xavier Simon, Nariman Hatami
 email=developpement-qgis@inrap.fr
 repository=https://github.com/narimanInrap/AGT
@@ -58,7 +62,7 @@ repository=https://github.com/narimanInrap/AGT
 # changelog=
 
 # Tags are comma separated with spaces allowed
-tags=archaeology, geophysics, RM85, RM15, INRAP, AGT, MXPDA, processing, EMI, EM31, GNNS, grid survey, Grad601, Geophex, GEM2, GSSI, EMP400 
+tags=archaeology, geophysics, RM85, RM15, INRAP, AGT, MXPDA, processing, EMI, EM31, GNNS, grid survey, Grad601, Geophex, GEM2, GSSI, EMP400, raster, interpolation, filter, survey, SAGA
 
 homepage=https://github.com/narimanInrap/AGT/blob/master/README.md
 tracker=https://github.com/narimanInrap/AGT/issues

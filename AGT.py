@@ -28,22 +28,23 @@ from __future__ import unicode_literals
 import os.path
 
 # Import the PyQt and QGIS libraries
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
+from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, QUrl
+from PyQt5.QtGui import QIcon, QDesktopServices
+from PyQt5.QtWidgets import QAction
 
 # Initialize Qt resources from file resources.py
-import resources_rc
+from .resources import *
 
 # Import the code for the dialog
-from Dialog.ElectDialog import ElectDialog
-from Dialog.MagDialog import MagDialog
-from Dialog.RasterDialog import RasterDialog
+from .Dialog.ElectDialog import ElectDialog
+from .Dialog.MagDialog import MagDialog
 #from Dialog.ElecDownDialog import ElecDownDialog
-from Dialog.EM31Dialog import EM31Dialog
-from Dialog.MagGridDialog import MagGridDialog
-from Dialog.ParametersDialog import ParametersDialog
-from Dialog.GEM2Dialog import GEM2Dialog
+from .Dialog.EM31Dialog import EM31Dialog
+from .Dialog.MagGridDialog import MagGridDialog
+from .Dialog.ParametersDialog import ParametersDialog
+from .Dialog.GEM2Dialog import GEM2Dialog
+from .Dialog.RasterMedDialog import RasterMedDialog
+from .Dialog.InterpolateurDialog import InterpolateurDialog
 
 class AGT:
     """QGIS Plugin Implementation."""
@@ -73,13 +74,14 @@ class AGT:
 
         # Create the dialog (after translation) and keep reference
         self.dlg = ElectDialog(self.iface)
-        self.magDlg = MagDialog(self.iface)
-        self.em31Dlg = EM31Dialog(self.iface)
-        #self.elecDownDlg = ElecDownDialog(self.iface)
-        #self.rasterDlg = RasterDialog(self.iface)
+        self.magDlg = MagDialog()
+        self.em31Dlg = EM31Dialog()
+        #self.elecDownDlg = ElecDownDialog()
         self.magGridDlg = MagGridDialog(self.iface)
-        self.paramDlg = ParametersDialog(self.iface)
-        self.gem2Dlg = GEM2Dialog(self.iface)
+        self.paramDlg = ParametersDialog()
+        self.gem2Dlg = GEM2Dialog()
+        self.rasterMedDlg = RasterMedDialog(self.iface)
+        self.interpDlg = InterpolateurDialog(self.iface)
 
         # Declare instance attributes
         self.actions = []
@@ -215,13 +217,6 @@ class AGT:
             callback=self.runEM31,
             parent=self.iface.mainWindow())
      
-#         icon_path = ':/plugins/AGT/icons/raster_icon.png'
-#         self.add_action(
-#             icon_path,
-#             text=self.tr(u'Interpolation'),
-#             callback=self.runRaster,
-#             parent=self.iface.mainWindow())
-#       
         icon_path = ':/plugins/AGT/icons/GEM2_icon.png'
         self.add_action(
             icon_path,
@@ -229,15 +224,29 @@ class AGT:
             callback=self.runGEM2,
             parent=self.iface.mainWindow())
         
+        icon_path = ':/plugins/AGT/icons/interpolator_icon.png'
+        self.add_action(
+            icon_path,
+            text=self.tr(u'Interpolator'),
+            callback=self.runInterpolateur,
+            parent=self.iface.mainWindow())     
+        icon_path = ':/plugins/AGT/icons/rasterMed_icon.png'
+        
+        self.add_action(
+            icon_path,
+            text=self.tr(u'Raster med processing'),
+            callback=self.runRasterMed,
+            parent=self.iface.mainWindow())        
+                   
         icon_path = ':/plugins/AGT/icons/param_icon.png'
         self.add_action(
             icon_path,
             text=self.tr(u'Default parameters'),
             callback=self.parameters,
             parent=self.iface.mainWindow(),
-            add_to_toolbar = True)        
-        icon_path = ':/plugins/AGT/icons/help.svg'
-        
+            add_to_toolbar = True)  
+              
+        icon_path = ':/plugins/AGT/icons/help.svg'        
         self.add_action(
             icon_path,
             text=self.tr(u'help'),
@@ -350,6 +359,8 @@ class AGT:
         # show the dialog
         self.gem2Dlg.show()
         # Run the dialog event loop
+        self.gem2Dlg.setDefaultCRSImport()
+        self.gem2Dlg.setDefaultCRSExport()
         result = self.gem2Dlg.exec_()
         # See if OK was pressed
         if result:
@@ -359,19 +370,34 @@ class AGT:
         else:
             self.gem2Dlg.hideDialog() 
              
-    def runRaster(self):
+    def runRasterMed(self):
         """Run method that performs all the real work"""
         # show the dialog
-        self.rasterDlg.show()
+        self.rasterMedDlg.show()
+        self.rasterMedDlg.populateProc()
         # Run the dialog event loop
-        result = self.rasterDlg.exec_()
+        result = self.rasterMedDlg.exec_()
         # See if OK was pressed
         if result:
             # Do something useful here - delete the line containing pass and
             # substitute with your code.
             pass
-        #else:
-         #   self.magDlg.hideDialog()
+        else:
+            self.rasterMedDlg.hideDialog()
 
+    def runInterpolateur(self):
+        """Run method that performs all the real work"""
+        # show the dialog
+        self.interpDlg.show()
+        self.interpDlg.populateProc()
+        # Run the dialog event loop
+        result = self.interpDlg.exec_()
+        # See if OK was pressed
+        if result:
+            # Do something useful here - delete the line containing pass and
+            # substitute with your code.
+            pass
+        else:
+            self.interpDlg.hideDialog()       
 
 

@@ -26,8 +26,9 @@ from __future__ import unicode_literals
 
 import os
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5 import uic, QtWidgets
+from PyQt5.QtCore import QSettings, QTextCodec, QCoreApplication, Qt
+
 
 
 
@@ -37,28 +38,23 @@ from ..ui.ui_MagGridDialog import Ui_AGTMagGridDialog
 from ..toolbox.AGTUtilities import Utilities, AGTEnconding
 from ..toolbox.AGTExceptions import *
 from ..toolbox.DefParamEnum import DefParamEnum
-from GeorefDialog import GeorefDialog
+from .GeorefDialog import GeorefDialog
 
 #FORM_CLASS, _ = uic.loadUiType(os.path.join(
 #   os.path.dirname(__file__), 'AGT_dialog_base.ui'))
 
 
-class MagGridDialog(QDialog, Ui_AGTMagGridDialog):
+class MagGridDialog(QtWidgets.QDialog, Ui_AGTMagGridDialog):
     def __init__(self, iface, parent=None):
         """Constructor."""
         super(MagGridDialog, self).__init__(parent)
-        # Set up the user interface from Designer.
-        # After setupUI you can access any designer object by doing
-        # self.<objectname>, and you can use autoconnect slots - see
-        # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
-        # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
-        QObject.connect(self.ButtonBrowse, SIGNAL('clicked()'), self.inFile)
-        QObject.connect(self.ButtonBrowseShape, SIGNAL('clicked()'), self.outFileBrowse)
-        QObject.connect(self.allProcess_button, SIGNAL('clicked()'), self.magProcesses)
-        QObject.connect(self.medchk, SIGNAL('stateChanged(int)'), self.medianChecked)
-        QObject.connect(self.trendchk, SIGNAL('stateChanged(int)'), self.TrendChecked)
-        self.iface = iface    
+        self.ButtonBrowse.clicked.connect(self.inFile)
+        self.ButtonBrowseShape.clicked.connect(self.outFileBrowse)
+        self.allProcess_button.clicked.connect(self.magProcesses)
+        self.medchk.stateChanged.connect(self.medianChecked)
+        self.trendchk.stateChanged.connect(self.TrendChecked)
+        self.iface = iface
         self.encoding = Utilities.loadDefaultParameters()[DefParamEnum.encoding]
       
     def medianChecked(self):
@@ -107,10 +103,12 @@ class MagGridDialog(QDialog, Ui_AGTMagGridDialog):
                               percThreshold = self.percentSpin.value(), trendRemove = self.trendchk.isChecked(), trendPolyOrder = self.polyOrdSpin.value(),
                               trendPercentile = self.trendPercentileChk.isChecked(), trendPercThreshold = self.trendPercentileSpinBox.value(), outputShapefile = self.outputFilename.text())
         shapefiles = [] 
+        
         try:
             self.runMagGrid()
-        except (FileDeletionError, NoFeatureCreatedError, ParserError, Exception) as e:            
-            QMessageBox.warning(self, 'AGT', e.message)
+        except (FileDeletionError, NoFeatureCreatedError, ParserError, Exception) as e:
+            msg = '{}'.format(e)            
+            QtWidgets.QMessageBox.warning(self, 'AGT', msg)
             return
         self.engine.createMagGridRelCoordShapefile()
         self.progressBar.setValue(100)    
@@ -118,14 +116,14 @@ class MagGridDialog(QDialog, Ui_AGTMagGridDialog):
             geoDlg = GeorefDialog(self.iface, self.engine)
             geoDlg.show()
             result = geoDlg.exec_()                
-            if result == QDialog.Rejected:
-                QMessageBox.information(self, 'AGT', 'grid' + QtGui.QApplication.translate(u"MagGridDlg",u'Georeferencing canceled'))
+            if result == QtWidgets.QDialog.Rejected:
+                QtWidgets.QMessageBox.information(self, 'AGT', 'grid' + QCoreApplication.translate(u"MagGridDlg",u'Georeferencing canceled'))
             else:                 
-                QMessageBox.information(self, 'AGT', 'grid' + QtGui.QApplication.translate(u"MagGridDlg",u'Georeferencing done'))
+                QtWidgets.QMessageBox.information(self, 'AGT', 'grid' + QCoreApplication.translate(u"MagGridDlg",u'Georeferencing done'))
                 shapefiles.append(self.outputFilename.text()[:-4] + '_Gref.shp')
         else:
             shapefiles.append(self.outputFilename.text())               
-            QMessageBox.information(self, 'AGT', "Data exported.")
+            QtWidgets.QMessageBox.information(self, 'AGT', "Data exported.")
         self.addShapeToCanvas(shapefiles)
         self.hideDialog()
         
@@ -146,29 +144,29 @@ class MagGridDialog(QDialog, Ui_AGTMagGridDialog):
         """Verifies whether the input is valid."""
       
         if not self.inFileLine.text():
-            msg = QtGui.QApplication.translate(u"MagGridDlg",'Please specify an input data file.')
-            QMessageBox.warning(self, 'AGT', msg)
+            msg = QCoreApplication.translate(u"MagGridDlg",'Please specify an input data file.')
+            QtWidgets.QMessageBox.warning(self, 'AGT', msg)
             return False
         if not self.outputFilename.text():
-            msg = QtGui.QApplication.translate(u"MagGridDlg",'Please specify an output shapefile.')
-            QMessageBox.warning(self, 'AGT', msg)
+            msg = QCoreApplication.translate(u"MagGridDlg",'Please specify an output shapefile.')
+            QtWidgets.QMessageBox.warning(self, 'AGT', msg)
             return False
         root, ext = os.path.splitext(self.outputFilename.text())
         if (ext.upper() != '.SHP'):
-            msg = QtGui.QApplication.translate(u"MagGridDlg",'The output file must have the filename.shp format.')
-            QMessageBox.warning(self, 'AGT', msg)
+            msg = QCoreApplication.translate(u"MagGridDlg",'The output file must have the filename.shp format.')
+            QtWidgets.QMessageBox.warning(self, 'AGT', msg)
             return False        
         return True
         
     def addShapeToCanvas(self, shapefiles):
     
-        message = QtGui.QApplication.translate(u"MagGridDlg",'Created output Shapfile:')
+        message = QCoreApplication.translate(u"MagGridDlg",'Created output Shapfile:')
         for sf in shapefiles:           
             message = '\n'.join([message, unicode(sf)])
-        message = '\n'.join([message, QtGui.QApplication.translate(u"MagGridDlg","Would you like to add the new layer to your project?")])            
-        addToTOC = QMessageBox.question(self, "AGT", message,
-            QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
-        if addToTOC == QMessageBox.Yes:
+        message = '\n'.join([message, QCoreApplication.translate(u"MagGridDlg","Would you like to add the new layer to your project?")])            
+        addToTOC = QtWidgets.QMessageBox.question(self, "AGT", message,
+            QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.NoButton)
+        if addToTOC == QtWidgets.QMessageBox.Yes:
             for sf in shapefiles:
                 Utilities.addShapeToCanvas(unicode(sf))       
                  
