@@ -140,7 +140,7 @@ class GEM2Dialog(QtWidgets.QDialog, Ui_AGTMultiFreqDialog):
         filterQ = FilterEnum.MEAN
         if self.windowSlideMedianQ.isChecked():
             filterQ = FilterEnum.MEDIAN
-        self.engine = EngineGEM2(rawDataFilename = self.dataInFileLine.text(), dataEncoding = self.encoding, crsRefImp = self.qgsProjectionSelectionImport.csr(), crsRefExp = self.qgsProjectionSelectionExport.crs(), 
+        self.engine = EngineGEM2(rawDataFilename = self.dataInFileLine.text(), dataEncoding = self.encoding, crsRefImp = self.qgsProjectionSelectionImport.crs(), crsRefExp = self.qgsProjectionSelectionExport.crs(), 
                                  sensorHeight = self.altSpin.value(), gnssHourShift = self.gnssHourShift.value(),gnssMinuteShift = self.gnssMinuteShift.value(), gnssSecondsShift = self.gnssSecondsShift.value(),
                                  gnssXShift = self.gnssXShift.value(), gnssYShift = self.gnssYShift.value(), calculConductivite = self.elecConductChkBox.isChecked(), calculSusceptibilite = self.magSusceptChkBox.isChecked(), 
                                  calibrationFilename = self.calibInlineFile, coilConfig = coil, paramConductCorr = self.conductCorrectChkBox.isChecked(), winfilterIp = self.SlidingWindowChkBoxIp.isChecked(), 
