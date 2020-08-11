@@ -44,6 +44,17 @@ from .Dialog.MagGridDialog import MagGridDialog
 from .Dialog.ParametersDialog import ParametersDialog
 from .Dialog.GEM2Dialog import GEM2Dialog
 from .Dialog.RasterMedDialog import RasterMedDialog
+from .Dialog.RasterClipDialog import RasterClipDialog
+from .Dialog.RasterExtentDialog import RasterExtentDialog
+from .Dialog.RasterDestripeDialog import RasterDestripeDialog
+from .Dialog.RasterTrendDialog import RasterTrendDialog
+from .Dialog.RasterContinuationDialog import RasterContinuationDialog
+from .Dialog.RasterGradTotalConverterDialog import RasterGradTotalConverterDialog
+from .Dialog.RasterPoleReductionDialog import RasterPoleReductionDialog
+from .Dialog.RasterEquivalentLayerDialog import RasterEquivalentLayerDialog
+
+from .Dialog.RasterHistoDialog import RasterHistoDialog
+
 from .Dialog.InterpolateurDialog import InterpolateurDialog
 
 class AGT:
@@ -81,6 +92,17 @@ class AGT:
         self.paramDlg = ParametersDialog()
         self.gem2Dlg = GEM2Dialog()
         self.rasterMedDlg = RasterMedDialog(self.iface)
+        self.rasterClipDlg = RasterClipDialog(self.iface)
+        self.rasterExtentDlg = RasterExtentDialog(self.iface)
+        self.rasterTrendDlg = RasterTrendDialog(self.iface)
+        self.rasterDestripeDlg = RasterDestripeDialog(self.iface)
+        self.rasterContinuationDlg = RasterContinuationDialog(self.iface)
+        self.rasterGradTotalConverterDlg = RasterGradTotalConverterDialog(self.iface)
+        self.rasterPoleReductionDlg = RasterPoleReductionDialog(self.iface)
+        self.rasterEquivalentLayerDlg = RasterEquivalentLayerDialog(self.iface)
+        
+        self.rasterHistoDlg = RasterHistoDialog(self.iface)
+        
         self.interpDlg = InterpolateurDialog(self.iface)
 
         # Declare instance attributes
@@ -230,6 +252,7 @@ class AGT:
             text=self.tr(u'Interpolator'),
             callback=self.runInterpolateur,
             parent=self.iface.mainWindow())     
+        
         icon_path = ':/plugins/AGT/icons/rasterMed_icon.png'
         
         self.add_action(
@@ -237,7 +260,80 @@ class AGT:
             text=self.tr(u'Raster med processing'),
             callback=self.runRasterMed,
             parent=self.iface.mainWindow())        
-                   
+        
+        icon_path = ':/plugins/AGT/icons/rasterClip_icon.png'
+        
+        self.add_action(
+            icon_path,
+            text=self.tr(u'Raster clipping processing'),
+            callback=self.runRasterClip,
+            parent=self.iface.mainWindow())    
+        
+        icon_path = ':/plugins/AGT/icons/rasterExtent_icon.png'
+        
+        self.add_action(
+            icon_path,
+            text=self.tr(u'Raster extent cropping'),
+            callback=self.runRasterExtent,
+            parent=self.iface.mainWindow())  
+        
+        icon_path = ':/plugins/AGT/icons/rasterTrend_icon.png'
+        
+        self.add_action(
+            icon_path,
+            text=self.tr(u'Raster trend removal'),
+            callback=self.runRasterTrend,
+            parent=self.iface.mainWindow())  
+        
+        icon_path = ':/plugins/AGT/icons/rasterDestripe_icon.png'
+        
+        self.add_action(
+            icon_path,
+            text=self.tr(u'Raster Destriping'),
+            callback=self.runRasterDestripe,
+            parent=self.iface.mainWindow())  
+        
+        icon_path = ':/plugins/AGT/icons/rasterContinuation_icon.png'
+        
+        self.add_action(
+            icon_path,
+            text=self.tr(u'Prolongement vers le haut'),
+            callback=self.runRasterContinuation,
+            parent=self.iface.mainWindow())  
+        
+        
+        icon_path = ':/plugins/AGT/icons/rasterGradTotalConverter_icon.png'
+        
+        self.add_action(
+            icon_path,
+            text=self.tr(u'Difference to Total Field converter'),
+            callback=self.runGradTotalConverter,
+            parent=self.iface.mainWindow()) 
+        
+        icon_path = ':/plugins/AGT/icons/rasterPoleReduction_icon.png'
+        
+        self.add_action(
+            icon_path,
+            text=self.tr(u'Réduction au pôle'),
+            callback=self.runPoleReduction,
+            parent=self.iface.mainWindow()) 
+        
+        icon_path = ':/plugins/AGT/icons/rasterEquivalentLayer_icon.png'
+        
+        self.add_action(
+            icon_path,
+            text=self.tr(u'Couche équivalente en susceptibilité'),
+            callback=self.runEquivalentLayer,
+            parent=self.iface.mainWindow())
+        
+        icon_path = ':/plugins/AGT/icons/rasterHisto_icon.png'
+        
+        self.add_action(
+            icon_path,
+            text=self.tr(u'Générer un histogramme'),
+            callback=self.runHisto,
+            parent=self.iface.mainWindow())
+        
         icon_path = ':/plugins/AGT/icons/param_icon.png'
         self.add_action(
             icon_path,
@@ -245,7 +341,9 @@ class AGT:
             callback=self.parameters,
             parent=self.iface.mainWindow(),
             add_to_toolbar = True)  
-              
+        
+        
+        
         icon_path = ':/plugins/AGT/icons/help.svg'        
         self.add_action(
             icon_path,
@@ -385,6 +483,143 @@ class AGT:
         else:
             self.rasterMedDlg.hideDialog()
 
+    def runRasterClip(self):
+        """Run method that performs all the real work"""
+        # show the dialog
+        self.rasterClipDlg.show()
+        self.rasterClipDlg.populateProc()
+        # Run the dialog event loop
+        result = self.rasterClipDlg.exec_()
+        # See if OK was pressed
+        if result:
+            # Do something useful here - delete the line containing pass and
+            # substitute with your code.
+            pass
+        else:
+            self.rasterClipDlg.hideDialog()
+    
+    def runRasterExtent(self):
+        """Run method that performs all the real work"""
+        # show the dialog
+        self.rasterExtentDlg.show()
+        self.rasterExtentDlg.populateProc()
+        # Run the dialog event loop
+        result = self.rasterExtentDlg.exec_()
+        # See if OK was pressed
+        if result:
+            # Do something useful here - delete the line containing pass and
+            # substitute with your code.
+            pass
+        else:
+            self.rasterExtentDlg.hideDialog()
+            
+    def runRasterTrend(self):
+        """Run method that performs all the real work"""
+        # show the dialog
+        self.rasterTrendDlg.show()
+        self.rasterTrendDlg.populateProc()
+        # Run the dialog event loop
+        result = self.rasterTrendDlg.exec_()
+        # See if OK was pressed
+        if result:
+            # Do something useful here - delete the line containing pass and
+            # substitute with your code.
+            pass
+        else:
+            self.rasterTrendDlg.hideDialog()
+
+    def runRasterDestripe(self):
+        """Run method that performs all the real work"""
+        # show the dialog
+        self.rasterDestripeDlg.show()
+        self.rasterDestripeDlg.populateProc()
+        # Run the dialog event loop
+        result = self.rasterDestripeDlg.exec_()
+        # See if OK was pressed
+        if result:
+            # Do something useful here - delete the line containing pass and
+            # substitute with your code.
+            pass
+        else:
+            self.rasterTrendDlg.hideDialog()
+          
+    def runRasterContinuation(self):
+        """Run method that performs all the real work"""
+        # show the dialog
+        self.rasterContinuationDlg.show()
+        self.rasterContinuationDlg.populateProc()
+        # Run the dialog event loop
+        result = self.rasterContinuationDlg.exec_()
+        # See if OK was pressed
+        if result:
+            # Do something useful here - delete the line containing pass and
+            # substitute with your code.
+            pass
+        else:
+            self.rasterContinuationDlg.hideDialog()
+            
+          
+    def runGradTotalConverter(self):
+        """Run method that performs all the real work"""
+        # show the dialog
+        self.rasterGradTotalConverterDlg.show()
+        self.rasterGradTotalConverterDlg.populateProc()
+        # Run the dialog event loop
+        result = self.rasterGradTotalConverterDlg.exec_()
+        # See if OK was pressed
+        if result:
+            # Do something useful here - delete the line containing pass and
+            # substitute with your code.
+            pass
+        else:
+            self.rasterGradTotalConverterDlg.hideDialog()      
+            
+    def runPoleReduction(self):
+        """Run method that performs all the real work"""
+        # show the dialog
+        self.rasterPoleReductionDlg.show()
+        self.rasterPoleReductionDlg.populateProc()
+        # Run the dialog event loop
+        result = self.rasterPoleReductionDlg.exec_()
+        # See if OK was pressed
+        if result:
+            # Do something useful here - delete the line containing pass and
+            # substitute with your code.
+            pass
+        else:
+            self.rasterPoleReductionDlg.hideDialog()   
+            
+    def runEquivalentLayer(self):
+        """Run method that performs all the real work"""
+        # show the dialog
+        self.rasterEquivalentLayerDlg.show()
+        self.rasterEquivalentLayerDlg.populateProc()
+        # Run the dialog event loop
+        result = self.rasterEquivalentLayerDlg.exec_()
+        # See if OK was pressed
+        if result:
+            # Do something useful here - delete the line containing pass and
+            # substitute with your code.
+            pass
+        else:
+            self.rasterEquivalentLayerDlg.hideDialog()    
+            
+    def runHisto(self):
+        """Run method that performs all the real work"""
+        # show the dialog
+        self.rasterHistoDlg.show()
+        self.rasterHistoDlg.populateProc()
+        # Run the dialog event loop
+        result = self.rasterHistoDlg.exec_()
+        # See if OK was pressed
+        if result:
+            # Do something useful here - delete the line containing pass and
+            # substitute with your code.
+            pass
+        else:
+            self.rasterHistoDlg.hideDialog()   
+            
+            
     def runInterpolateur(self):
         """Run method that performs all the real work"""
         # show the dialog

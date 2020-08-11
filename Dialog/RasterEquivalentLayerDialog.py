@@ -38,15 +38,15 @@ from processing.tools import *
 from osgeo import gdal
 from osgeo import ogr,osr, gdal
 
-from ..ui.ui_RasterMedDialog import Ui_AGTRasterMedDialog
+from ..ui.ui_RasterEquivalentLayerDialog import Ui_AGTRasterEquivalentLayerDialog
 from ..toolbox.AGTUtilities import Utilities, AGTEnconding
 from ..toolbox.AGTExceptions import *
 
 
-class RasterMedDialog(QtWidgets.QDialog, Ui_AGTRasterMedDialog):
+class RasterEquivalentLayerDialog(QtWidgets.QDialog, Ui_AGTRasterEquivalentLayerDialog):
     def __init__(self, iface, parent=None):
         """Constructor."""
-        super(RasterMedDialog, self).__init__(parent)  
+        super(RasterEquivalentLayerDialog, self).__init__(parent)  
         # Set up the user interface from Designer.
         # After setupUI you can access any designer object by doing
         # self.<objectname>, and you can use autoconnect slots - see
@@ -56,7 +56,7 @@ class RasterMedDialog(QtWidgets.QDialog, Ui_AGTRasterMedDialog):
         self.iface = iface
         self.populateProc()
         self.ButtonBrowseRaster.clicked.connect(self.outFileBrowse)            
-        self.runButton.clicked.connect(self.rasterMed)
+        self.runButton.clicked.connect(self.rasterEquivalentLayer)
     
     def populateProc(self):
         
@@ -82,7 +82,7 @@ class RasterMedDialog(QtWidgets.QDialog, Ui_AGTRasterMedDialog):
         """
         return QCoreApplication.translate(u"RasterDlg", message)
     
-    def rasterMed(self):
+    def rasterEquivalentLayer(self):
 
 
         layers = [tree_layer.layer() for tree_layer in QgsProject.instance().layerTreeRoot().findLayers()]
@@ -93,9 +93,20 @@ class RasterMedDialog(QtWidgets.QDialog, Ui_AGTRasterMedDialog):
         selectedLayerIndex = self.rastercomboBox.currentIndex() 
         rasterfile = layer_list[selectedLayerIndex]  
         
-        self.engine = EngineRaster(rawDataFilename = rasterfile.source(), outputRasterfile = self.outputFilename.text(), kernel = self.spinBox_kernel.value(), threshold = self.spinBox_threshold.value())
+        if self.radioButton_acquisition_totalfield.isChecked():
+            method = 'Total Field'
+        else :
+            method = 'Difference'
+
+
+        self.engine = EngineRaster(rawDataFilename = rasterfile.source(), outputRasterfile = self.outputFilename.text(), 
+                                   inclineAngle = self.doubleSpinBox_inclinaison.value(), alphaAngle = self.doubleSpinBox_alpha.value(),
+                                   botSensorused = self.doubleSpinBox_acquisition_botsensor.value(), topSensorused = self.doubleSpinBox_acquisition_topsensor.value(),
+                                   depthLayer = self.doubleSpinBox_depthlayer.value(), thicknessLayer = self.doubleSpinBox_thicknesslayer.value(), prosptechnic = method)
+        
+        
         self.engine.openRaster()
-        self.engine.medianRaster()
+        self.engine.equivalentLayer()
         self.engine.saveRaster()
         self.addRasterToCanvas()
         self.hideDialog()

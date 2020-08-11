@@ -38,15 +38,15 @@ from processing.tools import *
 from osgeo import gdal
 from osgeo import ogr,osr, gdal
 
-from ..ui.ui_RasterMedDialog import Ui_AGTRasterMedDialog
+from ..ui.ui_RasterContinuationDialog import Ui_AGTRasterContinuationDialog
 from ..toolbox.AGTUtilities import Utilities, AGTEnconding
 from ..toolbox.AGTExceptions import *
 
 
-class RasterMedDialog(QtWidgets.QDialog, Ui_AGTRasterMedDialog):
+class RasterContinuationDialog(QtWidgets.QDialog, Ui_AGTRasterContinuationDialog):
     def __init__(self, iface, parent=None):
         """Constructor."""
-        super(RasterMedDialog, self).__init__(parent)  
+        super(RasterContinuationDialog, self).__init__(parent)  
         # Set up the user interface from Designer.
         # After setupUI you can access any designer object by doing
         # self.<objectname>, and you can use autoconnect slots - see
@@ -56,7 +56,7 @@ class RasterMedDialog(QtWidgets.QDialog, Ui_AGTRasterMedDialog):
         self.iface = iface
         self.populateProc()
         self.ButtonBrowseRaster.clicked.connect(self.outFileBrowse)            
-        self.runButton.clicked.connect(self.rasterMed)
+        self.runButton.clicked.connect(self.rasterContinuation)
     
     def populateProc(self):
         
@@ -82,7 +82,7 @@ class RasterMedDialog(QtWidgets.QDialog, Ui_AGTRasterMedDialog):
         """
         return QCoreApplication.translate(u"RasterDlg", message)
     
-    def rasterMed(self):
+    def rasterContinuation(self):
 
 
         layers = [tree_layer.layer() for tree_layer in QgsProject.instance().layerTreeRoot().findLayers()]
@@ -91,11 +91,17 @@ class RasterMedDialog(QtWidgets.QDialog, Ui_AGTRasterMedDialog):
             if layer.type() == QgsMapLayer.RasterLayer:
                 layer_list.append(layer)
         selectedLayerIndex = self.rastercomboBox.currentIndex() 
-        rasterfile = layer_list[selectedLayerIndex]  
+        rasterfile = layer_list[selectedLayerIndex]   
         
-        self.engine = EngineRaster(rawDataFilename = rasterfile.source(), outputRasterfile = self.outputFilename.text(), kernel = self.spinBox_kernel.value(), threshold = self.spinBox_threshold.value())
+        if self.radioButton_method_totalfield.isChecked():
+            methode = 'Total Field'
+        else : 
+            methode = 'Difference'
+        
+        
+        self.engine = EngineRaster(rawDataFilename = rasterfile.source(), outputRasterfile = self.outputFilename.text(), prosptechnic = methode, topclearance = self.doubleSpinBox_topclearance.value(), bottomclearance = self.doubleSpinBox_bottomclearance.value(), continuation = self.doubleSpinBox_continuation.value())
         self.engine.openRaster()
-        self.engine.medianRaster()
+        self.engine.continuationRaster()
         self.engine.saveRaster()
         self.addRasterToCanvas()
         self.hideDialog()

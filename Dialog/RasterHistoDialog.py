@@ -37,16 +37,17 @@ from processing.core.Processing import Processing
 from processing.tools import *
 from osgeo import gdal
 from osgeo import ogr,osr, gdal
+import matplotlib as mpl
 
-from ..ui.ui_RasterMedDialog import Ui_AGTRasterMedDialog
+from ..ui.ui_RasterHistoDialog import Ui_AGTRasterHistoDialog
 from ..toolbox.AGTUtilities import Utilities, AGTEnconding
 from ..toolbox.AGTExceptions import *
 
 
-class RasterMedDialog(QtWidgets.QDialog, Ui_AGTRasterMedDialog):
+class RasterHistoDialog(QtWidgets.QDialog, Ui_AGTRasterHistoDialog):
     def __init__(self, iface, parent=None):
         """Constructor."""
-        super(RasterMedDialog, self).__init__(parent)  
+        super(RasterHistoDialog, self).__init__(parent)  
         # Set up the user interface from Designer.
         # After setupUI you can access any designer object by doing
         # self.<objectname>, and you can use autoconnect slots - see
@@ -56,7 +57,7 @@ class RasterMedDialog(QtWidgets.QDialog, Ui_AGTRasterMedDialog):
         self.iface = iface
         self.populateProc()
         self.ButtonBrowseRaster.clicked.connect(self.outFileBrowse)            
-        self.runButton.clicked.connect(self.rasterMed)
+        self.runButton.clicked.connect(self.rasterHisto)
     
     def populateProc(self):
         
@@ -82,8 +83,7 @@ class RasterMedDialog(QtWidgets.QDialog, Ui_AGTRasterMedDialog):
         """
         return QCoreApplication.translate(u"RasterDlg", message)
     
-    def rasterMed(self):
-
+    def rasterHisto(self):
 
         layers = [tree_layer.layer() for tree_layer in QgsProject.instance().layerTreeRoot().findLayers()]
         layer_list = []
@@ -93,11 +93,31 @@ class RasterMedDialog(QtWidgets.QDialog, Ui_AGTRasterMedDialog):
         selectedLayerIndex = self.rastercomboBox.currentIndex() 
         rasterfile = layer_list[selectedLayerIndex]  
         
-        self.engine = EngineRaster(rawDataFilename = rasterfile.source(), outputRasterfile = self.outputFilename.text(), kernel = self.spinBox_kernel.value(), threshold = self.spinBox_threshold.value())
+        listeCouleurs=[]
+        label=[]
+        for i in range(len(rasterfile.legendSymbologyItems())):
+            listeCouleurs.append(list(rasterfile.legendSymbologyItems()[i][1].getRgb()))
+            label.append(rasterfile.legendSymbologyItems()[i][0])
+        
+        label=[float(i) for i in label]
+        listeCouleurs01 = list(listeCouleurs.copy())
+        listeCouleurs=list(listeCouleurs)
+        
+        for i in range(len(listeCouleurs[0])):
+            for j in range(len(listeCouleurs)):
+                listeCouleurs01[j][i]=listeCouleurs[j][i]/255
+        
+        cmap= mpl.colors.ListedColormap(listeCouleurs01)
+        if len(label) <= 2 :
+            cmap = mpl.colors.LinearSegmentedColormap.from_list('test', listeCouleurs01, N=200)
+        
+        
+
+        self.engine = EngineRaster(rawDataFilename = rasterfile.source(), imageFileName = self.outputFilename.text() , 
+                                   unitLegend =self.unitName.text(), fontSize = self.spinBox_fontSize.value(), histOpt = self.checkHisto.isChecked(), 
+                                   colormap = cmap, labelcolor = label)
         self.engine.openRaster()
-        self.engine.medianRaster()
-        self.engine.saveRaster()
-        self.addRasterToCanvas()
+        self.engine.createHisto()
         self.hideDialog()
     
     def addRasterToCanvas(self):

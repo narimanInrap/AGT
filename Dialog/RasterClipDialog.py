@@ -38,15 +38,15 @@ from processing.tools import *
 from osgeo import gdal
 from osgeo import ogr,osr, gdal
 
-from ..ui.ui_RasterMedDialog import Ui_AGTRasterMedDialog
+from ..ui.ui_RasterClipDialog import Ui_AGTRasterClipDialog
 from ..toolbox.AGTUtilities import Utilities, AGTEnconding
 from ..toolbox.AGTExceptions import *
 
 
-class RasterMedDialog(QtWidgets.QDialog, Ui_AGTRasterMedDialog):
+class RasterClipDialog(QtWidgets.QDialog, Ui_AGTRasterClipDialog):
     def __init__(self, iface, parent=None):
         """Constructor."""
-        super(RasterMedDialog, self).__init__(parent)  
+        super(RasterClipDialog, self).__init__(parent)  
         # Set up the user interface from Designer.
         # After setupUI you can access any designer object by doing
         # self.<objectname>, and you can use autoconnect slots - see
@@ -56,7 +56,7 @@ class RasterMedDialog(QtWidgets.QDialog, Ui_AGTRasterMedDialog):
         self.iface = iface
         self.populateProc()
         self.ButtonBrowseRaster.clicked.connect(self.outFileBrowse)            
-        self.runButton.clicked.connect(self.rasterMed)
+        self.runButton.clicked.connect(self.rasterClip)
     
     def populateProc(self):
         
@@ -82,8 +82,7 @@ class RasterMedDialog(QtWidgets.QDialog, Ui_AGTRasterMedDialog):
         """
         return QCoreApplication.translate(u"RasterDlg", message)
     
-    def rasterMed(self):
-
+    def rasterClip(self):
 
         layers = [tree_layer.layer() for tree_layer in QgsProject.instance().layerTreeRoot().findLayers()]
         layer_list = []
@@ -93,9 +92,10 @@ class RasterMedDialog(QtWidgets.QDialog, Ui_AGTRasterMedDialog):
         selectedLayerIndex = self.rastercomboBox.currentIndex() 
         rasterfile = layer_list[selectedLayerIndex]  
         
-        self.engine = EngineRaster(rawDataFilename = rasterfile.source(), outputRasterfile = self.outputFilename.text(), kernel = self.spinBox_kernel.value(), threshold = self.spinBox_threshold.value())
+        
+        self.engine = EngineRaster(rawDataFilename = rasterfile.source(), outputRasterfile = self.outputFilename.text(), seuilMax = self.doubleSpinBox_max_value.value(), seuilMin = self.doubleSpinBox_min_value.value())
         self.engine.openRaster()
-        self.engine.medianRaster()
+        self.engine.clipRaster()
         self.engine.saveRaster()
         self.addRasterToCanvas()
         self.hideDialog()

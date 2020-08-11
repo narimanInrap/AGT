@@ -671,8 +671,8 @@ class Engine(object):
             else:
                 medianVals = list(map(lambda x : numpy.median(x), medianList)) # Median calculation               
                 for j in range(0, probNb):
-                    magDecimPoints.append((self.magPoints[i + j - (self.decimationVal//2)][0], self.magPoints[i + j - (self.decimationVal//2)][1], float(medianVals[j]), 
-                                           self.magPoints[i + j - (self.decimationVal//2)][3], self.magPoints[i + j - (self.decimationVal//2)][4]))             
+                    magDecimPoints.append((self.magPoints[i + j - (self.decimationVal//2)*probNb][0], self.magPoints[i + j - (self.decimationVal//2)*probNb][1], float(medianVals[j]), 
+                                           self.magPoints[i + j - (self.decimationVal//2)*probNb][3], self.magPoints[i + j - (self.decimationVal//2)*probNb][4]))             
                 medianList = []
                 stamp = 1
                 for j in range(0, probNb):
@@ -1564,21 +1564,72 @@ class EngineGEM2(object):
         
 class EngineRaster(object):
     
-    def __init__(self, rawDataFilename = '', outputRasterfile = '', shapefile = None, field = '', kernel = 3, threshold = 15, pixelSize = 0.5, searchWindow = 1.5, methodInterp = InterpolatorEnum.ELECTROMAGNETIC):
+    def __init__(self, rawDataFilename = '', outputRasterfile = '', imageFileName = '', unitLegend='', shapefile = None, histOpt = True, field = '', zeroExtent = None, prosptechnic = '' , colormap=[], labelcolor=[],  kernel = 3, threshold = 15, 
+                 pixelSize = 0.5, searchWindow = 1.5, methodInterp = InterpolatorEnum.ELECTROMAGNETIC, seuilMax =  100, seuilMin = -100, kernelLimit = 3,
+                 composanteTrend = True, methodeTrend = True, kernelTrend = 3, widness = 3, freqcut = 200, rotation = -45, 
+                 bottomclearance = 0.3, topclearance = 0.95, continuation = 1.0, apodisation = 10, case = 1, sense = 1, botSensorused = 0.3,
+                 topSensorused = 0.95, botSensorsim = 0.3, topSensorsim = 0.95, inclineAngle = 65, alphaAngle = 0,
+                 depthLayer = 0.5, thicknessLayer = 1.0, fontSize = 10):
         
         self.rawDataFilename =  rawDataFilename
         self.outputRasterfile = outputRasterfile
         self.data = []
         self.kernel = kernel
         self.threshold = threshold
+        
         if rawDataFilename:
             self.raster = gdal.Open(self.rawDataFilename)
             self.rasterBand = self.raster.GetRasterBand(1)
+            self.geotransform = self.raster.GetGeoTransform()
+            self.deltaX = -(self.geotransform[5])
+            self.deltaY = self.geotransform[1]
+            
         self.shapefile = shapefile
         self.field = field
         self.pixelSize = pixelSize
         self.searchWindow = searchWindow
         self.methodInterp = methodInterp
+        
+        self.seuilMax = seuilMax
+        self.seuilMin = seuilMin
+        
+        self.zeroExtent = zeroExtent
+        self.kernelLimit = kernelLimit
+        
+        self.kernelTrend = kernelTrend
+        self.composanteTrend = composanteTrend
+        self.methodeTrend = methodeTrend
+        
+        self.apodisation = apodisation
+        
+        self.widness = widness
+        self.freqcut= freqcut
+        self.rotation = rotation 
+        
+        self.prosptechnic = prosptechnic
+        self.bottomclearance =  bottomclearance
+        self.topclearance = topclearance
+        self.continuation = continuation
+        
+        self.case = case 
+        self.sense = sense
+        self.botSensorused = botSensorused
+        self.topSensorused = topSensorused
+        self.botSensorsim = botSensorsim
+        self.topSensorsim = topSensorsim
+        self.inclineAngle = inclineAngle
+        self.alphaAngle = alphaAngle
+        
+        self.depthLayer = depthLayer
+        self.thicknessLayer = thicknessLayer
+        
+        self.colormap = colormap
+        self.labelcolor= labelcolor
+        self.histOpt = histOpt
+        self.imageFileName = imageFileName
+        self.unitLegend = unitLegend
+        self.fontSize = fontSize
+        
         
     def openRaster(self):
         
@@ -1607,6 +1658,76 @@ class EngineRaster(object):
         srs = osr.SpatialReference(wkt = raster.GetProjection())
         dst_ds.SetProjection(srs.ExportToWkt())
     
+    def createHisto(self):
+        
+        mpl.rcParams.update({'font.size': self.fontSize})
+        ctable = self.rasterBand.GetColorTable()
+        
+        nodata = self.rasterBand.GetNoDataValue()
+        if nodata is not None:
+            dataplot = numpy.ma.masked_equal(numpy.array(self.data.copy()), nodata)
+        
+        dataplot[dataplot == self.rasterBand.GetNoDataValue()]=numpy.nan
+            
+        value = dataplot.flatten()
+        minimum=numpy.nanmin(value)
+        maximum=numpy.nanmax(value)
+        
+        nbins = 100
+        
+        cmap = self.colormap
+        
+        if len(self.labelcolor) > 2:
+            norm = mpl.colors.BoundaryNorm(self.labelcolor, cmap.N)
+        else:
+            norm = mpl.colors.Normalize(min(self.labelcolor), max(self.labelcolor))
+        
+        bins=numpy.array(self.labelcolor)
+        
+        
+        if len(bins) <= 2:
+            bins = numpy.linspace(min(self.labelcolor),max(self.labelcolor),100)
+#            colors = LinearSegmentedColormap.from_list(cmap_name, cmap, N=n_bin)
+         
+        colors = cmap(bins)
+        
+        
+        hist, bin_edges = numpy.histogram(value,bins)
+        X = bin_edges
+        x_span = X.max()-X.min()
+        C = [cmap(((x-X.min())/x_span)) for x in X]
+        
+        percent = [i/sum(hist)*100 for i in hist]
+        
+        ticks = numpy.linspace(min(self.labelcolor), max(self.labelcolor), 5)
+        
+        #Plot histogram
+        if self.histOpt :
+            fig = plt.figure()
+            ax = fig.add_axes([0.1, 0.2, 0.85, 0.7])
+            ax1 = fig.add_axes([0.1, 0.1, 0.85, 0.04])
+            cb1 = mpl.colorbar.ColorbarBase(ax1, cmap=cmap, norm=norm, orientation='horizontal')
+            if len(bins) > 20:
+                cb1.set_ticks(ticks)
+            ax1.set_xlabel(self.unitLegend)
+            widths = bins[1:] - bins[:-1]
+            ax.bar(bins[:-1], percent, width=widths, color=(0.4,0.4,0.4), edgecolor = 'black', linewidth=0.5)
+            ax.autoscale(enable=True, axis='x', tight=True)
+            ax.xaxis.set_visible(False)
+            ax.set_ylabel('% of values')
+            
+        else :
+            fig = plt.figure()
+            ax1 = fig.add_axes([0.1, 0.1, 0.85, 0.04])
+            cb1 = mpl.colorbar.ColorbarBase(ax1, cmap=cmap, norm=norm, orientation='horizontal')
+            if len(bins) > 20:
+                cb1.set_ticks(ticks)
+            ax1.set_xlabel(self.unitLegend)
+            
+            
+        plt.savefig(self.imageFileName,bbox_inches='tight',dpi = 300)
+
+        
     def medianRaster(self):
         
         for i in range(self.raster.RasterYSize):
@@ -1632,6 +1753,609 @@ class EngineRaster(object):
                     mediane = numpy.median(correction)
                     if abs(self.data[i, j] - mediane) > abs(self.threshold*0.01*mediane):
                         self.data[i, j] = mediane 
+
+    def clipRaster(self):
+        
+        for i in range(self.raster.RasterYSize):
+            for j in range(self.raster.RasterXSize):
+                if self.data[i, j] == self.rasterBand.GetNoDataValue():
+                    continue
+                elif self.data[i, j] > self.seuilMax:
+                    self.data[i, j] = self.seuilMax
+                elif self.data[i, j] < self.seuilMin:
+                    self.data[i, j] = self.seuilMin
+    
+    def limitExtentRaster(self):
+        
+        if self.zeroExtent:
+            Nodata=0.0
+        else:
+            Nodata=self.rasterBand.GetNoDataValue()
+
+        newdata2=[]
+        line=[]
+        
+        # Apodisation
+        for i in range(self.raster.RasterYSize+self.kernelLimit):
+            for j in range (self.raster.RasterXSize+self.kernelLimit):
+                line.append(Nodata)
+            newdata2.append(line) 
+            line=[]
+
+        newdata=numpy.asarray(newdata2)
+        for i in range(self.raster.RasterYSize):
+            for j in range (self.raster.RasterXSize):
+                newdata[i+(self.kernelLimit//2),j+(self.kernelLimit//2)]=self.data[i,j]
+        
+#        newdata=numpy.asarray(newdata2)
+        reference=newdata.copy()
+        for i in range(self.raster.RasterYSize+self.kernelLimit):
+            for j in range(self.raster.RasterXSize+self.kernelLimit):
+                if reference[i,j]==Nodata :
+                    for n in range(self.kernelLimit):
+                        for m in range(self.kernelLimit):
+                            if i+(self.kernelLimit//2)-n <= 0:
+                                continue
+                            elif i+(self.kernelLimit//2)-n >= self.raster.RasterYSize+self.kernelLimit:
+                                continue
+                            elif j+(self.kernelLimit//2)-m <= 0:
+                                continue
+                            elif j+(self.kernelLimit//2)-m >= self.raster.RasterXSize+self.kernelLimit:
+                                continue
+                            else:
+                                newdata[i+(self.kernelLimit//2)-n,j+(self.kernelLimit//2)-m]=self.rasterBand.GetNoDataValue()
+        
+        self.data=newdata[self.kernelLimit//2:self.raster.RasterYSize+self.kernelLimit//2,self.kernelLimit//2:self.raster.RasterXSize+self.kernelLimit//2]
+        
+    def trendRemovalRaster(self):
+        
+        znew=self.data*0.
+        datause=self.data
+        datause[datause==self.rasterBand.GetNoDataValue()]=numpy.nan
+        zmoy=numpy.nanmean(datause)
+    
+        for i in range(self.raster.RasterYSize):
+            for j in range(self.raster.RasterXSize):
+                if self.data[i,j] == self.rasterBand.GetNoDataValue(): 
+                    znew[i,j] = self.rasterBand.GetNoDataValue()
+                    continue
+                COR=[]
+                zloc=0
+                for n in range(self.kernelTrend):
+                    for m in range(self.kernelTrend):
+                        if i+(self.kernelTrend//2)-n <= 0:
+                            continue
+                        elif i+(self.kernelTrend//2)-n >= self.raster.RasterYSize:
+                            continue
+                        elif j+(self.kernelTrend//2)-m <= 0:
+                            continue
+                        elif j+(self.kernelTrend//2)-m >= self.raster.RasterXSize:
+                            continue
+                        else:
+                            COR.append(datause[i+(self.kernelTrend//2)-n,j+(self.kernelTrend//2)-m])
+                zloc=numpy.nanmean(COR)
+                
+                if self.composanteTrend == 'local':
+                    if self.methodeTrend == "relative":
+                        znew[i,j] = (self.data[i,j] * zmoy) / zloc
+                    elif self.methodeTrend == "absolue":
+                        znew[i,j] = self.data[i,j] - zloc
+                elif self.composanteTrend == 'regional':
+                    znew[i,j] = zloc
+        
+        self.data=znew
+        
+    def stripeFiltering(self):
+       
+       val = numpy.array(self.data.copy())
+       
+       val[val==self.rasterBand.GetNoDataValue()]=numpy.nan
+       
+       
+       # Calculation of lines and columns numbers
+       ny = len(val)
+       nx = len(val[0])
+       
+       # fill nan value for fft
+       nan_indexes = numpy.isnan(val)        
+       if(numpy.isnan(val).any()):             
+            val =self.fillnanvalues(val)
+    
+       mean = val.mean()
+
+#       if apodisation:
+#          val=apodisation2d(val, apod)
+    
+       # complex conversion, val[][] -> cval[][]
+       cval = numpy.array(val, dtype=complex)
+    
+       # fast fourier series calculation
+       cvalfft = numpy.fft.fft2(cval)
+       
+       cut2 = numpy.square(self.freqcut)
+       ny2 = ny//2
+       nx2 = nx//2
+       
+       # define filter size matrix
+       FIL = numpy.zeros((nx, ny))
+       
+       #filter 
+       rotr = self.rotation*numpy.pi/180
+       crot = numpy.cos(rotr)
+       srot = numpy.sin(rotr)
+       for ix in range(nx):
+           for iy in range(ny2+1):
+               ix1 = ix-1
+               if (ix1 > nx2):
+                   ix1 = -nx+ix-1
+               ua = ix1*crot-(iy-1)*srot
+               va = ix1*srot+(iy-1)*crot
+               ro = ua*ua+va*va/1.0
+               if not (ua == 0):
+                   teta = numpy.arctan2(va,ua)
+               else:
+                   teta = numpy.pi/2
+               if (teta <= numpy.pi/4):
+                   gamma = 1
+               else:
+                   gamma = abs(numpy.tan(teta))**self.widness
+               ya = 1-numpy.exp(-ro/gamma)
+               y1 = numpy.exp(-ro/cut2)
+               xa = ya*y1
+               FIL[ix,iy] = xa
+               
+               # convolution of signal and filter
+       cvalfft = cvalfft[:,:]*FIL[:,:].T
+       
+       #inverse fft
+       icvalfft = numpy.fft.ifft2(cvalfft)
+       val = icvalfft.real #+ mean                                 # real part added to mean calculation
+       
+       #resize the filtered data array to fit with input raster size
+#       if apodisation:
+#            dataset = np.array(self.data)
+#            (limite_fy,limite_fx)=np.shape(val)
+#            (limite_inity,limite_initx)=np.shape(dataset)
+#            borne_infy=(limite_fy-limite_inity)/2
+#            borne_supy=limite_inity+(limite_fy-limite_inity)/2
+#            borne_infx=(limite_fx-limite_initx)/2
+#            borne_supx=limite_initx+(limite_fx-limite_initx)/2
+#            istep=0
+#            jstep=0
+#            reduce=dataset.copy()
+#            for i in range(borne_infy,borne_supy):
+#                jstep=0
+#                for j in range(borne_infx,borne_supx):
+#                    reduce[istep,jstep]=val[i,j]
+#                    jstep+=1
+#                istep+=1
+#            val=reduce.copy()
+       
+       # set the initial 'nan' values, as in the initial array  
+       val[nan_indexes] = numpy.nan
+       self.data = val.copy()
+
+    def continuationRaster(self):
+       
+       val=self.data.copy()
+       val=numpy.array(val)
+       dataset=numpy.array(self.data)
+       
+       val[val==-99999]=numpy.nan
+       
+       # Calculation of lines and columns numbers
+       ny = len(val)
+       nx = len(val[0])
+       
+       nan_indexes = numpy.isnan(val)        
+       
+       if(numpy.isnan(val).any()):                  
+            val=self.fillnanvalues(val)
+    
+#    
+#       if apodisation:
+#          val=apodisation2d(val, apod)
+    
+       dz = self.bottomclearance - self.topclearance    
+       zp = - self.continuation + self.bottomclearance
+    
+       # complex conversion, val[][] -> cval[][]
+       cval = numpy.array(val, dtype=complex)
+    
+       # fast fourier series calculation
+       cvalfft = numpy.fft.fft2(cval)
+       
+       for ix in range(nx):                                        # for each column
+          for iy in range(ny):                                     # for each line
+             if ((ix != 0) or (iy != 0)):                          # if not first point of array
+                cu, cv = self.freq(ix, iy, self.deltaX, self.deltaY, nx, ny)     # complex u and v calculation
+                cz = numpy.sqrt(numpy.square(cu) + numpy.square(cv)) * (2. * numpy.pi)
+                if (self.prosptechnic == 'TotalField'):
+                   ce = numpy.exp(zp * cz)
+                   cvalfft[iy][ix] = (cvalfft[iy][ix] * complex(ce, 0.))
+                if (self.prosptechnic == 'Difference'):                # if prospection technic is magnetic field gradient
+                   cdz = 1. - numpy.exp(dz * cz)
+                   cvalfft[iy][ix] = (cvalfft[iy][ix] / complex(cdz, 0.))
+    
+       # FFT inversion
+       icvalfft = numpy.fft.ifft2(cvalfft)
+       val = icvalfft.real                              # real part added to mean calculation
+       
+#       if apodisation:
+#            (limite_fy,limite_fx)=np.shape(val)
+#            (limite_inity,limite_initx)=np.shape(dataset)
+#            borne_infy=(limite_fy-limite_inity)/2
+#            borne_supy=limite_inity+(limite_fy-limite_inity)/2
+#            borne_infx=(limite_fx-limite_initx)/2
+#            borne_supx=limite_initx+(limite_fx-limite_initx)/2
+#            istep=0
+#            jstep=0
+#            reduce=dataset.copy()
+#            for i in range(borne_infy,borne_supy):
+#                jstep=0
+#                for j in range(borne_infx,borne_supx):
+#                    reduce[istep,jstep]=val[i,j]
+#                    jstep+=1
+#                istep+=1
+#            val=reduce.copy()
+                                        # set the initial 'nan' values, as in the initial array  
+       val[nan_indexes] = numpy.nan
+       self.data = val.copy()
+       
+    def gradMagTotalfieldconversion(self):
+     
+       
+       val = self.data.copy()
+       
+       val = numpy.array(val)
+       
+       val[val == self.rasterBand.GetNoDataValue()] = numpy.nan
+       
+       dataset = numpy.array(self.data)
+       
+       # Calculation of lines and columns numbers
+       ny = len(val)
+       nx = len(val[0])
+       
+       nan_indexes = numpy.isnan(val)        
+       
+       if(numpy.isnan(val).any()):                  
+            val = self.fillnanvalues(val)
+    
+#    
+#       if apodisation:
+#          val=apodisation2d(val, apod)
+    
+       # complex conversion, val[][] -> cval[][]
+       cval = numpy.array(val, dtype=complex)
+       
+    # fast fourier series calculation
+       cvalfft = numpy.fft.fft2(cval)
+    
+       if (self.case >= 2):
+             # deg->rad angle conversions
+             rinc = (self.inclineAngle*numpy.pi)/180 # inclination in radians
+             ralpha = (self.alphaAngle*numpy.pi)/180  # alpha angle in radians
+             cosu = numpy.absolute(numpy.cos(rinc) * numpy.cos(ralpha))
+             cosv = numpy.absolute(numpy.cos(rinc) * numpy.sin(ralpha))
+             cosz = numpy.sin(rinc)
+    
+       for ix in range(nx):                                        # for each column
+             for iy in range(ny):                                     # for each line
+                if ((ix != 0) or (iy != 0)):                          # if not first point of array
+                   cu, cv = self.freq(ix, iy, self.deltaX, self.deltaY, nx, ny)     # complex u and v calculation
+                   cz = numpy.sqrt(numpy.square(cu) + numpy.square(cv))
+    
+                   if (self.case == 1):
+                      c1 = (self.botSensorsim - self.botSensorused )*2.*numpy.pi*cz
+                      c2 = (self.topSensorsim - self.botSensorsim)*2.*numpy.pi*cz
+                      c = numpy.exp(-c1) - numpy.exp(-c2)
+                   elif (self.case == 2):
+                      c1 = (self.botSensorsim - self.botSensorused)*2.*np.pi*cz
+                      c2 = (self.topSensorsim - self.botSensorsim)*2.*np.pi*cz
+                      cred = complex(cz*cosz, cu*cosu + cv*cosv)
+                      c = ((numpy.exp(-c1) - numpy.exp(-c2))*cz)/cred
+                   else :                  # case = 3
+                      cred = complex(cz*cosz, cu*cosu + cv*cosv)
+                      c = cz/cred
+                      
+                   if (self.sense == 0):
+                      coef = c
+                   else:
+                      coef = 1./c
+    
+                   cvalfft[iy][ix] = cvalfft[iy][ix] * coef
+                   
+          # FFT inversion
+       icvalfft = numpy.fft.ifft2(cvalfft)
+       val = icvalfft.real   
+       
+#       if apodisation:
+#            (limite_fy,limite_fx)=np.shape(val)
+#            (limite_inity,limite_initx)=np.shape(dataset)
+#            borne_infy=(limite_fy-limite_inity)/2
+#            borne_supy=limite_inity+(limite_fy-limite_inity)/2
+#            borne_infx=(limite_fx-limite_initx)/2
+#            borne_supx=limite_initx+(limite_fx-limite_initx)/2
+#            istep=0
+#            jstep=0
+#            reduce=dataset.copy()
+#            for i in range(borne_infy,borne_supy):
+#                jstep=0
+#                for j in range(borne_infx,borne_supx):
+#                    reduce[istep,jstep]=val[i,j]
+#                    jstep+=1
+#                istep+=1
+#            val=reduce.copy()
+                                        # set the initial 'nan' values, as in the initial array  
+       val[nan_indexes]=numpy.nan
+       self.data = val.copy()
+       
+#       valeur_temporaire = []
+#       MEDIANE = []
+#       newresult = self.data.copy()
+#       for i in range(self.raster.RasterYSize):
+#           for j in range(self.raster.RasterXSize):
+#               if self.data[i,j]==self.rasterBand.GetNoDataValue(): 
+#                   continue
+#               else:
+#                   valeur_temporaire.append(self.data[i,j])
+#           mediane=numpy.median(valeur_temporaire)
+#           MEDIANE.append(mediane)
+#           valeur_temporaire=[]
+#
+#       for i in range(self.raster.RasterYSize):
+#            for j in range(self.raster.RasterXSize):
+#                if not self.data[i,j]==self.rasterBand.GetNoDataValue():
+#                    self.data[i,j]=self.data[i,j]-MEDIANE[i]
+
+    #Fonction outil appelé dans stripeFitlering (méthode static ? où à mettre dans Utilities)
+    def poleReduction(self):
+    
+       '''
+       To reduce at the magnetic le from a DataSet Object.
+    
+       Parameters:
+    
+       :dataset: DataSet Object to do the treatment
+       
+       :apod: apodisation factor (%), to reduce bord effects
+    
+       :inclinangle: incline angle of the magnetic field
+    
+       :alphaangle: angle of magnetic field and y axe
+    
+       '''
+       
+       val = self.data.copy()
+       
+       val = numpy.array(val)
+       
+       val[val == self.rasterBand.GetNoDataValue()] = numpy.nan
+       
+       dataset = numpy.array(self.data)
+       
+       # Calculation of lines and columns numbers
+       ny = len(val)
+       nx = len(val[0])
+       
+       nt = nx * ny
+       nan_indexes = numpy.isnan(val)        
+       
+       if(numpy.isnan(val).any()):    
+            xnew = numpy.linspace(0,nx,nx)
+            ynew = numpy.linspace(0,ny,ny)              
+            val=self.fillnanvalues(val)
+    
+       mean = val.mean()
+    
+#       if apodisation:
+#          val=apodisation2d(val, apod)
+    
+       # complex conversion, val[][] -> cval[][]
+       cval = numpy.array(val, dtype=complex)
+    
+       # fast fourier series calculation
+       cvalfft = numpy.fft.fft2(cval)
+    
+       # filter application
+       # deg->rad angle conversions
+       rinc = (self.inclineAngle*numpy.pi)/180 # inclination in radians
+       ralpha = (self.alphaAngle*numpy.pi)/180  # alpha angle in radians
+    
+       cosu = numpy.absolute(numpy.cos(rinc) * numpy.cos(ralpha))
+       cosv = numpy.absolute(numpy.cos(rinc) * numpy.sin(ralpha))
+       cosz = numpy.sin(rinc)
+    
+       
+       for ix in range(nx):                                        # for each column
+          for iy in range(ny):                                     # for each line
+             if ((ix != 0) or (iy != 0)):                          # if not first point of array
+                cu, cv = self.freq(ix, iy, self.deltaX, self.deltaY, nx, ny)     # complex u and v calculation
+                cz = numpy.sqrt(numpy.square(cu) + numpy.square(cv))
+                cred = complex(cz*cosz, cu*cosu + cv*cosv)
+                cvalfft[iy,ix] = ((cvalfft[iy,ix] * numpy.square(cz))/numpy.square(cred))
+    
+       # FFT inversion
+       icvalfft = numpy.fft.ifft2(cvalfft)
+       val = icvalfft.real + mean                                  # real part added to mean calculation
+#       
+#       if apodisation:
+#            (limite_fy,limite_fx)=np.shape(val)
+#            (limite_inity,limite_initx)=np.shape(dataset)
+#            borne_infy=(limite_fy-limite_inity)/2
+#            borne_supy=limite_inity+(limite_fy-limite_inity)/2
+#            borne_infx=(limite_fx-limite_initx)/2
+#            borne_supx=limite_initx+(limite_fx-limite_initx)/2
+#            istep=0
+#            jstep=0
+#            reduce=dataset.copy()
+#            for i in range(borne_infy,borne_supy):
+#                jstep=0
+#                for j in range(borne_infx,borne_supx):
+#                    reduce[istep,jstep]=val[i,j]
+#                    jstep+=1
+#                istep+=1
+#            val=reduce.copy()
+                                        # set the initial 'nan' values, as in the initial array  
+       val[nan_indexes]=numpy.nan
+       self.data=val.copy()
+   
+    
+    def fillnanvalues(self, val):
+        '''
+        Fill np.array with nan values for fft calculation
+        '''
+        A=[]
+        for profile in val:    
+            if (numpy.isnan(profile).all()):
+                profile=[numpy.nanmean(val) for i in profile]
+            elif (numpy.isnan(profile).any()):
+                profile=numpy.array(profile)# if one 'nan' at least in the profile, does the completion
+                nan_indexes = numpy.isnan(profile)
+                data_indexes = numpy.logical_not(nan_indexes)
+                valid_data = profile[data_indexes]
+                interpolated = numpy.interp(nan_indexes.nonzero()[0], data_indexes.nonzero()[0], valid_data)   
+                profile[nan_indexes] = interpolated
+            A.append(profile)
+        val=numpy.array(A)
+        return val
+    
+    
+    def freq(self, ix, iy, deltax, deltay, nc, nl):
+        '''
+        Calculation of spatials frequencies u and v
+        '''
+        nyd = 1 + nl/2
+        nxd = 1 + nc/2
+    
+        if (iy < nyd):
+          cv = (float(iy))/((nl-1)*deltay)
+        else:
+          cv = float(iy-nl)/((nl-1)*deltay)
+    
+        if (ix < nxd):
+          cu = (float(ix))/((nc-1)*deltax)
+        else:
+          cu = float(ix-nc)/((nc-1)*deltax)
+    
+        return cu, cv
+
+
+    def equivalentLayer(self):
+       '''
+       Continuation of the magnetic field
+    
+       Parameters :
+    
+       :dataset: DataSet Object to do the treatment
+       
+       :prosptech: Prospection technical
+    
+       :apod: apodisation factor (%), to reduce bord effects
+    
+       :downsensoraltitude: Altitude of the down magnetic sensor
+    
+       :upsensoraltitude: Altitude of the up magnetic sensor
+    
+       :continuationflag: Continuation flag, False if not continuation
+    
+       :continuationvalue: Continuation altitude, greater than 0 if upper earth ground, lower than 0 else
+       
+       '''
+       
+       val=self.data.copy()
+       val=numpy.array(val)
+       val[val==self.rasterBand.GetNoDataValue()]=numpy.nan
+       
+       dataset=numpy.array(self.data)
+       
+       # Calculation of lines and columns numbers
+       ny = len(val)
+       nx = len(val[0])
+       
+       nan_indexes = numpy.isnan(val)        
+       
+       if(numpy.isnan(val).any()):                  
+            val=self.fillnanvalues(val)
+    
+#       if apodisation:
+#          val=apodisation2d(val, apod)
+    
+        # complex conversion, val[][] -> cval[][]
+       coef = 1./(400.*numpy.pi)
+       cval = numpy.array(val*coef, dtype=complex)
+    
+       # fast fourier series calculation
+       cvalfft = numpy.fft.fft2(cval)
+    
+       # filter application
+       # deg->rad angle conversions
+       rinc = (self.inclineAngle*numpy.pi)/180 # inclination in radians
+       ralpha = (self.alphaAngle*numpy.pi)/180  # alpha angle in radians
+    
+       cosu = numpy.absolute(numpy.cos(rinc) * numpy.cos(ralpha))
+       cosv = numpy.absolute(numpy.cos(rinc) * numpy.sin(ralpha))
+       cosz = numpy.sin(rinc)
+    
+       dz = self.botSensorused - self.topSensorused
+       zp = self.depthLayer + self.botSensorused
+       
+       
+       if (self.inclineAngle == 0):
+          teta = numpy.pi/2
+       elif (self.inclineAngle == 90) :    # pi/2
+          teta = numpy.pi
+       else :
+          teta = numpy.pi + numpy.arctan(-2/numpy.tan(rinc))
+    
+       # Field Module, medium field along I inclination calcultation if bipolar field
+       FM = 14.722 * (4*(numpy.square(numpy.cos(teta)) + numpy.square(numpy.sin(teta))))
+    
+       cvalfft[0][0] = 0.
+       for ix in range(nx):                                        # for each column
+          for iy in range(ny):                                     # for each line
+             if ((ix != 0) or (iy != 0)):                          # if not first point of array
+                cu, cv = self.freq(ix, iy, self.deltaX, self.deltaY, nx, ny)     # complex u and v calculation
+                # continuation
+                cz = numpy.sqrt(numpy.square(cu) + numpy.square(cv))
+                cvalfft[iy][ix] = cvalfft[iy][ix] * complex(numpy.exp(2*numpy.pi*cz*zp), 0.)
+                # pole reduction with potential calculation(and not with field as standard pole reduction)
+                cred = complex(cz*cosz, cu*cosu + cv*cosv)
+                cvalfft[iy][ix] = (cvalfft[iy][ix] * complex(cz,0))/(2*numpy.pi*numpy.square(cred))
+    
+                if (self.prosptechnic == 'Difference'):                         # if prospection technic is magnetic field gradient
+                   cvalfft[iy][ix] = cvalfft[iy][ix] / (1-numpy.exp(dz*cz))         
+    
+       # FFT inversion
+       icvalfft = numpy.fft.ifft2(cvalfft)
+    
+       # Equivalent stratum thickness
+       val = (icvalfft.real*2*100000)/(FM*self.thicknessLayer)         # 100000 because susceptibiliy in 10^-5 SI
+                                # real part added to mean calculation
+       
+#       if apodisation:
+#            (limite_fy,limite_fx)=np.shape(val)
+#            (limite_inity,limite_initx)=np.shape(dataset)
+#            borne_infy=(limite_fy-limite_inity)/2
+#            borne_supy=limite_inity+(limite_fy-limite_inity)/2
+#            borne_infx=(limite_fx-limite_initx)/2
+#            borne_supx=limite_initx+(limite_fx-limite_initx)/2
+#            istep=0
+#            jstep=0
+#            reduce=dataset.copy()
+#            for i in range(borne_infy,borne_supy):
+#                jstep=0
+#                for j in range(borne_infx,borne_supx):
+#                    reduce[istep,jstep]=val[i,j]
+#                    jstep+=1
+#                istep+=1
+#            val=reduce.copy()
+                                        # set the initial 'nan' values, as in the initial array  
+       val[nan_indexes]=numpy.nan
+       self.data=val.copy()
+       
+   
 
     def InterpolRaster(self):
         

@@ -38,15 +38,15 @@ from processing.tools import *
 from osgeo import gdal
 from osgeo import ogr,osr, gdal
 
-from ..ui.ui_RasterMedDialog import Ui_AGTRasterMedDialog
+from ..ui.ui_RasterExtentDialog import Ui_AGTRasterExtentDialog
 from ..toolbox.AGTUtilities import Utilities, AGTEnconding
 from ..toolbox.AGTExceptions import *
 
 
-class RasterMedDialog(QtWidgets.QDialog, Ui_AGTRasterMedDialog):
+class RasterExtentDialog(QtWidgets.QDialog, Ui_AGTRasterExtentDialog):
     def __init__(self, iface, parent=None):
         """Constructor."""
-        super(RasterMedDialog, self).__init__(parent)  
+        super(RasterExtentDialog, self).__init__(parent)  
         # Set up the user interface from Designer.
         # After setupUI you can access any designer object by doing
         # self.<objectname>, and you can use autoconnect slots - see
@@ -56,7 +56,7 @@ class RasterMedDialog(QtWidgets.QDialog, Ui_AGTRasterMedDialog):
         self.iface = iface
         self.populateProc()
         self.ButtonBrowseRaster.clicked.connect(self.outFileBrowse)            
-        self.runButton.clicked.connect(self.rasterMed)
+        self.runButton.clicked.connect(self.rasterExtent)
     
     def populateProc(self):
         
@@ -82,7 +82,7 @@ class RasterMedDialog(QtWidgets.QDialog, Ui_AGTRasterMedDialog):
         """
         return QCoreApplication.translate(u"RasterDlg", message)
     
-    def rasterMed(self):
+    def rasterExtent(self):
 
 
         layers = [tree_layer.layer() for tree_layer in QgsProject.instance().layerTreeRoot().findLayers()]
@@ -93,9 +93,9 @@ class RasterMedDialog(QtWidgets.QDialog, Ui_AGTRasterMedDialog):
         selectedLayerIndex = self.rastercomboBox.currentIndex() 
         rasterfile = layer_list[selectedLayerIndex]  
         
-        self.engine = EngineRaster(rawDataFilename = rasterfile.source(), outputRasterfile = self.outputFilename.text(), kernel = self.spinBox_kernel.value(), threshold = self.spinBox_threshold.value())
+        self.engine = EngineRaster(rawDataFilename = rasterfile.source(), outputRasterfile = self.outputFilename.text(), zeroExtent = self.checkBox_zeroExtent.isChecked(), kernelLimit = self.spinBox_kernelLimit.value()*2)
         self.engine.openRaster()
-        self.engine.medianRaster()
+        self.engine.limitExtentRaster()
         self.engine.saveRaster()
         self.addRasterToCanvas()
         self.hideDialog()

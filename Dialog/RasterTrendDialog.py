@@ -38,15 +38,15 @@ from processing.tools import *
 from osgeo import gdal
 from osgeo import ogr,osr, gdal
 
-from ..ui.ui_RasterMedDialog import Ui_AGTRasterMedDialog
+from ..ui.ui_RasterTrendDialog import Ui_AGTRasterTrendDialog
 from ..toolbox.AGTUtilities import Utilities, AGTEnconding
 from ..toolbox.AGTExceptions import *
 
 
-class RasterMedDialog(QtWidgets.QDialog, Ui_AGTRasterMedDialog):
+class RasterTrendDialog(QtWidgets.QDialog, Ui_AGTRasterTrendDialog):
     def __init__(self, iface, parent=None):
         """Constructor."""
-        super(RasterMedDialog, self).__init__(parent)  
+        super(RasterTrendDialog, self).__init__(parent)  
         # Set up the user interface from Designer.
         # After setupUI you can access any designer object by doing
         # self.<objectname>, and you can use autoconnect slots - see
@@ -56,7 +56,7 @@ class RasterMedDialog(QtWidgets.QDialog, Ui_AGTRasterMedDialog):
         self.iface = iface
         self.populateProc()
         self.ButtonBrowseRaster.clicked.connect(self.outFileBrowse)            
-        self.runButton.clicked.connect(self.rasterMed)
+        self.runButton.clicked.connect(self.rasterTrend)
     
     def populateProc(self):
         
@@ -82,7 +82,7 @@ class RasterMedDialog(QtWidgets.QDialog, Ui_AGTRasterMedDialog):
         """
         return QCoreApplication.translate(u"RasterDlg", message)
     
-    def rasterMed(self):
+    def rasterTrend(self):
 
 
         layers = [tree_layer.layer() for tree_layer in QgsProject.instance().layerTreeRoot().findLayers()]
@@ -93,9 +93,21 @@ class RasterMedDialog(QtWidgets.QDialog, Ui_AGTRasterMedDialog):
         selectedLayerIndex = self.rastercomboBox.currentIndex() 
         rasterfile = layer_list[selectedLayerIndex]  
         
-        self.engine = EngineRaster(rawDataFilename = rasterfile.source(), outputRasterfile = self.outputFilename.text(), kernel = self.spinBox_kernel.value(), threshold = self.spinBox_threshold.value())
+        
+        if self.radioButton_comp_local.isChecked():
+            composante = 'local'
+        else :
+            composante = 'regional'
+        
+        if self.radioButton_method_relative.isChecked():
+            methode = 'relative'
+        else : 
+            methode = 'absolue'
+        
+        
+        self.engine = EngineRaster(rawDataFilename = rasterfile.source(), outputRasterfile = self.outputFilename.text(), composanteTrend = composante, methodeTrend = methode, kernelTrend = self.spinBox_kernelTrend.value())
         self.engine.openRaster()
-        self.engine.medianRaster()
+        self.engine.trendRemovalRaster()
         self.engine.saveRaster()
         self.addRasterToCanvas()
         self.hideDialog()

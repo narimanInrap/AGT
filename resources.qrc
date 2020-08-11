@@ -5,9 +5,20 @@
 		<file>icons/rasterMed_icon.png</file>
 		<file>icons/interpolator_icon.png</file>
 		<file>icons/em31_icon.png</file>
+		<file>icons/GEM2_icon.png</file>
         <file>icons/help.svg</file>     
         <file>icons/magGrid_icon.png</file>
         <file>icons/param_icon.png</file>
-		<file>icons/GEM2_icon.png</file>
+		<file>icons/rasterMed_icon.png</file>
+		<file>icons/rasterClip_icon.png</file>
+		<file>icons/rasterContinuation_icon.png</file>
+		<file>icons/rasterDestripe_icon.png</file>
+		<file>icons/rasterEquivalentLayer_icon.png</file>
+		<file>icons/rasterExtent_icon.png</file>
+		<file>icons/rasterGradTotalConverter_icon.png</file>
+		<file>icons/rasterHisto_icon.png</file>
+		<file>icons/rasterPoleReduction_icon.png</file>
+		<file>icons/rasterTrend_icon.png</file>
+		
     </qresource>
 </RCC>
