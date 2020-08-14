@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'ui_RasterContinuationDialog.ui'
+# Form implementation generated from reading ui file 'ui/ui_RasterContinuationDialog.ui'
 #
-# Created by: PyQt5 UI code generator 5.12
+# Created by: PyQt5 UI code generator 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
+
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
@@ -86,15 +87,3 @@ class Ui_AGTRasterContinuationDialog(object):
         self.min_value_label.setText(_translate("AGTRasterContinuationDialog", "Continuation"))
         self.ButtonBrowseRaster.setText(_translate("AGTRasterContinuationDialog", "Browse"))
         self.runButton.setText(_translate("AGTRasterContinuationDialog", "Run"))
-
-
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    AGTRasterContinuationDialog = QtWidgets.QDialog()
-    ui = Ui_AGTRasterContinuationDialog()
-    ui.setupUi(AGTRasterContinuationDialog)
-    AGTRasterContinuationDialog.show()
-    sys.exit(app.exec_())

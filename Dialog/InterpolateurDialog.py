@@ -24,7 +24,7 @@
 #using Unicode for all strings
 from __future__ import unicode_literals
 
-import os
+import os, unicodedata
 
 from PyQt5 import uic, QtWidgets
 from PyQt5.QtCore import QSettings, QTextCodec, QCoreApplication, Qt
@@ -106,8 +106,23 @@ class InterpolateurDialog(QtWidgets.QDialog, Ui_InterpolatorDialog):
         """
         return QCoreApplication.translate(u"RasterDlg", message)
     
+    def inputCheck(self):
+        """Verifies whether the input is valid."""
+        
+        if not self.outputFilename.text():
+            msg = QCoreApplication.translate(u"InterpolateurDialog", 'Please specify an output filename.')            
+            QtWidgets.QMessageBox.warning(self, 'AGT', msg)
+            return False
+        isAscii = lambda s: len(s) == len(s.encode())
+        if not isAscii(os.path.basename(self.outputFilename.text())):
+            msg = QCoreApplication.translate(u"InterpolateurDialog", 'The output filename should only have ASCII characters.')            
+            QtWidgets.QMessageBox.warning(self, 'AGT', msg)
+            return False
+    
     def rasterInterp(self):
 
+        if not self.inputCheck():
+            return
         layers = [layer for layer in [tree_layer.layer() for tree_layer in QgsProject.instance().layerTreeRoot().findLayers()] if layer.type() == QgsMapLayer.VectorLayer]
         selectedLayerIndex=self.VectorComboBox.currentIndex() 
         shapefile_active = layers[selectedLayerIndex]

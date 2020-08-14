@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'ui_RasterGradTotalConverterDialog.ui'
+# Form implementation generated from reading ui file 'ui/ui_RasterGradTotalConverterDialog.ui'
 #
-# Created by: PyQt5 UI code generator 5.12
+# Created by: PyQt5 UI code generator 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
+
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
@@ -150,15 +151,3 @@ class Ui_AGTRasterGradTotalConverterDialog(object):
         self.groupBox_3.setTitle(_translate("AGTRasterGradTotalConverterDialog", "Simulated parameters"))
         self.label_4.setText(_translate("AGTRasterGradTotalConverterDialog", "Top sensor"))
         self.label_5.setText(_translate("AGTRasterGradTotalConverterDialog", "Bottom sensor"))
-
-
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    AGTRasterGradTotalConverterDialog = QtWidgets.QDialog()
-    ui = Ui_AGTRasterGradTotalConverterDialog()
-    ui.setupUi(AGTRasterGradTotalConverterDialog)
-    AGTRasterGradTotalConverterDialog.show()
-    sys.exit(app.exec_())

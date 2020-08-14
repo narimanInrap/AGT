@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'ui_RasterTrendDialog.ui'
+# Form implementation generated from reading ui file 'ui/ui_RasterTrendDialog.ui'
 #
-# Created by: PyQt5 UI code generator 5.12
+# Created by: PyQt5 UI code generator 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
+
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
@@ -83,19 +84,7 @@ class Ui_AGTRasterTrendDialog(object):
         self.runButton.setText(_translate("AGTRasterTrendDialog", "Run"))
         self.groupBox.setTitle(_translate("AGTRasterTrendDialog", "Composante"))
         self.radioButton_comp_local.setText(_translate("AGTRasterTrendDialog", "Local"))
-        self.radioButton_comp_regional.setText(_translate("AGTRasterTrendDialog", "Régional"))
+        self.radioButton_comp_regional.setText(_translate("AGTRasterTrendDialog", "Regional"))
         self.groupBox_2.setTitle(_translate("AGTRasterTrendDialog", "Method"))
         self.radioButton_method_relative.setText(_translate("AGTRasterTrendDialog", "Relative"))
-        self.radioButton_method_absolue.setText(_translate("AGTRasterTrendDialog", "Asolue"))
-
-
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    AGTRasterTrendDialog = QtWidgets.QDialog()
-    ui = Ui_AGTRasterTrendDialog()
-    ui.setupUi(AGTRasterTrendDialog)
-    AGTRasterTrendDialog.show()
-    sys.exit(app.exec_())
+        self.radioButton_method_absolue.setText(_translate("AGTRasterTrendDialog", "Absolue"))

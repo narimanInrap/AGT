@@ -4,54 +4,99 @@
 <context>
     <name>AGT</name>
     <message>
-        <location filename="../agt.py" line="279"/>
+        <location filename="../agt.py" line="377"/>
         <source>&amp;AGT</source>
         <translation>&amp;AGT</translation>
     </message>
     <message>
-        <location filename="../agt.py" line="193"/>
+        <location filename="../agt.py" line="215"/>
         <source>RM15/RM85 processing</source>
         <translation>Traitement RM15/RM85</translation>
     </message>
     <message>
-        <location filename="../agt.py" line="260"/>
+        <location filename="../agt.py" line="358"/>
         <source>help</source>
         <translation>aide</translation>
     </message>
     <message>
-        <location filename="../agt.py" line="214"/>
+        <location filename="../agt.py" line="236"/>
         <source>EM31 processing</source>
         <translation>Traitement EM31</translation>
     </message>
     <message>
-        <location filename="../agt.py" line="242"/>
+        <location filename="../agt.py" line="338"/>
         <source>Default parameters</source>
         <translation>Paramètres par défaut</translation>
     </message>
     <message>
-        <location filename="../agt.py" line="200"/>
+        <location filename="../agt.py" line="222"/>
         <source>MXPDA/Grad601 processing - Grid survey</source>
         <translation>Traitement MXPDA/Grad601 - Grille</translation>
     </message>
     <message>
-        <location filename="../agt.py" line="207"/>
+        <location filename="../agt.py" line="229"/>
         <source>MXPDA processing - GNSS survey</source>
         <translation>Traitement MXPDA - GNSS</translation>
     </message>
     <message>
-        <location filename="../agt.py" line="221"/>
+        <location filename="../agt.py" line="243"/>
         <source>GEM2/EMP400 processing</source>
         <translation>Traitement GEM2/EMP400</translation>
     </message>
     <message>
-        <location filename="../agt.py" line="235"/>
+        <location filename="../agt.py" line="258"/>
         <source>Raster med processing</source>
         <translation>Traitement raster par la médiane</translation>
     </message>
     <message>
-        <location filename="../agt.py" line="228"/>
+        <location filename="../agt.py" line="250"/>
         <source>Interpolator</source>
         <translation>Interpolateur</translation>
+    </message>
+    <message>
+        <location filename="../agt.py" line="266"/>
+        <source>Raster clipping processing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../agt.py" line="274"/>
+        <source>Raster extent cropping</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../agt.py" line="282"/>
+        <source>Raster trend removal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../agt.py" line="290"/>
+        <source>Raster Destriping</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../agt.py" line="298"/>
+        <source>Prolongement vers le haut</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../agt.py" line="307"/>
+        <source>Difference to Total Field converter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../agt.py" line="315"/>
+        <source>RÃ©duction au pÃ´le</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../agt.py" line="323"/>
+        <source>Couche Ã©quivalente en susceptibilitÃ©</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../agt.py" line="331"/>
+        <source>Histogram generation</source>
+        <translation>Génération d&apos;un histogramme</translation>
     </message>
 </context>
 <context>
@@ -782,41 +827,538 @@
     </message>
 </context>
 <context>
-    <name>AGTRasterMedDialog</name>
+    <name>AGTRasterClipDialog</name>
     <message>
-        <location filename="../ui/ui_RasterMedDialog.ui" line="20"/>
-        <source> Raster output</source>
-        <translation>Sortie raster</translation>
+        <location filename="../ui/ui_RasterClipDialog.py" line="68"/>
+        <source>Raster clipping value</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/ui_RasterMedDialog.ui" line="34"/>
+        <location filename="../ui/ui_RasterClipDialog.py" line="69"/>
+        <source>Raster output</source>
+        <translation>Sortie Raster</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterClipDialog.py" line="70"/>
         <source>Select raster layer</source>
         <translation>Choisir la couche raster</translation>
     </message>
     <message>
-        <location filename="../ui/ui_RasterMedDialog.ui" line="41"/>
+        <location filename="../ui/ui_RasterClipDialog.py" line="71"/>
+        <source>Minimum value</source>
+        <translation>Valeur minimum</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterClipDialog.py" line="72"/>
+        <source>Browse</source>
+        <translation>Parcourir</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterClipDialog.py" line="73"/>
+        <source>Maximum value</source>
+        <translation>Valeur maximum</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterClipDialog.py" line="74"/>
+        <source>Run</source>
+        <translation>Lancer</translation>
+    </message>
+</context>
+<context>
+    <name>AGTRasterContinuationDialog</name>
+    <message>
+        <location filename="../ui/ui_RasterContinuationDialog.py" line="87"/>
+        <source>Continuation</source>
+        <translation>Continuation</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterContinuationDialog.py" line="80"/>
+        <source>Method</source>
+        <translation>méthode</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterContinuationDialog.py" line="81"/>
+        <source>Total Field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterContinuationDialog.py" line="82"/>
+        <source>Difference</source>
+        <translation>Différence</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterContinuationDialog.py" line="83"/>
+        <source>Bottom clearance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterContinuationDialog.py" line="84"/>
+        <source>Top clearance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterContinuationDialog.py" line="85"/>
+        <source>Raster output</source>
+        <translation>Sortie Raster</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterContinuationDialog.py" line="86"/>
+        <source>Select raster layer</source>
+        <translation>Choisir la couche raster</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterContinuationDialog.py" line="88"/>
+        <source>Browse</source>
+        <translation>Parcourir</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterContinuationDialog.py" line="89"/>
+        <source>Run</source>
+        <translation>Lancer</translation>
+    </message>
+</context>
+<context>
+    <name>AGTRasterDestripeDialog</name>
+    <message>
+        <location filename="../ui/ui_RasterDestripeDialog.py" line="74"/>
+        <source>Raster destripping filtering</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterDestripeDialog.py" line="75"/>
+        <source>Raster output</source>
+        <translation>Sortie raster</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterDestripeDialog.py" line="76"/>
+        <source>Largeur</source>
+        <translation>Width</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterDestripeDialog.py" line="77"/>
+        <source>Select raster layer</source>
+        <translation>Choisir la couche raster</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterDestripeDialog.py" line="78"/>
+        <source>Browse</source>
+        <translation>Parcourir</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterDestripeDialog.py" line="79"/>
+        <source>Run</source>
+        <translation>Lancer</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterDestripeDialog.py" line="81"/>
+        <source>Angle</source>
+        <translation>Angle</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterDestripeDialog.py" line="80"/>
+        <source>Fréquence de coupure</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>AGTRasterEquivalentLayerDialog</name>
+    <message>
+        <location filename="../ui/ui_RasterEquivalentLayerDialog.py" line="116"/>
+        <source>Acquisition technic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterEquivalentLayerDialog.py" line="117"/>
+        <source>Total Field </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterEquivalentLayerDialog.py" line="118"/>
+        <source>Difference</source>
+        <translation>Différence</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterEquivalentLayerDialog.py" line="119"/>
+        <source>Acquisition parameters</source>
+        <translation>Paramètres d&apos;acquisition</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterEquivalentLayerDialog.py" line="120"/>
+        <source>Bottom sensor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterEquivalentLayerDialog.py" line="121"/>
+        <source>Top sensor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterEquivalentLayerDialog.py" line="122"/>
+        <source>Field characteristics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterEquivalentLayerDialog.py" line="123"/>
+        <source>Inclinaison</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterEquivalentLayerDialog.py" line="124"/>
+        <source>Angle alpha</source>
+        <translation>Angle alpha</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterEquivalentLayerDialog.py" line="125"/>
+        <source>Raster output</source>
+        <translation>Sortie raster</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterEquivalentLayerDialog.py" line="126"/>
+        <source>Select raster layer</source>
+        <translation>Choisir la couche raster</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterEquivalentLayerDialog.py" line="127"/>
+        <source>Browse</source>
+        <translation>Parcourir</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterEquivalentLayerDialog.py" line="128"/>
+        <source>Run</source>
+        <translation>Lancer</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterEquivalentLayerDialog.py" line="130"/>
+        <source>Epaisseur</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterEquivalentLayerDialog.py" line="131"/>
+        <source>Profondeur</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterEquivalentLayerDialog.py" line="115"/>
+        <source>Couche équivalente</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterEquivalentLayerDialog.py" line="129"/>
+        <source>Propriétés de la couche</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>AGTRasterExtentDialog</name>
+    <message>
+        <location filename="../ui/ui_RasterExtentDialog.py" line="61"/>
+        <source>Cropping raster extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterExtentDialog.py" line="62"/>
+        <source>Raster output</source>
+        <translation>Sortie raster</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterExtentDialog.py" line="63"/>
+        <source>Select raster layer</source>
+        <translation>Choisir la couche raster</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterExtentDialog.py" line="64"/>
+        <source>Cropping widness</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterExtentDialog.py" line="65"/>
+        <source>Browse</source>
+        <translation>Parcourir</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterExtentDialog.py" line="66"/>
+        <source>Run</source>
+        <translation type="unfinished">Lancer</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterExtentDialog.py" line="67"/>
+        <source>0 as dummy</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>AGTRasterGradTotalConverterDialog</name>
+    <message>
+        <location filename="../ui/ui_RasterGradTotalConverterDialog.py" line="132"/>
+        <source>Difference to Total Field Convertor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterGradTotalConverterDialog.py" line="133"/>
+        <source>Raster output</source>
+        <translation>Sortie raster</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterGradTotalConverterDialog.py" line="134"/>
+        <source>Select raster layer</source>
+        <translation>Choisir la couche raster</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterGradTotalConverterDialog.py" line="135"/>
+        <source>Browse</source>
+        <translation>Parcourir</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterGradTotalConverterDialog.py" line="136"/>
+        <source>Run</source>
+        <translation>Lancer</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterGradTotalConverterDialog.py" line="137"/>
+        <source>Acquisition technic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterGradTotalConverterDialog.py" line="138"/>
+        <source>Total Field </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterGradTotalConverterDialog.py" line="149"/>
+        <source>Difference</source>
+        <translation>Différence</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterGradTotalConverterDialog.py" line="150"/>
+        <source>Dif Total Field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterGradTotalConverterDialog.py" line="141"/>
+        <source>Acquisition parameters</source>
+        <translation>paramètres d&apos;acquisition</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterGradTotalConverterDialog.py" line="153"/>
+        <source>Bottom sensor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterGradTotalConverterDialog.py" line="152"/>
+        <source>Top sensor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterGradTotalConverterDialog.py" line="144"/>
+        <source>Field characteristics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterGradTotalConverterDialog.py" line="145"/>
+        <source>Inclinaison</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterGradTotalConverterDialog.py" line="146"/>
+        <source>Angle alpha</source>
+        <translation>Angle alpha</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterGradTotalConverterDialog.py" line="147"/>
+        <source>Simulated technic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterGradTotalConverterDialog.py" line="148"/>
+        <source>Total Field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterGradTotalConverterDialog.py" line="151"/>
+        <source>Simulated parameters</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>AGTRasterHistoDialog</name>
+    <message>
+        <location filename="../ui/ui_RasterHistoDialog.py" line="74"/>
+        <source>Histogramme</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterHistoDialog.py" line="68"/>
+        <source>Save histogram</source>
+        <translation>Enregistrer l&apos;histogramme</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterHistoDialog.py" line="69"/>
+        <source>Select raster layer</source>
+        <translation>Choisir la couche raster</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterHistoDialog.py" line="70"/>
+        <source>Browse</source>
+        <translation>Parcourir</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterHistoDialog.py" line="71"/>
+        <source>Run</source>
+        <translation>Lancer</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterHistoDialog.py" line="73"/>
+        <source>FontSize</source>
+        <translation>Taille de la police</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterHistoDialog.py" line="72"/>
+        <source>Unité</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>AGTRasterMedDialog</name>
+    <message>
+        <location filename="../ui/ui_RasterMedDialog.py" line="68"/>
+        <source> Raster output</source>
+        <translation>Sortie raster</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterMedDialog.py" line="69"/>
+        <source>Select raster layer</source>
+        <translation>Choisir la couche raster</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterMedDialog.py" line="70"/>
         <source>Window size</source>
         <translation>Taille de la fenêtre</translation>
     </message>
     <message>
-        <location filename="../ui/ui_RasterMedDialog.ui" line="51"/>
+        <location filename="../ui/ui_RasterMedDialog.py" line="71"/>
         <source>browse</source>
         <translation>parcourir</translation>
     </message>
     <message>
-        <location filename="../ui/ui_RasterMedDialog.ui" line="58"/>
+        <location filename="../ui/ui_RasterMedDialog.py" line="72"/>
         <source>Threshold</source>
         <translation>Seuil</translation>
     </message>
     <message>
-        <location filename="../ui/ui_RasterMedDialog.ui" line="74"/>
+        <location filename="../ui/ui_RasterMedDialog.py" line="73"/>
         <source>run</source>
         <translation>lancer</translation>
     </message>
     <message>
-        <location filename="../ui/ui_RasterMedDialog.ui" line="14"/>
+        <location filename="../ui/ui_RasterMedDialog.py" line="67"/>
         <source>Raster median process</source>
         <translation>Traitement raster par la médiane</translation>
+    </message>
+</context>
+<context>
+    <name>AGTRasterPoleReductionDialog</name>
+    <message>
+        <location filename="../ui/ui_RasterPoleReductionDialog.py" line="67"/>
+        <source>PoleReduction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterPoleReductionDialog.py" line="68"/>
+        <source>Raster output</source>
+        <translation>Sortie raster</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterPoleReductionDialog.py" line="69"/>
+        <source>Select raster layer</source>
+        <translation>Choisir la couche raster</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterPoleReductionDialog.py" line="70"/>
+        <source>Browse</source>
+        <translation>Parcourir</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterPoleReductionDialog.py" line="71"/>
+        <source>Run</source>
+        <translation>Lancer</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterPoleReductionDialog.py" line="72"/>
+        <source>Field characteristics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterPoleReductionDialog.py" line="73"/>
+        <source>Inclinaison</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterPoleReductionDialog.py" line="74"/>
+        <source>Angle alpha</source>
+        <translation>Angle alpha</translation>
+    </message>
+</context>
+<context>
+    <name>AGTRasterTrendDialog</name>
+    <message>
+        <location filename="../ui/ui_RasterTrendDialog.py" line="79"/>
+        <source>Trend Removal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterTrendDialog.py" line="80"/>
+        <source>Raster output</source>
+        <translation>Sortie raster</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterTrendDialog.py" line="81"/>
+        <source>Select raster layer</source>
+        <translation>Choisir la couche raster</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterTrendDialog.py" line="82"/>
+        <source>Kernel size (pixel)</source>
+        <translation>Taille du masque (pixel)</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterTrendDialog.py" line="83"/>
+        <source>Browse</source>
+        <translation>Parcourir</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterTrendDialog.py" line="84"/>
+        <source>Run</source>
+        <translation>Lancer</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterTrendDialog.py" line="85"/>
+        <source>Composante</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterTrendDialog.py" line="86"/>
+        <source>Local</source>
+        <translation>Local</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterTrendDialog.py" line="88"/>
+        <source>Method</source>
+        <translation>méthode</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterTrendDialog.py" line="89"/>
+        <source>Relative</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterTrendDialog.py" line="87"/>
+        <source>Regional</source>
+        <translation>Régional</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_RasterTrendDialog.py" line="90"/>
+        <source>Absolue</source>
+        <translation>Absolu</translation>
     </message>
 </context>
 <context>
@@ -991,6 +1533,19 @@
     </message>
 </context>
 <context>
+    <name>InterpolateurDialog</name>
+    <message>
+        <location filename="../Dialog/InterpolateurDialog.py" line="113"/>
+        <source>Please specify an output filename.</source>
+        <translation>Veuillez spécifier un nom de fichier de sortie.</translation>
+    </message>
+    <message>
+        <location filename="../Dialog/InterpolateurDialog.py" line="118"/>
+        <source>The output filename should only have ASCII characters.</source>
+        <translation>Le nom du fichier de sortie ne peut contenir de caractère accentué.</translation>
+    </message>
+</context>
+<context>
     <name>InterpolatorDialog</name>
     <message>
         <location filename="../ui/ui_InterpolateurDialog.ui" line="14"/>
@@ -1091,12 +1646,12 @@
         <translation>Le shapefile de sortie généré:</translation>
     </message>
     <message>
-        <location filename="../Dialog/RasterMedDialog.py" line="101"/>
+        <location filename="../Dialog/RasterTrendDialog.py" line="133"/>
         <source>Would you like to add the new layer to your project?</source>
         <translation>Voulez-vous ajouter la nouvelle couche à votre projet?</translation>
     </message>
     <message>
-        <location filename="../Dialog/RasterMedDialog.py" line="99"/>
+        <location filename="../Dialog/RasterTrendDialog.py" line="131"/>
         <source>Created output Rasterfile:</source>
         <translation>Le fichier raster de sortie généré:</translation>
     </message>
@@ -1178,6 +1733,136 @@
         <location filename="../ui/ui_ParametersDialog.ui" line="43"/>
         <source>Cancel</source>
         <translation>Annuler</translation>
+    </message>
+</context>
+<context>
+    <name>RasterClipDialog</name>
+    <message>
+        <location filename="../Dialog/RasterClipDialog.py" line="89"/>
+        <source>Please specify an output filename.</source>
+        <translation>Veuillez spécifier un nom de fichier de sortie.</translation>
+    </message>
+    <message>
+        <location filename="../Dialog/RasterClipDialog.py" line="94"/>
+        <source>The output filename should only have ASCII characters.</source>
+        <translation>Le nom du fichier de sortie ne peut contenir de caractère accentué.</translation>
+    </message>
+</context>
+<context>
+    <name>RasterContinuationDialog</name>
+    <message>
+        <location filename="../Dialog/RasterContinuationDialog.py" line="89"/>
+        <source>Please specify an output filename.</source>
+        <translation>Veuillez spécifier un nom de fichier de sortie.</translation>
+    </message>
+    <message>
+        <location filename="../Dialog/RasterContinuationDialog.py" line="94"/>
+        <source>The output filename should only have ASCII characters.</source>
+        <translation>Le nom du fichier de sortie ne peut contenir de caractère accentué.</translation>
+    </message>
+</context>
+<context>
+    <name>RasterDestripeDialog</name>
+    <message>
+        <location filename="../Dialog/RasterDestripeDialog.py" line="89"/>
+        <source>Please specify an output filename.</source>
+        <translation>Veuillez spécifier un nom de fichier de sortie.</translation>
+    </message>
+    <message>
+        <location filename="../Dialog/RasterDestripeDialog.py" line="94"/>
+        <source>The output filename should only have ASCII characters.</source>
+        <translation>Le nom du fichier de sortie ne peut contenir de caractère accentué.</translation>
+    </message>
+</context>
+<context>
+    <name>RasterEquivalentLayerDialog</name>
+    <message>
+        <location filename="../Dialog/RasterEquivalentLayerDialog.py" line="89"/>
+        <source>Please specify an output filename.</source>
+        <translation>Veuillez spécifier un nom de fichier de sortie.</translation>
+    </message>
+    <message>
+        <location filename="../Dialog/RasterEquivalentLayerDialog.py" line="94"/>
+        <source>The output filename should only have ASCII characters.</source>
+        <translation>Le nom du fichier de sortie ne peut contenir de caractère accentué.</translation>
+    </message>
+</context>
+<context>
+    <name>RasterExtentDialog</name>
+    <message>
+        <location filename="../Dialog/RasterExtentDialog.py" line="89"/>
+        <source>Please specify an output filename.</source>
+        <translation>Veuillez spécifier un nom de fichier de sortie.</translation>
+    </message>
+    <message>
+        <location filename="../Dialog/RasterExtentDialog.py" line="94"/>
+        <source>The output filename should only have ASCII characters.</source>
+        <translation>Le nom du fichier de sortie ne peut contenir de caractère accentué.</translation>
+    </message>
+</context>
+<context>
+    <name>RasterGradTotalConverterDialog</name>
+    <message>
+        <location filename="../Dialog/RasterGradTotalConverterDialog.py" line="89"/>
+        <source>Please specify an output filename.</source>
+        <translation>Veuillez spécifier un nom de fichier de sortie.</translation>
+    </message>
+    <message>
+        <location filename="../Dialog/RasterGradTotalConverterDialog.py" line="94"/>
+        <source>The output filename should only have ASCII characters.</source>
+        <translation>Le nom du fichier de sortie ne peut contenir de caractère accentué.</translation>
+    </message>
+</context>
+<context>
+    <name>RasterHistoDialog</name>
+    <message>
+        <location filename="../Dialog/RasterHistoDialog.py" line="90"/>
+        <source>Please specify an output filename.</source>
+        <translation>Veuillez spécifier un nom de fichier de sortie.</translation>
+    </message>
+    <message>
+        <location filename="../Dialog/RasterHistoDialog.py" line="95"/>
+        <source>The output filename should only have ASCII characters.</source>
+        <translation>Le nom du fichier de sortie ne peut contenir de caractère accentué.</translation>
+    </message>
+</context>
+<context>
+    <name>RasterMedDialog</name>
+    <message>
+        <location filename="../Dialog/RasterMedDialog.py" line="89"/>
+        <source>Please specify an output filename.</source>
+        <translation>Veuillez spécifier un nom de fichier de sortie.</translation>
+    </message>
+    <message>
+        <location filename="../Dialog/RasterMedDialog.py" line="94"/>
+        <source>The output filename should only have ASCII characters.</source>
+        <translation>Le nom du fichier de sortie ne peut contenir de caractère accentué.</translation>
+    </message>
+</context>
+<context>
+    <name>RasterPoleReductionDialog</name>
+    <message>
+        <location filename="../Dialog/RasterPoleReductionDialog.py" line="89"/>
+        <source>Please specify an output filename.</source>
+        <translation>Veuillez spécifier un nom de fichier de sortie.</translation>
+    </message>
+    <message>
+        <location filename="../Dialog/RasterPoleReductionDialog.py" line="94"/>
+        <source>The output filename should only have ASCII characters.</source>
+        <translation>Le nom du fichier de sortie ne peut contenir de caractère accentué.</translation>
+    </message>
+</context>
+<context>
+    <name>RasterTrendDialog</name>
+    <message>
+        <location filename="../Dialog/RasterTrendDialog.py" line="89"/>
+        <source>Please specify an output filename.</source>
+        <translation>Veuillez spécifier un nom de fichier de sortie.</translation>
+    </message>
+    <message>
+        <location filename="../Dialog/RasterTrendDialog.py" line="94"/>
+        <source>The output filename should only have ASCII characters.</source>
+        <translation>Le nom du fichier de sortie ne peut contenir de caractère accentué.</translation>
     </message>
 </context>
 <context>

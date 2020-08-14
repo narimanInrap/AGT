@@ -109,7 +109,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Régional</string>
+       <string>Regional</string>
       </property>
       <property name="checked">
        <bool>true</bool>
@@ -145,7 +145,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Asolue</string>
+       <string>Absolue</string>
       </property>
       <property name="checked">
        <bool>true</bool>

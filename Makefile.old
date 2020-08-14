@@ -42,6 +42,16 @@ SOURCES = \
 	Dialog/GEM2Dialog.py\
 	Dialog/InterpolateurDialog.py\
 	Dialog/RasterMedDialog.py\
+	Dialog/RasterClipDialog.py\
+	Dialog/RasterContinuationDialog.py\
+	Dialog/RasterDestripeDialog.py\
+	Dialog/RasterEquivalentLayerDialog.py\
+	Dialog/RasterExtentDialog.py\
+	Dialog/RasterGradTotalConverterDialog.py\
+	Dialog/RasterHistoDialog.py\
+	Dialog/RasterMedDialog.py\
+	Dialog/RasterPoleReductionDialog.py\
+	Dialog/RasterTrendDialog.py\	
 	ui/ui_electDialog.py\
 	ui/ui_georefDialog.py\
 	ui/ui_magDialog.py\
@@ -62,7 +72,6 @@ SOURCES = \
 	ui/ui_ParametersDialog.ui\
 	ui/ui_CalibrationDialog.ui\
 	ui/ui_MultiFreqDialog.ui\
-	ui/ui_RasterMedDialog.ui\
 	ui/ui_InterpolateurDialog.ui\
 	toolbox/AGTUtilities.py\
 	toolbox/AGTExceptions.py\
@@ -86,16 +95,9 @@ SOURCES = \
 	ui/ui_RasterMedDialog.py\
 	ui/ui_RasterPoleReductionDialog.py\
 	ui/ui_RasterTrendDialog.py\
-	Dialog/RasterClipDialog.py\
-	Dialog/RasterContinuationDialog.py\
-	Dialog/RasterDestripeDialog.py\
-	Dialog/RasterEquivalentLayerDialog.py\
-	Dialog/RasterExtentDialog.py\
-	Dialog/RasterGradTotalConverterDialog.py\
-	Dialog/RasterHistoDialog.py\
-	Dialog/RasterPoleReductionDialog.py\
-	Dialog/RasterTrendDialog.py
-	
+
+
+# Resource file(s) that will be compiled
 	
 	
 PLUGINNAME = AGT
@@ -133,7 +135,17 @@ COMPILED_UI_FILES = ui/ui_electDialog.py \
 	ui/ui_MagGridDialog.py\
 	ui/ui_ParametersDialog.py\
 	ui/ui_CalibrationDialog.py\
-	ui/ui_MultiFreqDialog.py
+	ui/ui_MultiFreqDialog.py\
+	ui/ui_RasterClipDialog.py\
+	ui/ui_RasterContinuationDialog.py\
+	ui/ui_RasterDestripeDialog.py\
+	ui/ui_RasterEquivalentLayerDialog.py\
+	ui/ui_RasterExtentDialog.py\
+	ui/ui_RasterGradTotalConverterDialog.py\
+	ui/ui_RasterHistoDialog.py\
+	ui/ui_RasterMedDialog.py\
+	ui/ui_RasterPoleReductionDialog.py\
+	ui/ui_RasterTrendDialog.py\
 	
 
 COMPILED_RESOURCE_FILES = resources_rc.py
