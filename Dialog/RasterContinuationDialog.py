@@ -82,9 +82,23 @@ class RasterContinuationDialog(QtWidgets.QDialog, Ui_AGTRasterContinuationDialog
         """
         return QCoreApplication.translate(u"RasterDlg", message)
     
+    def inputCheck(self):
+        """Verifies whether the input is valid."""
+        
+        if not self.outputFilename.text():
+            msg = QCoreApplication.translate(u"RasterContinuationDialog", 'Please specify an output filename.')            
+            QtWidgets.QMessageBox.warning(self, 'AGT', msg)
+            return False
+        isAscii = lambda s: len(s) == len(s.encode())
+        if not isAscii(os.path.basename(self.outputFilename.text())):
+            msg = QCoreApplication.translate(u"RasterContinuationDialog", 'The output filename should only have ASCII characters.')            
+            QtWidgets.QMessageBox.warning(self, 'AGT', msg)
+            return False
+    
     def rasterContinuation(self):
 
-
+        if not self.inputCheck():
+            return
         layers = [tree_layer.layer() for tree_layer in QgsProject.instance().layerTreeRoot().findLayers()]
         layer_list = []
         for layer in layers :

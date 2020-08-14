@@ -330,7 +330,7 @@ class AGT:
         
         self.add_action(
             icon_path,
-            text=self.tr(u'Générer un histogramme'),
+            text=self.tr(u'Histogram generation'),
             callback=self.runHisto,
             parent=self.iface.mainWindow())
         

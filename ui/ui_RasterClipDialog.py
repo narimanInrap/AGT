@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'ui_RasterClipDialog.ui'
+# Form implementation generated from reading ui file 'ui/ui_RasterClipDialog.ui'
 #
-# Created by: PyQt5 UI code generator 5.12
+# Created by: PyQt5 UI code generator 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
+
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
@@ -71,15 +72,3 @@ class Ui_AGTRasterClipDialog(object):
         self.ButtonBrowseRaster.setText(_translate("AGTRasterClipDialog", "Browse"))
         self.max_value_label.setText(_translate("AGTRasterClipDialog", "Maximum value"))
         self.runButton.setText(_translate("AGTRasterClipDialog", "Run"))
-
-
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    AGTRasterClipDialog = QtWidgets.QDialog()
-    ui = Ui_AGTRasterClipDialog()
-    ui.setupUi(AGTRasterClipDialog)
-    AGTRasterClipDialog.show()
-    sys.exit(app.exec_())
