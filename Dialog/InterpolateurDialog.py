@@ -121,24 +121,34 @@ class InterpolateurDialog(QtWidgets.QDialog, Ui_InterpolatorDialog):
     
     def rasterInterp(self):
 
-        if not self.inputCheck():
+        if self.inputCheck():
             return
         layers = [layer for layer in [tree_layer.layer() for tree_layer in QgsProject.instance().layerTreeRoot().findLayers()] if layer.type() == QgsMapLayer.VectorLayer]
-        selectedLayerIndex=self.VectorComboBox.currentIndex() 
+        selectedLayerIndex=self.VectorComboBox.currentIndex()
         shapefile_active = layers[selectedLayerIndex]
-        fieldname_active=self.FieldsComboBox.currentText()
-        self.pixel=self.doubleSpinBox_pixelsize.value()
-        self.window=self.doubleSpinBox_window.value()
-
-        interp = InterpolatorEnum.ELECTROMAGNETIC
-        if self.Magnetic.isChecked():
-            interp = InterpolatorEnum.MAGNETIC
-        elif self.Electric.isChecked():
-            interp = InterpolatorEnum.ELECTRICAL
-        self.engine = EngineRaster(outputRasterfile = self.outputFilename.text(), shapefile = shapefile_active, field = fieldname_active, pixelSize = self.pixel, searchWindow = self.window, methodInterp = interp)
-        self.engine.InterpolRaster()
-        self.iface.addRasterLayer(self.outputFilename.text(), '{} {}'.format(self.VectorComboBox.currentText(), self.FieldsComboBox.currentText()))
-        self.hideDialog()
+        filepath = shapefile_active.dataProvider().dataSourceUri()
+        (nameDir,nameFile) = os.path.split(filepath)
+        isAscii = lambda s: len(s) == len(s.encode())
+       
+        if not isAscii(nameDir):
+            msg = QCoreApplication.translate(u"InterpolateurDialog", 'The input path directory should only have ASCII characters.')            
+            QtWidgets.QMessageBox.warning(self, 'AGT', msg)
+            self.hideDialog()
+       
+        else :
+            fieldname_active=self.FieldsComboBox.currentText()
+            self.pixel=self.doubleSpinBox_pixelsize.value()
+            self.window=self.doubleSpinBox_window.value()
+   
+            interp = InterpolatorEnum.ELECTROMAGNETIC
+            if self.Magnetic.isChecked():
+                interp = InterpolatorEnum.MAGNETIC
+            elif self.Electric.isChecked():
+                interp = InterpolatorEnum.ELECTRICAL
+            self.engine = EngineRaster(outputRasterfile = self.outputFilename.text(), shapefile = shapefile_active, field = fieldname_active, pixelSize = self.pixel, searchWindow = self.window, methodInterp = interp)
+            self.engine.InterpolRaster()
+            self.iface.addRasterLayer(self.outputFilename.text(), '{} {}'.format(self.VectorComboBox.currentText(), self.FieldsComboBox.currentText()))
+            self.hideDialog()
 #        self.engine.medianRaster()
 #        self.engine.saveRaster()
 #        QtWidgets.QMessageBox.warning(self, 'AGT', msg)
