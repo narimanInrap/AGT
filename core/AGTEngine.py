@@ -1699,27 +1699,52 @@ class EngineRaster(object):
         coords = "%f,%f,%f,%f" %(xmin, xmax, ymin, ymax)
         
         if self.methodInterp == InterpolatorEnum.MAGNETIC:
-            alg_params = {
-            'DW_BANDWIDTH': 1,
-            'DW_IDW_OFFSET': False,
-            'DW_IDW_POWER': 2,
-            'DW_WEIGHTING': 1,
-            'FIELD': self.field,
-            'SEARCH_DIRECTION': 0,
-            'SEARCH_POINTS_ALL': 0,
-            'SEARCH_POINTS_MAX': 20,
-            'SEARCH_POINTS_MIN': -1,
-            'SEARCH_RADIUS': self.searchWindow,
-            'SEARCH_RANGE': 0,
-            'SHAPES': self.shapefile,
-            'TARGET_DEFINITION': 0,
-            'TARGET_TEMPLATE': None,
-            'TARGET_USER_FITS': 0,
-            'TARGET_USER_SIZE': self.pixelSize,
-            'TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX': coords,
-            'TARGET_OUT_GRID': QgsProcessing.TEMPORARY_OUTPUT
-            }
-            raster1 = processing.run('saga:inversedistanceweightedinterpolation', alg_params)
+            if Qgis.QGIS_VERSION_INT < 32600:
+                alg_params = {
+                'DW_BANDWIDTH': 1,
+                'DW_IDW_OFFSET': False,
+                'DW_IDW_POWER': 2,
+                'DW_WEIGHTING': 1,
+                'FIELD': self.field,
+                'SEARCH_DIRECTION': 0,
+                'SEARCH_POINTS_ALL': 0,
+                'SEARCH_POINTS_MAX': 20,
+                'SEARCH_POINTS_MIN': 1,
+                'SEARCH_RADIUS': self.searchWindow,
+                'SEARCH_RANGE': 0,
+                'SHAPES': self.shapefile,
+                'TARGET_DEFINITION': 0,
+                'TARGET_TEMPLATE': None,
+                'TARGET_USER_FITS': 0,
+                'TARGET_USER_SIZE': self.pixelSize,
+                'TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX': coords,
+                'TARGET_OUT_GRID': QgsProcessing.TEMPORARY_OUTPUT
+                }
+                raster1 = processing.run('saga:inversedistanceweightedinterpolation', alg_params)
+            else :
+                alg_params = {
+                'DW_BANDWIDTH': 1,
+                'DW_IDW_POWER': 2,
+                'DW_WEIGHTING': 1,
+                'FIELD': self.field,
+                'SEARCH_RANGE': 0,
+                'SEARCH_POINTS_ALL': 0,
+                'SEARCH_POINTS_MAX': 20,
+                'SEARCH_POINTS_MIN': 1,
+                'SEARCH_RADIUS': self.searchWindow,
+                'SEARCH_RANGE': 0,
+                'CV_METHOD': 0,
+                'CV_SUMMARY': QgsProcessing.TEMPORARY_OUTPUT,
+                'CV_RESIDUALS': QgsProcessing.TEMPORARY_OUTPUT,
+                'POINTS': self.shapefile,
+                'TARGET_DEFINITION': 0,
+                'TARGET_TEMPLATE': None,
+                'TARGET_USER_FITS': 0,
+                'TARGET_USER_SIZE': self.pixelSize,
+                'TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX': coords,
+                'TARGET_OUT_GRID': QgsProcessing.TEMPORARY_OUTPUT
+                }
+                raster1 = processing.run('saga:inversedistanceweighted', alg_params)
             
             alg_params2 = {
             'COPY_SUBDATASETS': False,
@@ -1734,125 +1759,138 @@ class EngineRaster(object):
             processing.run('gdal:translate', alg_params2)
             
         if self.methodInterp == InterpolatorEnum.ELECTRICAL:
-            alg_params1 = {
-            'DW_BANDWIDTH': 1,
-            'DW_IDW_OFFSET': False,
-            'DW_IDW_POWER': 2,
-            'DW_WEIGHTING': 1,
-            'FIELD': self.field,
-            'SEARCH_DIRECTION': 0,
-            'SEARCH_POINTS_ALL': 0,
-            'SEARCH_POINTS_MAX': 20,
-            'SEARCH_POINTS_MIN': -1,
-            'SEARCH_RADIUS': self.searchWindow,
-            'SEARCH_RANGE': 0,
-            'SHAPES': self.shapefile,
-            'TARGET_DEFINITION': 0,
-            'TARGET_TEMPLATE': None,
-            'TARGET_USER_FITS': 0,
-            'TARGET_USER_SIZE': self.pixelSize,
-            'TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX': coords,
-            'TARGET_OUT_GRID': QgsProcessing.TEMPORARY_OUTPUT
-            }
-            raster1 = processing.run('saga:inversedistanceweightedinterpolation', alg_params1)
+            if Qgis.QGIS_VERSION_INT < 32600:
+                alg_params1 = {
+                'DW_BANDWIDTH': 1,
+                'DW_IDW_OFFSET': False,
+                'DW_IDW_POWER': 2,
+                'DW_WEIGHTING': 1,
+                'FIELD': self.field,
+                'SEARCH_DIRECTION': 0,
+                'SEARCH_POINTS_ALL': 0,
+                'SEARCH_POINTS_MAX': 20,
+                'SEARCH_POINTS_MIN': 1,
+                'SEARCH_RADIUS': self.searchWindow,
+                'SEARCH_RANGE': 0,
+                'SHAPES': self.shapefile,
+                'TARGET_DEFINITION': 0,
+                'TARGET_TEMPLATE': None,
+                'TARGET_USER_FITS': 0,
+                'TARGET_USER_SIZE': self.pixelSize,
+                'TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX': coords,
+                'TARGET_OUT_GRID': QgsProcessing.TEMPORARY_OUTPUT
+                }
+                raster1 = processing.run('saga:inversedistanceweightedinterpolation', alg_params1)
+            else :
+                alg_params1 = {
+                'DW_BANDWIDTH': 1,
+                'DW_IDW_POWER': 2,
+                'DW_WEIGHTING': 1,
+                'FIELD': self.field,
+                'SEARCH_RANGE': 0,
+                'SEARCH_POINTS_ALL': 0,
+                'SEARCH_POINTS_MAX': 20,
+                'SEARCH_POINTS_MIN': 1,
+                'SEARCH_RADIUS': self.searchWindow,
+                'SEARCH_RANGE': 0,
+                'CV_METHOD': 0,
+                'CV_SUMMARY': QgsProcessing.TEMPORARY_OUTPUT,
+                'CV_RESIDUALS': QgsProcessing.TEMPORARY_OUTPUT,
+                'POINTS': self.shapefile,
+                'TARGET_DEFINITION': 0,
+                'TARGET_TEMPLATE': None,
+                'TARGET_USER_FITS': 0,
+                'TARGET_USER_SIZE': self.pixelSize,
+                'TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX': coords,
+                'TARGET_OUT_GRID': QgsProcessing.TEMPORARY_OUTPUT
+                }
+                raster1 = processing.run('saga:inversedistanceweighted', alg_params1)
+            
             
             alg_params2 = {
             'EPSILON': 0.0001,
             'FIELD': self.field,
             'LEVEL_MAX': 11,
-            'METHOD': 1,
+            'METHOD': 0,
             'SHAPES': self.shapefile,
             'TARGET_USER_FITS': 0,
             'TARGET_USER_SIZE': self.pixelSize,
             'TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX': coords,
             'TARGET_OUT_GRID': QgsProcessing.TEMPORARY_OUTPUT
             }
-            raster2 = processing.run('saga:multilevelbsplineinterpolation', alg_params2)
+            if Qgis.QGIS_VERSION_INT < 32600:
+                raster2 = processing.run('saga:multilevelbsplineinterpolation', alg_params2)
+            else :
+                raster2 = processing.run('saga:multilevelbspline', alg_params2)
+			
             
-            # Calculatrice Raster
-            alg_params3 = {
-                'BAND_A': 1,
-                'BAND_B': None,
-                'BAND_C': None,
-                'BAND_D': None,
-                'BAND_E': None,
-                'BAND_F': None,
-                'EXTRA': '',
-                'FORMULA': '1*(A>0)',
-                'INPUT_A': raster1['TARGET_OUT_GRID'],
-                'INPUT_B': None,
-                'INPUT_C': None,
-                'INPUT_D': None,
-                'INPUT_E': None,
-                'INPUT_F': None,
-                'NO_DATA': None,
-                'OPTIONS': 'Not selected',
-                'RTYPE': 5,
-                'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT
-            }
-            raster3 = processing.run('gdal:rastercalculator', alg_params3)
-        
-            # Calculatrice Raster
-            alg_params4 = {
-                'BAND_A': 1,
-                'BAND_B': 1,
-                'BAND_C': None,
-                'BAND_D': None,
-                'BAND_E': None,
-                'BAND_F': None,
-                'EXTRA': None,
-                'FORMULA': 'A*B',
-                'INPUT_A': raster3['OUTPUT'],
-                'INPUT_B': raster2['TARGET_OUT_GRID'],
-                'INPUT_C': None,
-                'INPUT_D': None,
-                'INPUT_E': None,
-                'INPUT_F': None,
-                'NO_DATA': None,
-                'OPTIONS': 'Not selected',
-                'RTYPE': 5,
-                'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT
-            }
-            raster4 = processing.run('gdal:rastercalculator', alg_params4)
             
-            alg_params5 = {
-            'COPY_SUBDATASETS': False,
-            'DATA_TYPE': 0,
-            'EXTRA': '',
-            'INPUT': raster4['OUTPUT'],
-            'NODATA': None,
-            'OPTIONS': '',
-            'TARGET_CRS': 'ProjectCrs',
-            'OUTPUT': self.outputRasterfile
-            }
-            processing.run('gdal:translate', alg_params5)
-                             
-        
+            layer_data = QgsRasterLayer(raster2['TARGET_OUT_GRID'])
+            layer_contour = QgsRasterLayer(raster1['TARGET_OUT_GRID'])
+            
+            ras_emprise = QgsRasterCalculatorEntry()
+            entries = []
+            ras_emprise.ref = 'ras_emprise@1'
+            ras_emprise.raster = layer_contour
+            ras_emprise.bandNumber = 1
+            entries.append(ras_emprise)
+            
+            ras_data = QgsRasterCalculatorEntry()
+            ras_data.ref = 'ras_data@1'
+            ras_data.raster = layer_data
+            ras_data.bandNumber = 1
+            entries.append(ras_data)
+            
+            calc1 = QgsRasterCalculator('(ras_emprise@1>0)*ras_data@1',self.outputRasterfile,'GTiff',layer_data.extent(),layer_data.width(),layer_data.height(),entries)
+            calc1.processCalculation()
+
+
         if self.methodInterp == InterpolatorEnum.ELECTROMAGNETIC:
             
-            alg_params = {
+            
+            alg_params2 = {
+            'EPSILON': 0.0001,
             'FIELD': self.field,
-            'K': 10,
-            'NPMAX': 11,
-            'NPMIN': 1,
-            'NPPC': 3,
+            'LEVEL_MAX': 11,
+            'METHOD': 0,
             'SHAPES': self.shapefile,
             'TARGET_USER_FITS': 0,
             'TARGET_USER_SIZE': self.pixelSize,
             'TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX': coords,
             'TARGET_OUT_GRID': QgsProcessing.TEMPORARY_OUTPUT
             }
+            raster_EM = processing.run('saga:multilevelbspline', alg_params2)
             
-            raster1 = processing.run('saga:interpolatecubicspline', alg_params)
             
-            alg_params2 = {
-            'COPY_SUBDATASETS': False,
-            'DATA_TYPE': 0,
-            'EXTRA': '',
-            'INPUT': raster1['TARGET_OUT_GRID'],
-            'NODATA': None,
-            'OPTIONS': '',
-            'TARGET_CRS': 'ProjectCrs',
-            'OUTPUT': self.outputRasterfile
+            alg_params = {
+            'DECAY': 0,
+            'INPUT': self.shapefile,
+            'KERNEL': 0,
+            'OUTPUT_VALUE': 0,
+            'PIXEL_SIZE': self.pixelSize,
+            'RADIUS': self.searchWindow,
+            'RADIUS_FIELD': None,
+            'WEIGHT_FIELD': None,
+            'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT
             }
-            processing.run('gdal:translate', alg_params2)
+            raster_densite =  processing.run('qgis:heatmapkerneldensityestimation', alg_params)
+            
+            layer_densite = QgsRasterLayer(raster_densite['OUTPUT'])
+            layer_EM = QgsRasterLayer(raster_EM['TARGET_OUT_GRID'])
+            
+            ras_mnt = QgsRasterCalculatorEntry()
+            entries = []
+            ras_mnt.ref = 'ras_mnt@1'
+            ras_mnt.raster = layer_EM
+            ras_mnt.bandNumber = 1
+            entries.append(ras_mnt)
+            
+            ras_densite = QgsRasterCalculatorEntry()
+            ras_densite.ref = 'ras_densite@1'
+            ras_densite.raster = layer_densite
+            ras_densite.bandNumber = 1
+            entries.append(ras_densite)
+            
+            calc1 = QgsRasterCalculator('(ras_densite@1>1)*ras_mnt@1',self.outputRasterfile,'GTiff',layer_EM.extent(),layer_EM.width(),layer_EM.height(),entries)
+            calc1.processCalculation()
+   
