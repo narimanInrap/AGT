@@ -32,6 +32,7 @@ from PyQt5 import uic, QtWidgets
 from PyQt5.QtCore import QSettings, QTextCodec, QCoreApplication, QFile, QVariant
 
 from qgis.core import *
+from qgis.analysis import QgsRasterCalculatorEntry, QgsRasterCalculator
 
 import os
 from os.path import splitext
