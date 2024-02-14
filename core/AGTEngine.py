@@ -883,7 +883,7 @@ class Engine(object):
             fields.append(QgsField('Y', QVariant.Double))            
         features = []                
         crsSrc = QgsCoordinateReferenceSystem(self.inputCrsCode)
-        xform = QgsCoordinateTransform(crsSrc, self.crs)                                              
+        xform = QgsCoordinateTransform(crsSrc, self.crs, QgsProject.instance())                                              
         for i in range(0, len(self.EM31Points)):
             feature = QgsFeature()
             qPoint = QgsPointXY(self.EM31Points[i][0], self.EM31Points[i][1])
