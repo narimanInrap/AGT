@@ -1745,7 +1745,10 @@ class EngineRaster(object):
                 'TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX': coords,
                 'TARGET_OUT_GRID': QgsProcessing.TEMPORARY_OUTPUT
                 }
-                raster1 = processing.run('saga:inversedistanceweighted', alg_params)
+                if Qgis.QGIS_VERSION_INT > 33000:
+                    raster1 = processing.run('sagang:inversedistanceweightedinterpolation', alg_params)
+                else :
+                    raster1 = processing.run('saga:inversedistanceweighted', alg_params)
             
             alg_params2 = {
             'COPY_SUBDATASETS': False,
@@ -1805,7 +1808,10 @@ class EngineRaster(object):
                 'TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX': coords,
                 'TARGET_OUT_GRID': QgsProcessing.TEMPORARY_OUTPUT
                 }
-                raster1 = processing.run('saga:inversedistanceweighted', alg_params1)
+                if Qgis.QGIS_VERSION_INT > 33000:
+                    raster1 = processing.run('sagang:inversedistanceweightedinterpolation', alg_params1)
+                else: 
+                    raster1 = processing.run('saga:inversedistanceweighted', alg_params1)
             
             
             alg_params2 = {
@@ -1821,6 +1827,8 @@ class EngineRaster(object):
             }
             if Qgis.QGIS_VERSION_INT < 32600:
                 raster2 = processing.run('saga:multilevelbsplineinterpolation', alg_params2)
+            elif Qgis.QGIS_VERSION_INT > 33000:
+                raster2 = processing.run('sagang:multilevelbspline', alg_params2)
             else :
                 raster2 = processing.run('saga:multilevelbspline', alg_params2)
 			
@@ -1860,8 +1868,12 @@ class EngineRaster(object):
             'TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX': coords,
             'TARGET_OUT_GRID': QgsProcessing.TEMPORARY_OUTPUT
             }
-            raster_EM = processing.run('saga:multilevelbspline', alg_params2)
-            
+            if Qgis.QGIS_VERSION_INT < 32600:
+                raster_EM = processing.run('saga:multilevelbsplineinterpolation', alg_params2)
+            elif Qgis.QGIS_VERSION_INT > 33000:
+                raster_EM = processing.run('sagang:multilevelbspline', alg_params2)
+            else :
+                raster_EM = processing.run('saga:multilevelbspline', alg_params2)
             
             alg_params = {
             'DECAY': 0,
